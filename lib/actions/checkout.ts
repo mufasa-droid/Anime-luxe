@@ -111,7 +111,7 @@ export async function checkoutAction(
   }
 
   const baseUrl = await getBaseUrl();
-  const currency = process.env.NEXT_PUBLIC_CURRENCY || "USD";
+  const currency = process.env.NEXT_PUBLIC_CURRENCY || "NGN";
 
   // Paystack expects amount in lowest currency denomination (kobo or cents)
   const amountInSubunits = Math.round(total * 100);

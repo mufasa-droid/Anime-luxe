@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { slugify } from "@/lib/utils";
 import { getSupabaseServerClient } from "@/lib/services/supabase";
 import {
   fetchAdminProducts,
@@ -61,9 +62,13 @@ type ParsedProductForm =
   | { success: false; error: string };
 
 function parseFormValues(formData: FormData): ParsedProductForm {
+  const rawTitle = ((formData.get("title") as string) || "").trim();
+  const rawSlug = ((formData.get("slug") as string) || "").trim();
+  const resolvedSlug = slugify(rawSlug || rawTitle);
+
   const parsed = productSchema.safeParse({
-    title: formData.get("title"),
-    slug: formData.get("slug"),
+    title: rawTitle,
+    slug: resolvedSlug,
     description: formData.get("description"),
     price: formData.get("price"),
     compareAtPrice: formData.get("compareAtPrice") || undefined,

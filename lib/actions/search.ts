@@ -26,10 +26,12 @@ export async function searchProductsAction(
   let matched: Product[];
 
   if (!q) {
-    // Return trending & popular products by default
     matched = allProducts
       .filter((p) => p.isTrending || p.isNew || p.rating >= 4.8)
       .slice(0, 6);
+    if (matched.length === 0) {
+      matched = allProducts.slice(0, 6);
+    }
   } else {
     matched = allProducts.filter((p) => {
       const matchTitle = p.title.toLowerCase().includes(q);

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   getProductBySlug,
-  MOCK_PRODUCTS,
+  getAllProducts,
 } from "@/lib/data/products";
 import { getReviewsForProduct } from "@/lib/data/reviews";
 import { ProductGallery } from "@/components/product/ProductGallery";
@@ -20,7 +20,8 @@ interface ProductPageProps {
 }
 
 export async function generateStaticParams() {
-  return MOCK_PRODUCTS.map((p) => ({ slug: p.slug }));
+  const products = await getAllProducts();
+  return products.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({

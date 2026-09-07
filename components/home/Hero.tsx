@@ -10,6 +10,7 @@ import { formatCurrency } from "@/lib/utils";
 
 interface HeroSlide {
   id: string;
+  tabLabel: string;
   anime: string;
   tagline: string;
   title: string;
@@ -32,117 +33,122 @@ interface HeroSlide {
 
 const HERO_SLIDES: HeroSlide[] = [
   {
-    id: "naruto",
+    id: "naruto-pain",
+    tabLabel: "Pain (Akatsuki)",
     anime: "Naruto",
-    tagline: "NEW SEASON DROP — AKATSUKI EDITION",
-    title: "WEAR THE\nCURSED CLOUD",
+    tagline: "NEW SEASON DROP — AKATSUKI PAIN",
+    title: "KNOW PAIN,\nFEEL LUXURY",
     subtitle:
-      "Heavyweight embroidered streetwear, signet jewelry, and collector artifacts forged in the shadows.",
-    ctaText: "Explore Akatsuki Drop",
-    ctaHref: "/shop?anime=naruto",
+      "Heavyweight graphic apparel, shinobi aesthetic silhouettes, and collector drops forged in the rain.",
+    ctaText: "Explore Pain Drop",
+    ctaHref: "/product/pain-tee",
     themeGradient: "from-red-600 via-rose-500 to-amber-500",
     glowColor: "rgba(220, 38, 38, 0.25)",
     accentClass: "text-rose-400 border-rose-500/30 bg-rose-500/10",
     product: {
-      title: "Akatsuki Cloud Hoodie",
-      category: "Heavyweight 400gsm",
-      price: 89.0,
-      rating: 4.8,
+      title: "Nagato “Pain” Tee Shirt",
+      category: "Heavyweight Cotton",
+      price: 24435,
+      rating: 4.9,
       image:
         "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
-      slug: "akatsuki-cloud-hoodie",
+      slug: "pain-tee",
       badge: "Trending Drop",
     },
   },
   {
-    id: "jujutsu",
-    anime: "Jujutsu Kaisen",
-    tagline: "SPECIAL GRADE ARTIFACTS",
-    title: "UNLEASH YOUR\nCURSED ENERGY",
-    subtitle:
-      "Domain Expansion outerwear, talisman rings, and luxury apparel designed for modern sorcerers.",
-    ctaText: "Shop Jujutsu Kaisen",
-    ctaHref: "/shop?anime=jujutsu-kaisen",
-    themeGradient: "from-purple-500 via-violet-400 to-blue-500",
-    glowColor: "rgba(168, 85, 247, 0.25)",
-    accentClass: "text-purple-400 border-purple-500/30 bg-purple-500/10",
-    product: {
-      title: "Sukuna Talisman Oversized Tee",
-      category: "Luxury Streetwear",
-      price: 48.0,
-      rating: 4.9,
-      image:
-        "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=800&q=80",
-      slug: "strawhat-crew-tee",
-      badge: "Special Grade",
-    },
-  },
-  {
-    id: "demon-slayer",
-    anime: "Demon Slayer",
-    tagline: "BLADE OF SUNLIGHT — RESTOCK",
-    title: "BREATHE FIRE,\nSTRIKE TRUE",
-    subtitle:
-      "Water-repellent satin bombers, Nichirin pendants, and hand-painted limited edition resin statues.",
-    ctaText: "View Demon Slayer Gear",
-    ctaHref: "/shop?anime=demon-slayer",
-    themeGradient: "from-orange-500 via-amber-400 to-emerald-400",
-    glowColor: "rgba(249, 115, 22, 0.25)",
-    accentClass: "text-amber-400 border-amber-500/30 bg-amber-500/10",
-    product: {
-      title: "Nichirin Blade Bomber Jacket",
-      category: "Satin Embroidered",
-      price: 139.0,
-      rating: 4.7,
-      image:
-        "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80",
-      slug: "nichirin-blade-jacket",
-      badge: "Limited Run",
-    },
-  },
-  {
     id: "solo-leveling",
+    tabLabel: "Solo Leveling",
     anime: "Solo Leveling",
-    tagline: "MONARCH VAULT — EXCLUSIVE",
-    title: "ARISE AS THE\nSHADOW MONARCH",
+    tagline: "SHADOW MONARCH COLLECTION",
+    title: "ARISE AS THE\nMONARCH",
     subtitle:
-      "Individually numbered mystery boxes, neon cyber prints, and oversized streetwear for hunters.",
-    ctaText: "Claim Mystery Box",
-    ctaHref: "/product/shadow-monarch-mystery-box",
+      "Precision cut streetwear, obsidian windbreakers, and electric cyber apparel crafted for high-rank hunters.",
+    ctaText: "Shop Solo Leveling",
+    ctaHref: "/product/shadow-monarch-jacket",
     themeGradient: "from-cyan-400 via-blue-500 to-indigo-600",
     glowColor: "rgba(6, 182, 212, 0.25)",
     accentClass: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10",
     product: {
-      title: "Shadow Monarch Mystery Box",
-      category: "Guaranteed 4 Items",
-      price: 99.0,
-      rating: 4.9,
+      title: "Shadow Monarch Jacket",
+      category: "Obsidian Streetwear",
+      price: 67500,
+      rating: 5.0,
       image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
-      slug: "shadow-monarch-mystery-box",
-      badge: "Vault Exclusive",
+        "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80",
+      slug: "shadow-monarch-jacket",
+      badge: "Monarch Vault",
     },
   },
   {
-    id: "one-piece",
-    anime: "One Piece",
-    tagline: "GRAND LINE TREASURES",
-    title: "FOR THE KING\nOF THE PIRATES",
+    id: "jujutsu",
+    tabLabel: "Jujutsu Kaisen",
+    anime: "Jujutsu Kaisen",
+    tagline: "SPECIAL GRADE APPAREL",
+    title: "UNLEASH YOUR\nCURSED ENERGY",
     subtitle:
-      "18k gold-plated straw hat signet rings, crew graphic apparel, and Yonko collectible gear.",
-    ctaText: "Shop Grand Line",
-    ctaHref: "/shop?anime=one-piece",
+      "Domain Expansion streetwear, luxury heavyweight tees, and talisman graphics engineered for modern sorcerers.",
+    ctaText: "Shop Jujutsu Kaisen",
+    ctaHref: "/product/jujutsu-kaisen-tee-shirt",
+    themeGradient: "from-purple-500 via-violet-400 to-blue-500",
+    glowColor: "rgba(168, 85, 247, 0.25)",
+    accentClass: "text-purple-400 border-purple-500/30 bg-purple-500/10",
+    product: {
+      title: "Jujutsu Kaisen Tee Shirt",
+      category: "Luxury Streetwear",
+      price: 22050,
+      rating: 4.9,
+      image:
+        "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=800&q=80",
+      slug: "jujutsu-kaisen-tee-shirt",
+      badge: "Special Grade",
+    },
+  },
+  {
+    id: "attack-on-titan",
+    tabLabel: "Attack on Titan",
+    anime: "Attack on Titan",
+    tagline: "SCOUT REGIMENT EXCLUSIVE",
+    title: "DEDICATE YOUR\nHEART IN STYLE",
+    subtitle:
+      "Humanity's strongest silhouettes, vintage washed graphic tees, and military precision tailoring.",
+    ctaText: "View Levi Drop",
+    ctaHref: "/product/levi-ackermann",
+    themeGradient: "from-emerald-500 via-teal-400 to-cyan-500",
+    glowColor: "rgba(168, 85, 247, 0.25)",
+    accentClass: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
+    product: {
+      title: "Levi Ackermann Aesthe Tee Shirt",
+      category: "Vintage Wash Heavyweight",
+      price: 23850,
+      rating: 4.9,
+      image:
+        "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80",
+      slug: "levi-ackermann",
+      badge: "Scout Elite",
+    },
+  },
+  {
+    id: "naruto-ninja-way",
+    tabLabel: "Ninja Way",
+    anime: "Naruto",
+    tagline: "SHINOBI LEGACY EDITION",
+    title: "FORGE YOUR\nNINJA WAY",
+    subtitle:
+      "Signature heritage drops, premium spun cotton, and timeless iconography from the Hidden Leaf.",
+    ctaText: "Shop Ninja Way",
+    ctaHref: "/product/ninja-way-collection",
     themeGradient: "from-amber-400 via-orange-400 to-red-500",
     glowColor: "rgba(245, 158, 11, 0.25)",
     accentClass: "text-amber-300 border-amber-500/30 bg-amber-500/10",
     product: {
-      title: "Gomu Gomu Straw Hat Ring",
-      category: "18k Gold Plated",
-      price: 59.0,
-      rating: 4.9,
+      title: "Ninja Way Tee Shirt",
+      category: "Heritage Collection",
+      price: 22500,
+      rating: 4.8,
       image:
-        "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80",
-      slug: "gomu-gomu-straw-hat-ring",
+        "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
+      slug: "ninja-way-collection",
       badge: "Best Seller",
     },
   },
@@ -223,7 +229,7 @@ export function Hero() {
                   : "glass text-white/60 hover:text-white hover:bg-white/10"
               }`}
             >
-              {s.anime}
+              {s.tabLabel}
             </button>
           ))}
         </div>

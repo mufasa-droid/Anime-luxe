@@ -3,9 +3,10 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { AlertCircle, UploadCloud, X, Plus, ImageIcon } from "lucide-react";
+import { AlertCircle, UploadCloud, X, Plus, ImageIcon, Sparkles } from "lucide-react";
 import { PRODUCT_CATEGORIES, ANIME_SERIES } from "@/lib/data/categories";
 import { MagneticButton } from "@/components/ui/MagneticButton";
+import { cn, slugify } from "@/lib/utils";
 import type { AdminProduct, ProductFormState } from "@/lib/actions/admin/products";
 
 interface ProductFormProps {
@@ -23,6 +24,9 @@ export function ProductForm({ initialValues, action, submitLabel }: ProductFormP
     null
   );
 
+  const [title, setTitle] = useState(initialValues?.title ?? "");
+  const [slug, setSlug] = useState(initialValues?.slug ?? "");
+  const [isSlugTouched, setIsSlugTouched] = useState(Boolean(initialValues?.slug));
   const [images, setImages] = useState<string[]>(initialValues?.images ?? []);
   const [urlInput, setUrlInput] = useState("");
 
@@ -31,6 +35,21 @@ export function ProductForm({ initialValues, action, submitLabel }: ProductFormP
   const selectClass =
     "w-full rounded-xl bg-base-900 border border-white/10 px-4 py-2.5 text-sm text-white focus:border-accent-purple focus:outline-none [&>option]:bg-[#121218] [&>option]:text-white";
   const labelClass = "mb-1.5 block text-xs font-medium text-white/60";
+
+  function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = e.target.value;
+    setTitle(val);
+    if (!isSlugTouched || !slug.trim()) {
+      setSlug(slugify(val));
+    }
+  }
+
+  function handleGenerateSlug() {
+    if (title.trim()) {
+      setSlug(slugify(title));
+      setIsSlugTouched(false);
+    }
+  }
 
   function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const files = e.target.files;
@@ -64,21 +83,46 @@ export function ProductForm({ initialValues, action, submitLabel }: ProductFormP
           <label className={labelClass}>Product Title</label>
           <input
             name="title"
-            defaultValue={initialValues?.title}
+            value={title}
+            onChange={handleTitleChange}
             placeholder="Akatsuki Cloud Hoodie"
             className={inputClass}
             required
           />
         </div>
         <div>
-          <label className={labelClass}>Product Slug (URL)</label>
-          <input
-            name="slug"
-            defaultValue={initialValues?.slug}
-            placeholder="akatsuki-cloud-hoodie"
-            className={inputClass}
-            required
-          />
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-xs font-medium text-white/60">Product Slug (URL)</label>
+            <button
+              type="button"
+              onClick={handleGenerateSlug}
+              className="flex items-center gap-1 text-[11px] font-medium text-accent-purple hover:text-accent-pink transition-colors"
+            >
+              <Sparkles size={12} /> Auto-generate
+            </button>
+          </div>
+          <div className="relative">
+            <input
+              name="slug"
+              value={slug}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSlug(val);
+                setIsSlugTouched(val.trim().length > 0);
+              }}
+              onBlur={() => {
+                if (!slug.trim() && title.trim()) {
+                  setSlug(slugify(title));
+                  setIsSlugTouched(false);
+                } else if (slug.trim()) {
+                  setSlug(slugify(slug));
+                }
+              }}
+              placeholder="akatsuki-cloud-hoodie"
+              className={cn(inputClass, "font-mono text-xs")}
+              required
+            />
+          </div>
         </div>
       </div>
 
@@ -95,24 +139,25 @@ export function ProductForm({ initialValues, action, submitLabel }: ProductFormP
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div>
-          <label className={labelClass}>Price ($)</label>
+          <label className={labelClass}>Price (₦ NGN)</label>
           <input
             name="price"
             type="number"
             step="0.01"
             defaultValue={initialValues?.price}
+            placeholder="e.g. 25000"
             className={inputClass}
             required
           />
         </div>
         <div>
-          <label className={labelClass}>Compare-at Price ($)</label>
+          <label className={labelClass}>Compare-at Price (₦ NGN)</label>
           <input
             name="compareAtPrice"
             type="number"
             step="0.01"
             defaultValue={initialValues?.compare_at_price ?? ""}
-            placeholder="Original price if on sale"
+            placeholder="e.g. 35000"
             className={inputClass}
           />
         </div>

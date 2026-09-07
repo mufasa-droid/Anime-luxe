@@ -499,69 +499,54 @@ function isDiscounted(product: Product) {
 }
 
 const ADMIN_FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1600000000000?ixid=admin-product&auto=format&fit=crop&w=800&q=80";
+  "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80";
 
-/**
- * Maps an admin-managed products-table row onto the storefront's richer
- * Product type. The admin table intentionally has a simpler shape than
- * the mock catalog (single stock count instead of size/color variants,
- * no manually-curated tags) — see README for why. `category`/`anime` are
- * cast rather than validated because the admin form's <select> options
- * are populated directly from PRODUCT_CATEGORIES/ANIME_SERIES, so any
- * row written through that form is guaranteed to match one of the union
- * values by construction.
- */
 function mapAdminRowToProduct(row: AdminProductRow): Product {
+  const stock = Number(row.stock) || 50;
+  const price = Number(row.price);
+  const compareAtPrice = row.compare_at_price ? Number(row.compare_at_price) : undefined;
+  const images = Array.isArray(row.images) && row.images.length > 0 ? row.images : [ADMIN_FALLBACK_IMAGE];
+
   return {
     id: row.id,
     slug: row.slug,
     title: row.title,
     description: row.description ?? "",
-    price: row.price,
-    compareAtPrice: row.compare_at_price ?? undefined,
-    currency: "USD",
-    category: row.category as ProductCategory,
-    anime: row.anime as AnimeSeries,
-    images: row.images.length > 0 ? row.images : [ADMIN_FALLBACK_IMAGE],
-    variants: [{ id: `${row.id}-default`, stock: row.stock }],
-    rating: row.rating,
-    reviewCount: row.review_count,
-    isLimited: row.is_limited,
-    isNew: row.is_new,
-    isTrending: row.is_trending,
-    tags: [row.category.toLowerCase(), slugify(row.anime)],
+    price,
+    compareAtPrice,
+    currency: process.env.NEXT_PUBLIC_CURRENCY || "NGN",
+    category: (row.category || "T-Shirts") as ProductCategory,
+    anime: (row.anime || "Naruto") as AnimeSeries,
+    images,
+    variants: [
+      { id: `${row.id}-s`, size: "S", stock: Math.max(1, Math.floor(stock / 4)) },
+      { id: `${row.id}-m`, size: "M", stock: Math.max(1, Math.floor(stock / 4)) },
+      { id: `${row.id}-l`, size: "L", stock: Math.max(1, Math.floor(stock / 4)) },
+      { id: `${row.id}-xl`, size: "XL", stock: Math.max(1, Math.floor(stock / 4)) },
+    ],
+    rating: row.rating || 4.9,
+    reviewCount: row.review_count || 16,
+    isLimited: Boolean(row.is_limited),
+    isNew: Boolean(row.is_new),
+    isTrending: Boolean(row.is_trending),
+    tags: [row.category.toLowerCase(), slugify(row.anime), "streetwear", "luxe"],
   };
 }
 
 /**
- * The full public catalog: curated mock products merged with whatever's
- * live in the admin-managed Supabase table. Wrapped in React's `cache()`
- * so multiple calls within the same request/render (e.g. a page calling
- * getProducts() while a sibling Suspense boundary calls
- * getFilterFacets()) share one Supabase round-trip instead of firing it
- * repeatedly.
+ * Public catalog: live products from the Supabase `products` table.
+ * Wrapped in React's `cache()` for request deduplication.
  */
 export const getAllProducts = cache(async (): Promise<Product[]> => {
   const adminRows = await fetchAdminProducts();
-  if (adminRows.length === 0) return MOCK_PRODUCTS;
-
-  const merged = [...MOCK_PRODUCTS];
-  for (const row of adminRows) {
-    const mapped = mapAdminRowToProduct(row);
-    const existingIndex = merged.findIndex((p) => p.slug === mapped.slug);
-    if (existingIndex >= 0) {
-      merged[existingIndex] = mapped; // admin edit overrides a mock product with the same slug
-    } else {
-      merged.push(mapped);
-    }
+  if (adminRows && adminRows.length > 0) {
+    return adminRows.map(mapAdminRowToProduct);
   }
-  return merged;
+  return [];
 });
 
 /**
- * Pure filter/sort/paginate over an already-fetched product list. Pulled
- * out of getProducts() so it can run against the merged mock+admin
- * catalog without duplicating this logic.
+ * Pure filter/sort/paginate over product list.
  */
 function applyProductQuery(
   allProducts: Product[],
@@ -658,7 +643,7 @@ function applyProductQuery(
 
 /**
  * Full product query used by the /shop page: filtering, sorting, and
- * pagination all in one call, over the merged mock+admin catalog.
+ * pagination all in one call, over the live catalog.
  */
 export async function getProducts(
   filters: ProductFilters = {}
@@ -667,9 +652,7 @@ export async function getProducts(
   return applyProductQuery(allProducts, filters);
 }
 
-/** Distinct filter option lists, derived from the merged catalog (would
- * be a DISTINCT query or a cached facet table against a real DB at
- * larger scale). */
+/** Distinct filter option lists, derived from the live catalog */
 export async function getFilterFacets() {
   const allProducts = await getAllProducts();
   const colors = new Set<string>();
@@ -689,8 +672,8 @@ export async function getFilterFacets() {
   return {
     colors: Array.from(colors).sort(),
     sizes: Array.from(sizes).sort(),
-    minPrice: Math.floor(minPrice),
-    maxPrice: Math.ceil(maxPrice),
+    minPrice: minPrice === Infinity ? 0 : Math.floor(minPrice),
+    maxPrice: maxPrice === 0 ? 100000 : Math.ceil(maxPrice),
   };
 }
 
@@ -704,8 +687,6 @@ export async function getProductBySlug(
 export async function getProductsByIds(ids: string[]): Promise<Product[]> {
   const allProducts = await getAllProducts();
   const idSet = new Set(ids);
-  // Preserve the order of `ids` (most-recently-added-first) rather than
-  // catalog order, since callers like the wishlist page care about that.
   return ids
     .map((id) => allProducts.find((p) => p.id === id))
     .filter((p): p is Product => !!p && idSet.has(p.id));
@@ -713,15 +694,18 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
 
 export async function getTrendingProducts(): Promise<Product[]> {
   const allProducts = await getAllProducts();
-  return allProducts.filter((p) => p.isTrending);
+  const trending = allProducts.filter((p) => p.isTrending);
+  return trending.length > 0 ? trending : allProducts.slice(0, 8);
 }
 
 export async function getNewArrivals(): Promise<Product[]> {
   const allProducts = await getAllProducts();
-  return allProducts.filter((p) => p.isNew);
+  const fresh = allProducts.filter((p) => p.isNew);
+  return fresh.length > 0 ? fresh : allProducts.slice(0, 8);
 }
 
 export async function getLimitedEditions(): Promise<Product[]> {
   const allProducts = await getAllProducts();
-  return allProducts.filter((p) => p.isLimited);
+  const limited = allProducts.filter((p) => p.isLimited);
+  return limited.length > 0 ? limited : allProducts.slice(0, 8);
 }

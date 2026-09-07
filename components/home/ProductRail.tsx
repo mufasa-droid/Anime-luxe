@@ -16,6 +16,8 @@ export function ProductRail({
   products,
   viewAllHref = "/shop",
 }: ProductRailProps) {
+  if (!products || products.length === 0) return null;
+
   return (
     <section className="px-6 py-20">
       <div className="mx-auto max-w-7xl">
