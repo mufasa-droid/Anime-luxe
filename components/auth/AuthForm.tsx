@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState, useTransition } from "react";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, MailCheck, ArrowLeft } from "lucide-react";
 import {
   signInWithPasswordAction,
   signUpAction,
@@ -63,7 +63,45 @@ export function AuthForm({ next }: { next?: string }) {
     "glass w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none";
   const labelClass = "mb-1.5 block text-xs font-medium text-white/60";
 
-  const activeState = tab === "signin" ? signInState : signUpState;
+  // If a signup confirmation email was dispatched, show a prominent verification screen
+  if (tab === "signup" && signUpState?.success) {
+    return (
+      <div className="glass-strong w-full max-w-md rounded-3xl p-8 text-center">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-purple/20 text-accent-purple shadow-glow">
+          <MailCheck size={32} />
+        </div>
+
+        <h3 className="font-heading text-2xl font-bold text-white">
+          Confirmation Link Sent!
+        </h3>
+
+        <p className="mt-2 text-sm text-white/70">
+          {signUpState.success}
+        </p>
+
+        <div className="glass my-6 rounded-2xl p-4 text-left text-xs text-white/60 space-y-2">
+          <p className="flex items-center gap-2 text-white font-medium">
+            <CheckCircle2 size={14} className="text-emerald-400" />
+            Next Steps:
+          </p>
+          <p>1. Open your email client and check your inbox.</p>
+          <p>2. Click the verification link to activate your account.</p>
+          <p className="text-white/40 italic">
+            * Be sure to check your Spam or Junk folder if the email does not appear within a minute.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setTab("signin")}
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-white/10 py-3 font-heading text-sm font-semibold text-white transition-colors hover:bg-white/20"
+        >
+          <ArrowLeft size={16} />
+          <span>Go to Sign In</span>
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="glass-strong w-full max-w-md rounded-3xl p-8">
@@ -194,16 +232,16 @@ export function AuthForm({ next }: { next?: string }) {
         </form>
       )}
 
-      {activeState?.error && (
+      {signInState?.error && tab === "signin" && (
         <div className="mt-4 flex items-start gap-2 rounded-xl bg-accent-red/10 px-3 py-2.5 text-xs text-accent-red">
           <AlertCircle size={14} className="mt-0.5 shrink-0" />
-          <span>{activeState.error}</span>
+          <span>{signInState.error}</span>
         </div>
       )}
-      {activeState?.success && (
-        <div className="mt-4 flex items-start gap-2 rounded-xl bg-accent-blue/10 px-3 py-2.5 text-xs text-accent-blue">
-          <CheckCircle2 size={14} className="mt-0.5 shrink-0" />
-          <span>{activeState.success}</span>
+      {signUpState?.error && tab === "signup" && (
+        <div className="mt-4 flex items-start gap-2 rounded-xl bg-accent-red/10 px-3 py-2.5 text-xs text-accent-red">
+          <AlertCircle size={14} className="mt-0.5 shrink-0" />
+          <span>{signUpState.error}</span>
         </div>
       )}
     </div>

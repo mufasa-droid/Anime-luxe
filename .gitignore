@@ -5,6 +5,7 @@ out
 .env*.local
 .DS_Store
 *.log
+*.tsbuildinfo
 AGENT.md
 prompts
 skills
