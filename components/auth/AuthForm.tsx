@@ -1,11 +1,12 @@
 "use client";
 
 import { useActionState, useState, useTransition } from "react";
-import { AlertCircle, CheckCircle2, MailCheck, ArrowLeft } from "lucide-react";
+import { AlertCircle, CheckCircle2, MailCheck, ArrowLeft, KeyRound } from "lucide-react";
 import {
   signInWithPasswordAction,
   signUpAction,
   signInWithOAuthAction,
+  requestPasswordResetAction,
   type AuthActionState,
 } from "@/lib/actions/auth";
 import { MagneticButton } from "@/components/ui/MagneticButton";
@@ -35,6 +36,8 @@ function GithubIcon() {
 export function AuthForm({ next }: { next?: string }) {
   const redirectTarget = next ?? "/account";
   const [tab, setTab] = useState<"signin" | "signup">("signin");
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+
   const [signInState, signInFormAction, signInPending] = useActionState(
     signInWithPasswordAction,
     initialState
@@ -43,6 +46,11 @@ export function AuthForm({ next }: { next?: string }) {
     signUpAction,
     initialState
   );
+  const [resetState, resetFormAction, resetPending] = useActionState(
+    requestPasswordResetAction,
+    initialState
+  );
+
   const [oauthError, setOauthError] = useState<string | null>(null);
   const [oauthPending, startOauthTransition] = useTransition();
 
@@ -63,7 +71,77 @@ export function AuthForm({ next }: { next?: string }) {
     "glass w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none";
   const labelClass = "mb-1.5 block text-xs font-medium text-white/60";
 
-  // If a signup confirmation email was dispatched, show a prominent verification screen
+  // 1. Forgot Password View
+  if (isForgotPassword) {
+    return (
+      <div className="glass-strong w-full max-w-md rounded-3xl p-8 text-center">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-purple/20 text-accent-purple shadow-glow">
+          <KeyRound size={28} />
+        </div>
+
+        <h3 className="font-heading text-2xl font-bold text-white">
+          Reset Password
+        </h3>
+        <p className="mt-1.5 text-xs text-white/60">
+          Enter your account email to receive a password reset link.
+        </p>
+
+        {resetState?.success ? (
+          <div className="my-6 glass rounded-2xl p-5 text-left text-xs text-emerald-400 border border-emerald-500/20 space-y-2">
+            <div className="flex items-center gap-2 font-medium">
+              <CheckCircle2 size={16} />
+              Reset Email Dispatched
+            </div>
+            <p className="text-white/70">
+              {resetState.success}
+            </p>
+            <p className="text-white/40 italic">
+              * Remember to check your Spam or Junk folder.
+            </p>
+          </div>
+        ) : (
+          <form action={resetFormAction} className="mt-6 space-y-4 text-left">
+            <div>
+              <label className={labelClass}>Email Address</label>
+              <input
+                name="email"
+                type="email"
+                required
+                placeholder="you@email.com"
+                className={inputClass}
+              />
+            </div>
+
+            {resetState?.error && (
+              <div className="flex items-start gap-2 rounded-xl bg-accent-red/10 px-3 py-2.5 text-xs text-accent-red">
+                <AlertCircle size={14} className="mt-0.5 shrink-0" />
+                <span>{resetState.error}</span>
+              </div>
+            )}
+
+            <MagneticButton
+              type="submit"
+              disabled={resetPending}
+              className="w-full text-center disabled:opacity-60"
+            >
+              {resetPending ? "Sending link…" : "Send Reset Link"}
+            </MagneticButton>
+          </form>
+        )}
+
+        <button
+          type="button"
+          onClick={() => setIsForgotPassword(false)}
+          className="mt-6 flex w-full items-center justify-center gap-2 text-xs text-white/60 hover:text-white transition-colors"
+        >
+          <ArrowLeft size={14} />
+          <span>Back to Sign In</span>
+        </button>
+      </div>
+    );
+  }
+
+  // 2. Sign Up Confirmation Screen
   if (tab === "signup" && signUpState?.success) {
     return (
       <div className="glass-strong w-full max-w-md rounded-3xl p-8 text-center">
@@ -172,7 +250,16 @@ export function AuthForm({ next }: { next?: string }) {
             />
           </div>
           <div>
-            <label className={labelClass}>Password</label>
+            <div className="flex items-center justify-between">
+              <label className={labelClass}>Password</label>
+              <button
+                type="button"
+                onClick={() => setIsForgotPassword(true)}
+                className="text-[11px] text-accent-purple hover:underline"
+              >
+                Forgot password?
+              </button>
+            </div>
             <input
               name="password"
               type="password"

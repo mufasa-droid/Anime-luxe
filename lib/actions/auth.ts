@@ -68,6 +68,52 @@ export async function signUpAction(
   };
 }
 
+export async function requestPasswordResetAction(
+  _prevState: AuthActionState | null,
+  formData: FormData
+): Promise<AuthActionState> {
+  const email = String(formData.get("email") ?? "").trim();
+
+  if (!email) {
+    return { error: "Please enter your email address." };
+  }
+
+  const supabase = await createClient();
+  const baseUrl = await getBaseUrl();
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${baseUrl}/auth/callback?next=/reset-password`,
+  });
+
+  if (error) return { error: error.message };
+
+  return {
+    success: "Password reset link sent! Check your inbox to set a new password.",
+  };
+}
+
+export async function updatePasswordAction(
+  _prevState: AuthActionState | null,
+  formData: FormData
+): Promise<AuthActionState> {
+  const password = String(formData.get("password") ?? "");
+  const confirmPassword = String(formData.get("confirmPassword") ?? "");
+
+  if (!password || password.length < 8) {
+    return { error: "Password must be at least 8 characters long." };
+  }
+  if (password !== confirmPassword) {
+    return { error: "Passwords do not match." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) return { error: error.message };
+
+  redirect("/account");
+}
+
 export async function signInWithOAuthAction(
   provider: "google" | "github",
   next = "/account"
