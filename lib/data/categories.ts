@@ -173,7 +173,7 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Demon Slayer",
     slug: "demon-slayer",
     color: "#22C55E",
-    image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80",
+    image: "/images/anime/demon-slayer.jpg",
   },
   {
     name: "Jujutsu Kaisen",
@@ -227,13 +227,13 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Hunter x Hunter",
     slug: "hunter-x-hunter",
     color: "#22C55E",
-    image: "/images/products/killua-zoldyck-slurp-heavyweight-hoodie.jpeg",
+    image: "/images/anime/hunter-x-hunter.jpg",
   },
   {
     name: "Fire Force",
     slug: "fire-force",
     color: "#F97316",
-    image: "/images/products/shinra-devil-footprints-boxy-tee.jpeg",
+    image: "/images/anime/fire-force.jpg",
   },
   {
     name: "Baki",
@@ -263,7 +263,7 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Haikyuu",
     slug: "haikyuu",
     color: "#EF4444",
-    image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=600&q=80",
+    image: "/images/anime/haikyuu.jpg",
   },
   {
     name: "Vinland Saga",
