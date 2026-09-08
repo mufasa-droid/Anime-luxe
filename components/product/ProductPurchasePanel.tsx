@@ -25,8 +25,8 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
   const [justAdded, setJustAdded] = useState(false);
 
   const addItem = useCartStore((s) => s.addItem);
-  const { toggle, has } = useWishlistStore();
-  const wishlisted = has(product.id);
+  const wishlisted = useWishlistStore((s) => s.productIds.includes(product.id));
+  const toggleWishlist = useWishlistStore((s) => s.toggle);
 
   const selectedVariant: ProductVariant | undefined = product.variants.find(
     (v) =>
@@ -221,13 +221,17 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
         </MagneticButton>
 
         <button
-          onClick={() => toggle(product.id)}
+          type="button"
+          onClick={() => toggleWishlist(product.id)}
           aria-label="Toggle wishlist"
-          className="glass rounded-full p-4 text-white/70 hover:text-white"
+          className="glass rounded-full p-4 text-white/70 hover:text-white hover:scale-105 active:scale-90 transition-all"
         >
           <Heart
             size={18}
-            className={cn(wishlisted && "fill-accent-pink text-accent-pink")}
+            className={cn(
+              "transition-colors duration-200",
+              wishlisted && "fill-accent-pink text-accent-pink"
+            )}
           />
         </button>
       </div>

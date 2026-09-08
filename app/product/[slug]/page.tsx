@@ -15,6 +15,9 @@ import { RecentlyViewedRail } from "@/components/product/RecentlyViewedRail";
 import { TrackRecentlyViewed } from "@/components/product/TrackRecentlyViewed";
 import { ProductGridSkeleton } from "@/components/ui/ProductGridSkeleton";
 
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { ANIME_SERIES } from "@/lib/data/categories";
+
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -49,12 +52,25 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!product) notFound();
 
   const reviews = await getReviewsForProduct(product.id, product.reviewCount);
+  const animeSlug =
+    ANIME_SERIES.find((a) => a.name === product.anime)?.slug ||
+    product.anime.toLowerCase().replace(/\s+/g, "-");
 
   return (
-    <div className="pt-32">
+    <div className="pt-28 md:pt-32">
       <TrackRecentlyViewed product={product} />
 
       <div className="mx-auto max-w-7xl px-6 pb-16">
+        <Breadcrumbs
+          items={[
+            { label: "Shop", href: "/shop" },
+            { label: product.anime, href: `/anime/${animeSlug}` },
+            { label: product.title },
+          ]}
+          backHref="/shop"
+          backLabel="Back to Shop"
+        />
+
         <div className="grid gap-12 md:grid-cols-2">
           <ProductGallery images={product.images} title={product.title} />
           <div>

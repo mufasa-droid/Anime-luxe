@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Search, Heart, ShoppingBag, Menu, X, User } from "lucide-react";
+import { Search, Heart, ShoppingBag, Menu, X, User, Home } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthUser } from "@/hooks/useAuthUser";
@@ -151,11 +151,19 @@ export function Navbar() {
                 <Search size={16} className="text-accent-purple" />
                 <span>Search anime gear...</span>
               </button>
+              <Link
+                href="/"
+                className="flex items-center gap-2 font-heading font-semibold text-white/90"
+                onClick={() => setMobileOpen(false)}
+              >
+                <Home size={18} className="text-accent-pink" />
+                <span>Home</span>
+              </Link>
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="font-heading text-white/80"
+                  className="font-heading text-white/80 transition-colors hover:text-white"
                   onClick={() => setMobileOpen(false)}
                 >
                   {link.label}

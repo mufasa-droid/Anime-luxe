@@ -12,8 +12,8 @@ import { useWishlistStore } from "@/store/wishlistStore";
 export function ProductCard({ product }: { product: Product }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
-  const { toggle, has } = useWishlistStore();
-  const wishlisted = has(product.id);
+  const wishlisted = useWishlistStore((s) => s.productIds.includes(product.id));
+  const toggleWishlist = useWishlistStore((s) => s.toggle);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -49,14 +49,19 @@ export function ProductCard({ product }: { product: Product }) {
       className="glass group relative overflow-hidden rounded-3xl"
     >
       <button
-        onClick={() => toggle(product.id)}
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleWishlist(product.id);
+        }}
         aria-label="Toggle wishlist"
-        className="absolute right-4 top-4 z-10 rounded-full bg-black/40 p-2 backdrop-blur-sm transition-colors hover:bg-black/60"
+        className="absolute right-4 top-4 z-10 rounded-full bg-black/40 p-2 backdrop-blur-sm transition-all hover:bg-black/60 hover:scale-110 active:scale-90"
       >
         <Heart
           size={16}
           className={cn(
-            "transition-colors",
+            "transition-colors duration-200",
             wishlisted ? "fill-accent-pink text-accent-pink" : "text-white"
           )}
         />

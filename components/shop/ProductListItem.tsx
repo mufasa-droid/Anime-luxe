@@ -8,8 +8,8 @@ import { formatCurrency, cn } from "@/lib/utils";
 import { useWishlistStore } from "@/store/wishlistStore";
 
 export function ProductListItem({ product }: { product: Product }) {
-  const { toggle, has } = useWishlistStore();
-  const wishlisted = has(product.id);
+  const wishlisted = useWishlistStore((s) => s.productIds.includes(product.id));
+  const toggleWishlist = useWishlistStore((s) => s.toggle);
 
   return (
     <Link
@@ -59,17 +59,19 @@ export function ProductListItem({ product }: { product: Product }) {
 
       <div className="flex shrink-0 flex-col items-end gap-3">
         <button
+          type="button"
           onClick={(e) => {
             e.preventDefault();
-            toggle(product.id);
+            e.stopPropagation();
+            toggleWishlist(product.id);
           }}
           aria-label="Toggle wishlist"
-          className="rounded-full bg-white/10 p-2 hover:bg-white/20"
+          className="rounded-full bg-white/10 p-2 hover:bg-white/20 hover:scale-110 active:scale-90 transition-all"
         >
           <Heart
             size={16}
             className={cn(
-              "transition-colors",
+              "transition-colors duration-200",
               wishlisted ? "fill-accent-pink text-accent-pink" : "text-white"
             )}
           />

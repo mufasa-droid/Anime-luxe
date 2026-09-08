@@ -7,6 +7,8 @@ import { ShopResults } from "@/components/shop/ShopResults";
 import { Pagination } from "@/components/shop/Pagination";
 import { ProductGridSkeleton } from "@/components/ui/ProductGridSkeleton";
 
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+
 export const metadata: Metadata = {
   title: "Shop All Anime Merchandise",
   description:
@@ -29,12 +31,14 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   ]);
 
   return (
-    <div className="mx-auto max-w-7xl px-6 pb-24 pt-32">
+    <div className="mx-auto max-w-7xl px-6 pb-24 pt-28 md:pt-32">
+      <Breadcrumbs items={[{ label: "Shop" }]} backHref="/" backLabel="Home" />
+
       <div className="mb-10">
-        <h1 className="font-heading text-4xl font-bold text-white sm:text-5xl">
+        <h1 className="font-heading text-4xl font-bold text-neutral-900 dark:text-white sm:text-5xl">
           Shop All
         </h1>
-        <p className="mt-2 text-white/50">
+        <p className="mt-2 text-neutral-500 dark:text-white/50">
           {total} products across every series and category
         </p>
       </div>
