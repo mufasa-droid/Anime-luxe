@@ -1,11 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Search, Heart, ShoppingBag, Menu, X, User, Home } from "lucide-react";
+import {
+  Search,
+  Heart,
+  ShoppingBag,
+  Menu,
+  X,
+  User,
+  Home,
+  LogOut,
+  Package,
+  ShieldCheck,
+  ChevronDown,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthUser } from "@/hooks/useAuthUser";
+import { signOutAction } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 import { SearchModal } from "@/components/layout/SearchModal";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -21,6 +34,9 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
   const openCart = useCartStore((s) => s.openCart);
   const itemCount = useCartStore((s) => s.itemCount());
   const { user } = useAuthUser();
@@ -43,13 +59,27 @@ export function Navbar() {
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
   }, []);
 
+  // Close user menu on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(e.target as Node)
+      ) {
+        setUserMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <>
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       <header
         className={cn(
           "fixed top-0 z-50 w-full transition-all duration-500",
-          scrolled ? "glass-strong py-3" : "bg-transparent py-6"
+          scrolled ? "glass-strong py-3 shadow-lg" : "bg-transparent py-6"
         )}
       >
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6">
@@ -86,107 +116,278 @@ export function Navbar() {
 
             <ThemeToggle />
 
-            <Link
-              href={user ? "/account" : "/login"}
-              aria-label={user ? "Account" : "Login"}
-              className="flex items-center"
-            >
-              {user ? (
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-accent-purple to-accent-pink font-heading text-xs font-bold text-white shadow-sm shadow-accent-purple/30">
-                  {(user.name || user.email || "?").charAt(0).toUpperCase()}
-                </span>
-              ) : (
-                <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-heading font-medium text-white/90 backdrop-blur-sm transition-all hover:border-accent-purple/50 hover:bg-white/10 hover:text-white">
+            {/* Desktop User Menu Dropdown */}
+            {user ? (
+              <div ref={userMenuRef} className="relative hidden md:block">
+                <button
+                  type="button"
+                  onClick={() => setUserMenuOpen((prev) => !prev)}
+                  className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 p-1 pr-2.5 transition-all hover:bg-white/10 hover:border-white/25 focus:outline-none"
+                  aria-expanded={userMenuOpen}
+                  aria-label="User account menu"
+                >
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 font-heading text-[11px] font-bold text-white shadow-sm">
+                    {(user.name || user.email || "?").charAt(0).toUpperCase()}
+                  </span>
+                  <ChevronDown
+                    size={12}
+                    className={cn(
+                      "text-white/60 transition-transform duration-200",
+                      userMenuOpen && "rotate-180 text-white"
+                    )}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {userMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 8 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 8 }}
+                      transition={{ duration: 0.15 }}
+                      className="glass-strong absolute right-0 mt-2.5 w-60 rounded-2xl border border-white/15 p-2 shadow-2xl backdrop-blur-xl"
+                    >
+                      {/* User Info Header */}
+                      <div className="border-b border-white/10 px-3 py-2.5">
+                        <p className="font-heading text-xs font-bold text-white truncate">
+                          {user.name || "Collector"}
+                        </p>
+                        <p className="text-[11px] text-white/50 truncate">
+                          {user.email}
+                        </p>
+                      </div>
+
+                      {/* Menu Links */}
+                      <div className="space-y-0.5 py-1.5">
+                        <Link
+                          href="/account"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                        >
+                          <User size={14} className="text-purple-400" />
+                          <span>My Account</span>
+                        </Link>
+                        <Link
+                          href="/account/orders"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                        >
+                          <Package size={14} className="text-blue-400" />
+                          <span>My Orders</span>
+                        </Link>
+                        <Link
+                          href="/account/wishlist"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+                        >
+                          <Heart size={14} className="text-pink-400" />
+                          <span>Wishlist</span>
+                        </Link>
+                        {user.isAdmin && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setUserMenuOpen(false)}
+                            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-accent-purple transition-colors hover:bg-white/10 hover:text-accent-pink"
+                          >
+                            <ShieldCheck size={14} />
+                            <span>Admin Panel</span>
+                          </Link>
+                        )}
+                      </div>
+
+                      {/* Log Out Action */}
+                      <div className="border-t border-white/10 pt-1.5">
+                        <form action={signOutAction}>
+                          <button
+                            type="submit"
+                            className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-rose-400 transition-colors hover:bg-rose-500/10 hover:text-rose-300"
+                          >
+                            <LogOut size={14} />
+                            <span>Log Out</span>
+                          </button>
+                        </form>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                aria-label="Login"
+                className="hidden md:flex items-center"
+              >
+                <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1 text-xs font-heading font-medium text-white/90 backdrop-blur-sm transition-all hover:border-accent-purple/50 hover:bg-white/10 hover:text-white">
                   <User size={14} className="text-accent-purple" />
                   <span>Login</span>
                 </span>
-              )}
-            </Link>
-          <Link
-            href="/account/wishlist"
-            aria-label="Wishlist"
-            className="text-white/80 transition-colors hover:text-white"
-          >
-            <Heart size={20} />
-          </Link>
-          <button
-            aria-label="Open cart"
-            onClick={openCart}
-            className="relative text-white/80 transition-colors hover:text-white"
-          >
-            <ShoppingBag size={20} />
-            {itemCount > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent-pink text-[10px] font-bold text-white">
-                {itemCount}
-              </span>
-            )}
-          </button>
-          <button
-            className="text-white/80 md:hidden"
-            onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
-        </div>
-      </nav>
-
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="glass-strong mt-4 overflow-hidden md:hidden"
-          >
-            <div className="flex flex-col gap-4 px-6 py-6">
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileOpen(false);
-                  setSearchOpen(true);
-                }}
-                className="flex items-center gap-2.5 rounded-2xl bg-white/5 px-4 py-2.5 font-heading text-sm text-white/70 text-left"
-              >
-                <Search size={16} className="text-accent-purple" />
-                <span>Search anime gear...</span>
-              </button>
-              <Link
-                href="/"
-                className="flex items-center gap-2 font-heading font-semibold text-white/90"
-                onClick={() => setMobileOpen(false)}
-              >
-                <Home size={18} className="text-accent-pink" />
-                <span>Home</span>
               </Link>
-              {NAV_LINKS.map((link) => (
+            )}
+
+            <Link
+              href="/account/wishlist"
+              aria-label="Wishlist"
+              className="text-white/80 transition-colors hover:text-white"
+            >
+              <Heart size={20} />
+            </Link>
+
+            <button
+              aria-label="Open cart"
+              onClick={openCart}
+              className="relative text-white/80 transition-colors hover:text-white"
+            >
+              <ShoppingBag size={20} />
+              {itemCount > 0 && (
+                <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent-pink text-[10px] font-bold text-white">
+                  {itemCount}
+                </span>
+              )}
+            </button>
+
+            <button
+              className="text-white/80 md:hidden"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
+        </nav>
+
+        {/* Mobile Navigation Drawer */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="glass-strong mt-4 overflow-hidden border-t border-white/10 md:hidden"
+            >
+              <div className="flex flex-col gap-4 px-6 py-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    setSearchOpen(true);
+                  }}
+                  className="flex items-center gap-2.5 rounded-2xl bg-white/5 px-4 py-2.5 font-heading text-sm text-white/70 text-left border border-white/10"
+                >
+                  <Search size={16} className="text-accent-purple" />
+                  <span>Search anime gear...</span>
+                </button>
+
                 <Link
-                  key={link.href}
-                  href={link.href}
-                  className="font-heading text-white/80 transition-colors hover:text-white"
+                  href="/"
+                  className="flex items-center gap-2 font-heading font-semibold text-white/90"
                   onClick={() => setMobileOpen(false)}
                 >
-                  {link.label}
+                  <Home size={18} className="text-accent-pink" />
+                  <span>Home</span>
                 </Link>
-              ))}
-              <div className="flex items-center justify-between border-t border-white/10 pt-3">
-                <span className="font-heading text-xs text-white/60">Theme Appearance</span>
-                <ThemeToggle />
+
+                {NAV_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="font-heading text-white/80 transition-colors hover:text-white"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+
+                <div className="flex items-center justify-between border-t border-white/10 pt-3">
+                  <span className="font-heading text-xs text-white/60">
+                    Theme Appearance
+                  </span>
+                  <ThemeToggle />
+                </div>
+
+                {/* Mobile Auth & User Profile Section */}
+                <div className="border-t border-white/10 pt-4 space-y-3">
+                  {user ? (
+                    <>
+                      <div className="flex items-center gap-3 rounded-2xl bg-white/5 p-3 border border-white/10">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 font-heading text-sm font-bold text-white shadow-sm">
+                          {(user.name || user.email || "?").charAt(0).toUpperCase()}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-heading text-sm font-bold text-white truncate">
+                            {user.name || "Collector"}
+                          </p>
+                          <p className="text-xs text-white/50 truncate">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1 pl-1">
+                        <Link
+                          href="/account"
+                          className="flex items-center gap-2.5 py-2 font-heading text-sm text-white/80 hover:text-white"
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          <User size={16} className="text-purple-400" />
+                          <span>My Account</span>
+                        </Link>
+                        <Link
+                          href="/account/orders"
+                          className="flex items-center gap-2.5 py-2 font-heading text-sm text-white/80 hover:text-white"
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          <Package size={16} className="text-blue-400" />
+                          <span>My Orders</span>
+                        </Link>
+                        <Link
+                          href="/account/wishlist"
+                          className="flex items-center gap-2.5 py-2 font-heading text-sm text-white/80 hover:text-white"
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          <Heart size={16} className="text-pink-400" />
+                          <span>Wishlist</span>
+                        </Link>
+                        {user.isAdmin && (
+                          <Link
+                            href="/admin"
+                            className="flex items-center gap-2.5 py-2 font-heading text-sm font-semibold text-accent-purple"
+                            onClick={() => setMobileOpen(false)}
+                          >
+                            <ShieldCheck size={16} />
+                            <span>Admin Panel</span>
+                          </Link>
+                        )}
+                      </div>
+
+                      {/* Prominent Mobile Log Out Button */}
+                      <form action={signOutAction} className="pt-2">
+                        <button
+                          type="submit"
+                          className="flex w-full items-center justify-center gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 py-2.5 font-heading text-xs font-semibold text-rose-400 transition-colors hover:bg-rose-500/20 active:scale-95"
+                        >
+                          <LogOut size={15} />
+                          <span>Log Out</span>
+                        </button>
+                      </form>
+                    </>
+                  ) : (
+                    <Link
+                      href="/login"
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white/10 py-3 font-heading text-sm font-semibold text-white transition-colors hover:bg-white/20"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      <User size={16} className="text-accent-purple" />
+                      <span>Login / Sign In</span>
+                    </Link>
+                  )}
+                </div>
               </div>
-              <Link
-                href={user ? "/account" : "/login"}
-                className="flex items-center gap-2 font-heading text-white/90"
-                onClick={() => setMobileOpen(false)}
-              >
-                <User size={16} className="text-accent-purple" />
-                <span>{user ? "My Account" : "Login / Sign In"}</span>
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
     </>
   );
 }
+
 
