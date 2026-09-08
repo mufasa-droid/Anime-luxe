@@ -30,9 +30,10 @@ export default async function AdminProductsPage() {
         </div>
         <Link
           href="/admin/products/new"
-          className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-accent-purple to-accent-pink px-4 py-2 text-xs font-semibold text-white shadow-md hover:opacity-95 transition-opacity"
+          className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 px-4 py-2 text-xs font-bold !text-white shadow-md shadow-purple-500/25 hover:opacity-95 transition-opacity"
         >
-          <Plus size={14} /> Add Product
+          <Plus size={14} className="!text-white" />
+          <span className="!text-white font-bold">Add Product</span>
         </Link>
       </div>
 

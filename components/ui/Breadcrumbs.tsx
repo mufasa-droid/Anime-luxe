@@ -85,11 +85,11 @@ export function Breadcrumbs({
       <button
         type="button"
         onClick={handleBack}
-        className="glass group flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-neutral-700 dark:text-white/70 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-200/50 dark:hover:bg-white/10 transition-all active:scale-95 shadow-sm"
+        className="glass group flex items-center gap-2 rounded-full border border-neutral-300 dark:border-white/10 px-3.5 py-1.5 text-xs font-semibold text-neutral-800 dark:text-white/80 hover:text-neutral-950 dark:hover:text-white hover:bg-neutral-200/70 dark:hover:bg-white/10 transition-all active:scale-95 shadow-sm"
       >
         <ArrowLeft
           size={14}
-          className="transition-transform group-hover:-translate-x-0.5"
+          className="transition-transform group-hover:-translate-x-0.5 text-neutral-700 dark:text-white/70"
         />
         <span>{backLabel}</span>
       </button>

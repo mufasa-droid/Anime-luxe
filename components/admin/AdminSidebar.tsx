@@ -44,12 +44,12 @@ export function AdminSidebar() {
             className={cn(
               "flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-xs font-semibold transition-all",
               active
-                ? "bg-gradient-to-r from-accent-purple to-accent-pink text-white shadow-md shadow-accent-purple/20"
-                : "text-neutral-600 dark:text-white/60 hover:bg-neutral-200/50 dark:hover:bg-white/5 hover:text-neutral-900 dark:hover:text-white"
+                ? "bg-gradient-to-r from-purple-600 to-pink-500 !text-white shadow-md shadow-purple-500/25 font-bold"
+                : "text-neutral-700 dark:text-white/70 hover:bg-neutral-200/60 dark:hover:bg-white/5 hover:text-neutral-900 dark:hover:text-white"
             )}
           >
-            <Icon size={16} className={active ? "text-white" : "text-neutral-500 dark:text-white/50"} />
-            <span className="truncate">{item.label}</span>
+            <Icon size={16} className={cn("shrink-0", active ? "!text-white" : "text-neutral-500 dark:text-white/50")} />
+            <span className={cn("truncate", active && "!text-white font-bold")}>{item.label}</span>
           </Link>
         );
       })}

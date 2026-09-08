@@ -1,4 +1,16 @@
 @import "tailwindcss";
+@config "../tailwind.config.ts";
+
+@theme {
+  --color-accent-purple: #8b5cf6;
+  --color-accent-blue: #3b82f6;
+  --color-accent-pink: #ec4899;
+  --color-accent-red: #ef4444;
+  --color-accent-gold: #f5b700;
+  --color-base-950: #080808;
+  --color-base-900: #111111;
+  --color-base-800: #181818;
+}
 
 :root {
   --bg-950: #f8fafc;
