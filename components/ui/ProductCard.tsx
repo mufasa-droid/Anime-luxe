@@ -65,10 +65,10 @@ export function ProductCard({ product }: { product: Product }) {
       {(product.isNew || product.isLimited || product.isTrending) && (
         <span
           className={cn(
-            "absolute left-4 top-4 z-10 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white",
-            product.isLimited && "bg-accent-gold text-black",
-            product.isNew && "bg-accent-blue",
-            product.isTrending && !product.isNew && !product.isLimited && "bg-accent-pink"
+            "absolute left-4 top-4 z-10 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider",
+            product.isLimited && "bg-accent-gold !text-slate-950 font-black",
+            product.isNew && "bg-accent-blue text-white text-white-always",
+            product.isTrending && !product.isNew && !product.isLimited && "bg-accent-pink text-white text-white-always"
           )}
         >
           {product.isLimited ? "Limited" : product.isNew ? "New" : "Trending"}

@@ -6,9 +6,9 @@
   --bg-800: #f1f5f9;
   --text-primary: #0f172a;
   --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --glass-bg: rgba(255, 255, 255, 0.82);
-  --glass-strong-bg: rgba(255, 255, 255, 0.94);
+  --text-muted: #64748b;
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-strong-bg: rgba(255, 255, 255, 0.96);
   --glass-border: rgba(15, 23, 42, 0.08);
   --glass-strong-border: rgba(15, 23, 42, 0.12);
   --skeleton-base: #e2e8f0;
@@ -72,7 +72,7 @@ body {
   transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
-/* Light mode specific enhancements */
+/* Light mode specific text & component enhancements */
 html:not(.dark) {
   --scrollbar-bg: #f1f5f9;
 }
@@ -110,11 +110,11 @@ html:not(.dark) .text-white\/50 {
 }
 
 html:not(.dark) .text-white\/40 {
-  color: #94a3b8;
+  color: #64748b;
 }
 
 html:not(.dark) .text-white\/30 {
-  color: #cbd5e1;
+  color: #94a3b8;
 }
 
 html:not(.dark) .border-white\/10 {
@@ -168,23 +168,54 @@ html:not(.dark) .bg-base-800 {
 html:not(.dark) input,
 html:not(.dark) textarea,
 html:not(.dark) select {
-  color: #0f172a;
+  color: #0f172a !important;
 }
 
 html:not(.dark) input::placeholder,
 html:not(.dark) textarea::placeholder {
-  color: #94a3b8;
+  color: #94a3b8 !important;
 }
 
-/* Preserve bright white text for saturated accents and badges */
+html:not(.dark) select option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+.dark select option {
+  background-color: #121218;
+  color: #ffffff;
+}
+
+/* PROTECT WHITE TEXT on saturated buttons, badges, gradients, and dark overlays */
 html:not(.dark) .btn-primary,
+html:not(.dark) .btn-magnetic,
 html:not(.dark) button[type="submit"],
 html:not(.dark) .bg-accent-purple,
 html:not(.dark) .bg-accent-pink,
+html:not(.dark) .bg-accent-blue,
 html:not(.dark) .bg-accent-red,
 html:not(.dark) .bg-gradient-to-r,
 html:not(.dark) .bg-gradient-to-br,
-html:not(.dark) .text-white-always {
+html:not(.dark) .bg-gradient-to-tr,
+html:not(.dark) .bg-gradient-to-b,
+html:not(.dark) .bg-gradient-to-t,
+html:not(.dark) .bg-black,
+html:not(.dark) .bg-black\/40,
+html:not(.dark) .bg-black\/60,
+html:not(.dark) .bg-black\/70,
+html:not(.dark) .bg-black\/80,
+html:not(.dark) .bg-black\/90,
+html:not(.dark) .text-white-always,
+html:not(.dark) [data-theme-always-white],
+html:not(.dark) .btn-primary *,
+html:not(.dark) .btn-magnetic *,
+html:not(.dark) button[type="submit"] *,
+html:not(.dark) .bg-accent-purple *,
+html:not(.dark) .bg-accent-pink *,
+html:not(.dark) .bg-accent-blue *,
+html:not(.dark) .bg-accent-red *,
+html:not(.dark) .bg-gradient-to-r *,
+html:not(.dark) .bg-gradient-to-br * {
   color: #ffffff !important;
 }
 
@@ -224,4 +255,5 @@ input:focus-visible {
   outline: 2px solid #8b5cf6;
   outline-offset: 2px;
 }
+
 

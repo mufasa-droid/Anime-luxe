@@ -225,8 +225,8 @@ export function Hero() {
               onClick={() => setActiveIdx(idx)}
               className={`rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide transition-all ${
                 activeIdx === idx
-                  ? "bg-white text-base-950 shadow-glow scale-105"
-                  : "glass text-white/60 hover:text-white hover:bg-white/10"
+                  ? "bg-accent-purple text-white shadow-glow scale-105"
+                  : "glass text-white/70 hover:text-white hover:bg-white/10"
               }`}
             >
               {s.tabLabel}
@@ -308,9 +308,9 @@ export function Hero() {
                     priority
                     className="object-cover transition-transform duration-700 hover:scale-105"
                   />
-                  <span className="absolute top-3 left-3 rounded-full bg-base-950/80 backdrop-blur-md border border-white/10 px-3 py-1 text-[11px] font-bold text-white flex items-center gap-1">
+                  <span className="absolute top-3 left-3 rounded-full bg-black/75 backdrop-blur-md border border-white/20 px-3 py-1 text-[11px] font-bold text-white flex items-center gap-1">
                     <Flame size={12} className="text-accent-pink" />
-                    {slide.product.badge}
+                    <span className="text-white-always">{slide.product.badge}</span>
                   </span>
                 </div>
 
