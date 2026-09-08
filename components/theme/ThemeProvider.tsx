@@ -17,37 +17,35 @@ interface ThemeContextType {
   setTheme: (theme: Theme) => void;
 }
 
+function applyTheme(t: Theme) {
+  if (typeof document === "undefined") return;
+  const root = document.documentElement;
+  if (t === "dark") {
+    root.classList.add("dark");
+    root.classList.remove("light");
+  } else {
+    root.classList.remove("dark");
+    root.classList.add("light");
+  }
+}
+
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    // Read saved theme from localStorage, or fallback to dark mode as default
     const savedTheme = localStorage.getItem("anime-luxe-theme") as Theme | null;
     if (savedTheme === "light" || savedTheme === "dark") {
       setThemeState(savedTheme);
       applyTheme(savedTheme);
     } else {
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const initial = prefersDark ? "dark" : "dark"; // Default to dark for luxury anime aesthetic
+      const initial: Theme = prefersDark ? "dark" : "dark";
       setThemeState(initial);
       applyTheme(initial);
     }
   }, []);
-
-  const applyTheme = (t: Theme) => {
-    const root = document.documentElement;
-    if (t === "dark") {
-      root.classList.add("dark");
-      root.classList.remove("light");
-    } else {
-      root.classList.remove("dark");
-      root.classList.add("light");
-    }
-  };
 
   const setTheme = useCallback((newTheme: Theme) => {
     setThemeState(newTheme);
@@ -78,3 +76,4 @@ export function useTheme() {
   }
   return context;
 }
+
