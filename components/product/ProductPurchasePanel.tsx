@@ -231,18 +231,13 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
           onClick={() => toggleWishlist(product.id)}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className={cn(
-            "glass rounded-full p-4 transition-all duration-300 active:scale-75 hover:scale-105",
-            wishlisted
-              ? "bg-pink-500/25 text-pink-500 ring-2 ring-pink-500/70 shadow-[0_0_18px_rgba(236,72,153,0.5)]"
-              : "text-neutral-700 dark:text-white/70 hover:text-neutral-900 dark:hover:text-white"
-          )}
+          className="glass rounded-full p-4 border border-neutral-200 dark:border-white/15 text-neutral-700 dark:text-white/70 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/10 transition-all duration-200 active:scale-90 hover:scale-105"
         >
           <Heart
             size={18}
             className={cn(
               "transition-all duration-200",
-              wishlisted ? "fill-pink-500 text-pink-500 scale-110" : "fill-transparent"
+              wishlisted ? "fill-rose-500 text-rose-500 scale-110" : "fill-transparent"
             )}
           />
         </button>

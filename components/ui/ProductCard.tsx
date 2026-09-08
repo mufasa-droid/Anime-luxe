@@ -63,20 +63,15 @@ export function ProductCard({ product }: { product: Product }) {
         }}
         aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
         title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-        className={cn(
-          "absolute right-4 top-4 z-20 rounded-full p-2.5 backdrop-blur-md transition-all duration-300 active:scale-75",
-          wishlisted
-            ? "bg-pink-500/25 text-pink-500 ring-2 ring-pink-500/70 shadow-[0_0_16px_rgba(236,72,153,0.5)] scale-105"
-            : "bg-black/40 text-white hover:bg-black/70 hover:scale-110"
-        )}
+        className="absolute right-3.5 top-3.5 z-20 rounded-full bg-black/45 p-2.5 backdrop-blur-md border border-white/10 text-white transition-all duration-200 hover:bg-black/70 hover:scale-110 active:scale-90"
       >
         <Heart
           size={16}
           className={cn(
             "transition-all duration-200",
             wishlisted
-              ? "fill-pink-500 text-pink-500 scale-110"
-              : "fill-transparent text-white"
+              ? "fill-rose-500 text-rose-500 scale-110"
+              : "fill-transparent text-white/80"
           )}
         />
       </button>

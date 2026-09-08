@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Sparkles, ArrowRight, ChevronLeft, ChevronRight, Star, Flame } from "lucide-react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, type PanInfo } from "framer-motion";
+import { Sparkles, ArrowRight, ChevronLeft, ChevronRight, Star, Flame, Pause, Play } from "lucide-react";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { formatCurrency } from "@/lib/utils";
 
@@ -152,7 +152,9 @@ const HERO_SLIDES: HeroSlide[] = [
 export function Hero() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [dragDirection, setDragDirection] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
+  const tabsScrollRef = useRef<HTMLDivElement>(null);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -169,14 +171,46 @@ export function Hero() {
     mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
   }
 
+  const nextSlide = useCallback(() => {
+    setDragDirection(1);
+    setActiveIdx((prev) => (prev + 1) % HERO_SLIDES.length);
+  }, []);
+
+  const prevSlide = useCallback(() => {
+    setDragDirection(-1);
+    setActiveIdx((prev) => (prev === 0 ? HERO_SLIDES.length - 1 : prev - 1));
+  }, []);
+
   // Auto-play carousel every 6 seconds
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
-      setActiveIdx((prev) => (prev + 1) % HERO_SLIDES.length);
+      nextSlide();
     }, 6000);
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, nextSlide]);
+
+  // Scroll active tab into view on mobile
+  useEffect(() => {
+    const container = tabsScrollRef.current;
+    if (!container) return;
+    const activeBtn = container.children[activeIdx] as HTMLElement | undefined;
+    if (activeBtn) {
+      const scrollLeft =
+        activeBtn.offsetLeft - container.offsetWidth / 2 + activeBtn.offsetWidth / 2;
+      container.scrollTo({ left: scrollLeft, behavior: "smooth" });
+    }
+  }, [activeIdx]);
+
+  // Touch Swipe Handler for Mobile
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
+    const swipeThreshold = 40;
+    if (info.offset.x < -swipeThreshold || info.velocity.x < -400) {
+      nextSlide();
+    } else if (info.offset.x > swipeThreshold || info.velocity.x > 400) {
+      prevSlide();
+    }
+  };
 
   const slide: HeroSlide = HERO_SLIDES[activeIdx] ?? HERO_SLIDES[0]!;
 
@@ -186,18 +220,18 @@ export function Hero() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-base-950 pt-28 pb-16"
+      className="relative flex min-h-[92vh] sm:min-h-screen items-center justify-center overflow-hidden bg-base-950 pt-24 pb-12 sm:pt-32 sm:pb-20"
     >
       {/* Dynamic Mouse-reactive atmospheric glow */}
       <motion.div
         style={{ left: glowX, top: glowY, backgroundColor: slide.glowColor }}
-        className="pointer-events-none absolute h-[650px] w-[650px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[140px] transition-colors duration-1000"
+        className="pointer-events-none absolute h-[400px] w-[400px] sm:h-[650px] sm:w-[650px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px] sm:blur-[140px] transition-colors duration-1000 opacity-60 sm:opacity-100"
       />
 
       {/* Floating gradient orbs */}
-      <div className="absolute -left-20 top-20 h-72 w-72 animate-float rounded-full bg-accent-pink/15 blur-[100px]" />
+      <div className="absolute -left-16 top-16 h-52 w-52 sm:h-72 sm:w-72 animate-float rounded-full bg-accent-pink/15 blur-[80px] sm:blur-[100px]" />
       <div
-        className="absolute -right-20 bottom-20 h-96 w-96 animate-float rounded-full bg-accent-blue/15 blur-[100px]"
+        className="absolute -right-16 bottom-16 h-64 w-64 sm:h-96 sm:w-96 animate-float rounded-full bg-accent-blue/15 blur-[80px] sm:blur-[100px]"
         style={{ animationDelay: "2s" }}
       />
 
@@ -207,49 +241,59 @@ export function Hero() {
         style={{
           backgroundImage:
             "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
+          backgroundSize: "40px 40px",
         }}
       />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6 w-full">
-        {/* Anime Universe Selector Tabs */}
-        <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
-          {HERO_SLIDES.map((s, idx) => (
-            <button
-              key={s.id}
-              onClick={() => setActiveIdx(idx)}
-              className={`rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide transition-all ${
-                activeIdx === idx
-                  ? "bg-accent-purple text-white shadow-glow scale-105"
-                  : "glass text-white/70 hover:text-white hover:bg-white/10"
-              }`}
-            >
-              {s.tabLabel}
-            </button>
-          ))}
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full">
+        {/* Anime Universe Selector Tabs (Smooth horizontal scroll on mobile, wrap on desktop) */}
+        <div className="mb-6 sm:mb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div
+            ref={tabsScrollRef}
+            className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 sm:flex-wrap sm:justify-center"
+          >
+            {HERO_SLIDES.map((s, idx) => (
+              <button
+                key={s.id}
+                onClick={() => {
+                  setDragDirection(idx > activeIdx ? 1 : -1);
+                  setActiveIdx(idx);
+                }}
+                className={`shrink-0 rounded-full px-3.5 sm:px-4 py-1.5 text-[11px] sm:text-xs font-semibold tracking-wide transition-all ${
+                  activeIdx === idx
+                    ? "bg-accent-purple text-white shadow-glow scale-105"
+                    : "glass text-white/70 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                {s.tabLabel}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Main Content Grid: Typography on Left, 3D Product Showcase on Right */}
-        <div className="grid items-center gap-10 lg:gap-12 lg:grid-cols-12">
+        <div className="grid items-center gap-8 lg:gap-12 lg:grid-cols-12">
           {/* Left Column: Story & CTAs */}
-          <div className="text-center lg:text-left lg:col-span-7 space-y-6">
+          <div className="text-center lg:text-left lg:col-span-7 space-y-4 sm:space-y-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={slide.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-6"
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.45 }}
+                className="space-y-4 sm:space-y-6"
               >
-                <span
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 text-xs font-semibold tracking-widest ${slide.accentClass}`}
-                >
-                  <Sparkles size={12} />
-                  {slide.tagline}
-                </span>
+                <div>
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-0.5 sm:px-3.5 sm:py-1 text-[10px] sm:text-xs font-semibold tracking-widest ${slide.accentClass}`}
+                  >
+                    <Sparkles size={11} className="shrink-0" />
+                    <span className="truncate">{slide.tagline}</span>
+                  </span>
+                </div>
 
-                <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] tracking-tight text-white whitespace-pre-line break-words">
+                <h1 className="font-heading text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] tracking-tight text-white whitespace-pre-line break-words">
                   {slide.title.split("\n")[0]}
                   <br />
                   <span
@@ -259,23 +303,27 @@ export function Hero() {
                   </span>
                 </h1>
 
-                <p className="max-w-xl text-sm sm:text-base md:text-lg text-white/75 mx-auto lg:mx-0 leading-relaxed">
+                <p className="max-w-xl text-xs sm:text-base md:text-lg text-white/75 mx-auto lg:mx-0 leading-relaxed">
                   {slide.subtitle}
                 </p>
 
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
-                  <Link href={slide.ctaHref}>
-                    <MagneticButton className="!px-8 !py-3.5">
-                      <span className="flex items-center gap-2">
+                {/* Call-to-action buttons */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-1 sm:pt-2">
+                  <Link href={slide.ctaHref} className="w-full sm:w-auto">
+                    <MagneticButton className="w-full sm:w-auto !px-6 sm:!px-8 !py-3 sm:!py-3.5 text-center">
+                      <span className="flex items-center justify-center gap-2">
                         <span>{slide.ctaText}</span>
-                        <ArrowRight size={16} />
+                        <ArrowRight size={15} />
                       </span>
                     </MagneticButton>
                   </Link>
 
-                  <Link href="/shop">
-                    <MagneticButton variant="secondary" className="!px-7 !py-3.5">
-                      Explore All Collections
+                  <Link href="/shop" className="w-full sm:w-auto">
+                    <MagneticButton
+                      variant="secondary"
+                      className="w-full sm:w-auto !px-6 sm:!px-7 !py-3 sm:!py-3.5 text-center"
+                    >
+                      Explore Vault
                     </MagneticButton>
                   </Link>
                 </div>
@@ -283,97 +331,140 @@ export function Hero() {
             </AnimatePresence>
           </div>
 
-          {/* Right Column: 3D-Tilt Floating Merchandise Card */}
-          <div className="flex justify-center lg:col-span-5">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={slide.id}
-                initial={{ opacity: 0, scale: 0.9, rotateY: 15 }}
-                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-                exit={{ opacity: 0, scale: 0.9, rotateY: -15 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="glass-strong relative w-full max-w-sm rounded-3xl p-5 border border-white/15 shadow-2xl"
-              >
-                {/* Product Image Thumbnail */}
-                <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-base-900 border border-white/10">
-                  <Image
-                    src={slide.product.image}
-                    alt={slide.product.title}
-                    fill
-                    priority
-                    className="object-cover transition-transform duration-700 hover:scale-105"
-                  />
-                  <span className="absolute top-3 left-3 rounded-full bg-black/75 backdrop-blur-md border border-white/20 px-3 py-1 text-[11px] font-bold text-white flex items-center gap-1">
-                    <Flame size={12} className="text-accent-pink" />
-                    <span className="text-white-always">{slide.product.badge}</span>
-                  </span>
-                </div>
-
-                {/* Card Info */}
-                <div className="mt-4 flex items-center justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <span className="text-xs text-white/50 block truncate">{slide.product.category}</span>
-                    <h4 className="font-heading text-sm sm:text-base font-bold text-white truncate">
-                      {slide.product.title}
-                    </h4>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <span className="font-heading text-base sm:text-lg font-bold text-white block">
-                      {formatCurrency(slide.product.price)}
+          {/* Right Column: Touch-Swipeable 3D Floating Merchandise Card */}
+          <div className="flex justify-center lg:col-span-5 touch-pan-y">
+            <div className="relative w-full max-w-[310px] xs:max-w-[340px] sm:max-w-sm">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={slide.id}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={handleDragEnd}
+                  initial={{ opacity: 0, scale: 0.92, x: dragDirection * 50 }}
+                  animate={{ opacity: 1, scale: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.92, x: -dragDirection * 50 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="glass-strong relative w-full cursor-grab active:cursor-grabbing rounded-3xl p-4 sm:p-5 border border-white/15 shadow-2xl backdrop-blur-xl"
+                >
+                  {/* Product Image Thumbnail */}
+                  <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-base-900 border border-white/10">
+                    <Image
+                      src={slide.product.image}
+                      alt={slide.product.title}
+                      fill
+                      priority
+                      sizes="(max-width: 640px) 280px, (max-width: 1024px) 340px, 380px"
+                      className="object-cover transition-transform duration-700 hover:scale-105 pointer-events-none"
+                    />
+                    <span className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 rounded-full bg-black/75 backdrop-blur-md border border-white/20 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-[11px] font-bold text-white flex items-center gap-1">
+                      <Flame size={11} className="text-accent-pink" />
+                      <span className="text-white-always">{slide.product.badge}</span>
                     </span>
-                    <div className="flex items-center gap-1 text-[11px] text-amber-400 justify-end">
-                      <Star size={11} className="fill-amber-400" />
-                      <span>{slide.product.rating}</span>
+                  </div>
+
+                  {/* Card Info */}
+                  <div className="mt-3.5 sm:mt-4 flex items-center justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[11px] sm:text-xs text-white/50 block truncate">
+                        {slide.product.category}
+                      </span>
+                      <h4 className="font-heading text-xs sm:text-base font-bold text-white truncate">
+                        {slide.product.title}
+                      </h4>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="font-heading text-sm sm:text-lg font-bold text-white block">
+                        {formatCurrency(slide.product.price)}
+                      </span>
+                      <div className="flex items-center gap-1 text-[10px] sm:text-[11px] text-amber-400 justify-end">
+                        <Star size={11} className="fill-amber-400" />
+                        <span>{slide.product.rating}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Quick Link Button */}
-                <Link
-                  href={`/product/${slide.product.slug}`}
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-white/10 py-2.5 text-xs font-semibold text-white transition-all hover:bg-white/20 hover:shadow-glow"
-                >
-                  <span>Inspect Drop</span>
-                  <ArrowRight size={13} />
-                </Link>
-              </motion.div>
-            </AnimatePresence>
+                  {/* Quick Link Button */}
+                  <Link
+                    href={`/product/${slide.product.slug}`}
+                    className="mt-3.5 sm:mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-white/10 py-2 sm:py-2.5 text-xs font-semibold text-white transition-all hover:bg-white/20 hover:shadow-glow active:scale-95"
+                  >
+                    <span>Inspect Drop</span>
+                    <ArrowRight size={13} />
+                  </Link>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Mobile Quick Swipe Chevron Overlays */}
+              <button
+                type="button"
+                onClick={prevSlide}
+                aria-label="Previous drop"
+                className="absolute -left-3 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white/80 hover:text-white sm:hidden shadow-lg"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button
+                type="button"
+                onClick={nextSlide}
+                aria-label="Next drop"
+                className="absolute -right-3 top-1/2 -translate-y-1/2 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-white/80 hover:text-white sm:hidden shadow-lg"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Carousel Navigation Arrows & Indicators */}
-        <div className="mt-12 flex items-center justify-between border-t border-white/10 pt-6">
-          <div className="flex items-center gap-2">
-            {HERO_SLIDES.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveIdx(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  activeIdx === idx
-                    ? "w-8 bg-gradient-to-r " + slide.themeGradient
-                    : "w-2 bg-white/20 hover:bg-white/40"
-                }`}
-              />
-            ))}
+        {/* Carousel Navigation Bar (Progress indicators, Counter, and Controls) */}
+        <div className="mt-8 sm:mt-12 flex items-center justify-between border-t border-white/10 pt-4 sm:pt-6">
+          {/* Progress Indicators & Slide Counter */}
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <span className="font-mono text-xs font-bold text-white/70">
+              0{activeIdx + 1} <span className="text-white/30">/ 0{HERO_SLIDES.length}</span>
+            </span>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {HERO_SLIDES.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    setDragDirection(idx > activeIdx ? 1 : -1);
+                    setActiveIdx(idx);
+                  }}
+                  aria-label={`Go to slide ${idx + 1}`}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    activeIdx === idx
+                      ? "w-6 sm:w-8 bg-gradient-to-r " + slide.themeGradient
+                      : "w-1.5 sm:w-2 bg-white/20 hover:bg-white/40"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Autoplay Pause/Play & Arrow Controls */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <button
-              onClick={() =>
-                setActiveIdx((prev) => (prev === 0 ? HERO_SLIDES.length - 1 : prev - 1))
-              }
-              aria-label="Previous slide"
-              className="glass rounded-full p-2.5 text-white/60 hover:text-white transition-colors hover:bg-white/10"
+              onClick={() => setIsPaused((prev) => !prev)}
+              aria-label={isPaused ? "Play carousel" : "Pause carousel"}
+              title={isPaused ? "Play carousel" : "Pause carousel"}
+              className="glass rounded-full p-2 text-white/60 hover:text-white transition-colors hover:bg-white/10"
             >
-              <ChevronLeft size={18} />
+              {isPaused ? <Play size={14} /> : <Pause size={14} />}
             </button>
             <button
-              onClick={() => setActiveIdx((prev) => (prev + 1) % HERO_SLIDES.length)}
-              aria-label="Next slide"
-              className="glass rounded-full p-2.5 text-white/60 hover:text-white transition-colors hover:bg-white/10"
+              onClick={prevSlide}
+              aria-label="Previous slide"
+              className="glass rounded-full p-2 sm:p-2.5 text-white/60 hover:text-white transition-colors hover:bg-white/10"
             >
-              <ChevronRight size={18} />
+              <ChevronLeft size={16} className="sm:h-4 sm:w-4" />
+            </button>
+            <button
+              onClick={nextSlide}
+              aria-label="Next slide"
+              className="glass rounded-full p-2 sm:p-2.5 text-white/60 hover:text-white transition-colors hover:bg-white/10"
+            >
+              <ChevronRight size={16} className="sm:h-4 sm:w-4" />
             </button>
           </div>
         </div>
@@ -381,3 +472,4 @@ export function Hero() {
     </section>
   );
 }
+
