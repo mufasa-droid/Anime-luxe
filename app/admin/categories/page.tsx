@@ -23,6 +23,7 @@ import {
   Image as ImageIcon,
   Drama,
   FolderTree,
+  UploadCloud,
 } from "lucide-react";
 import { PRODUCT_CATEGORIES, ANIME_SERIES, type CategoryMeta, type AnimeMeta } from "@/lib/data/categories";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -70,6 +71,32 @@ export default function AdminCategoriesPage() {
   function showToast(msg: string) {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3000);
+  }
+
+  function handleCategoryFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setCategoryImage(reader.result);
+        showToast("Image loaded from file explorer");
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleFranchiseFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setFranchiseImage(reader.result);
+        showToast("Cover image loaded from file explorer");
+      }
+    };
+    reader.readAsDataURL(file);
   }
 
   // Handle Category Save (Add / Edit)
@@ -302,61 +329,52 @@ export default function AdminCategoriesPage() {
             </button>
           </div>
 
-          <form onSubmit={handleSaveCategory} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
-            <div>
-              <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Category Name</label>
-              <input
-                type="text"
-                required
-                value={categoryName}
-                onChange={(e) => {
-                  setCategoryName(e.target.value);
-                  if (!editingCategory) setCategorySlug(slugify(e.target.value));
-                }}
-                placeholder="e.g. Bomber Jackets"
-                className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
-              />
+          <form onSubmit={handleSaveCategory} className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Category Name</label>
+                <input
+                  type="text"
+                  required
+                  value={categoryName}
+                  onChange={(e) => {
+                    setCategoryName(e.target.value);
+                    if (!editingCategory) setCategorySlug(slugify(e.target.value));
+                  }}
+                  placeholder="e.g. Bomber Jackets"
+                  className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">URL Slug</label>
+                <input
+                  type="text"
+                  required
+                  value={categorySlug}
+                  onChange={(e) => setCategorySlug(slugify(e.target.value))}
+                  placeholder="e.g. bomber-jackets"
+                  className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Icon Preset</label>
+                <select
+                  value={categoryIcon}
+                  onChange={(e) => setCategoryIcon(e.target.value)}
+                  className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
+                >
+                  {ICON_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div>
-              <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">URL Slug</label>
-              <input
-                type="text"
-                required
-                value={categorySlug}
-                onChange={(e) => setCategorySlug(slugify(e.target.value))}
-                placeholder="e.g. bomber-jackets"
-                className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white font-mono"
-              />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Card Image URL</label>
-              <input
-                type="url"
-                value={categoryImage}
-                onChange={(e) => setCategoryImage(e.target.value)}
-                placeholder="https://images.unsplash.com/..."
-                className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Icon Preset</label>
-              <select
-                value={categoryIcon}
-                onChange={(e) => setCategoryIcon(e.target.value)}
-                className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
-              >
-                {ICON_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="sm:col-span-2 lg:col-span-3">
               <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Subtitle / Tagline</label>
               <input
                 type="text"
@@ -365,6 +383,84 @@ export default function AdminCategoriesPage() {
                 placeholder="e.g. 400gsm heavyweight fleece & embroidered drops"
                 className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
               />
+            </div>
+
+            {/* Image Selection Section: File Upload from Explorer + URL Option */}
+            <div className="space-y-2 rounded-2xl bg-neutral-100/70 dark:bg-white/[0.03] p-4 border border-neutral-200 dark:border-white/10">
+              <label className="block text-xs font-semibold text-neutral-900 dark:text-white">
+                Category Card Image
+              </label>
+              
+              <div className="grid gap-4 sm:grid-cols-2 items-start">
+                {/* File explorer upload */}
+                <div>
+                  <input
+                    type="file"
+                    id="category-file-upload"
+                    accept="image/*"
+                    onChange={handleCategoryFileUpload}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="category-file-upload"
+                    className="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-neutral-300 dark:border-white/20 p-4 text-center cursor-pointer hover:border-accent-purple hover:bg-accent-purple/5 transition-all"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple/10 text-accent-purple">
+                      <UploadCloud size={20} />
+                    </div>
+                    <div>
+                      <span className="text-xs font-semibold text-neutral-800 dark:text-white block">
+                        Upload from Device / Explorer
+                      </span>
+                      <span className="text-[11px] text-neutral-500 dark:text-white/40">
+                        PNG, JPG, WEBP or GIF
+                      </span>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Paste URL or Preview */}
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-[11px] font-medium text-neutral-500 dark:text-white/50 block mb-1">
+                      Or Paste Image URL
+                    </span>
+                    <input
+                      type="url"
+                      value={categoryImage.startsWith("data:") ? "" : categoryImage}
+                      onChange={(e) => setCategoryImage(e.target.value)}
+                      placeholder="https://images.unsplash.com/..."
+                      className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
+                    />
+                  </div>
+
+                  {categoryImage && (
+                    <div className="flex items-center gap-3 rounded-xl bg-neutral-200/50 dark:bg-white/5 p-2 border border-neutral-200 dark:border-white/10">
+                      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-neutral-300 dark:bg-base-800">
+                        <img
+                          src={categoryImage}
+                          alt="Category preview"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <span className="text-xs font-medium text-neutral-800 dark:text-white block truncate">
+                          {categoryImage.startsWith("data:") ? "Local File Explorer Upload" : "Web Image URL"}
+                        </span>
+                        <span className="text-[10px] text-emerald-600 dark:text-emerald-400">Ready to save</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setCategoryImage("")}
+                        className="rounded-full p-1.5 text-neutral-400 hover:text-accent-red transition-colors"
+                        title="Remove image"
+                      >
+                        <X size={15} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
@@ -408,60 +504,131 @@ export default function AdminCategoriesPage() {
             </button>
           </div>
 
-          <form onSubmit={handleSaveFranchise} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
-            <div>
-              <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Anime Universe Name</label>
-              <input
-                type="text"
-                required
-                value={franchiseName}
-                onChange={(e) => {
-                  setFranchiseName(e.target.value);
-                  if (!editingFranchise) setFranchiseSlug(slugify(e.target.value));
-                }}
-                placeholder="e.g. Cyberpunk Edgerunners"
-                className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">URL Slug</label>
-              <input
-                type="text"
-                required
-                value={franchiseSlug}
-                onChange={(e) => setFranchiseSlug(slugify(e.target.value))}
-                placeholder="e.g. cyberpunk-edgerunners"
-                className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white font-mono"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Cover Image URL</label>
-              <input
-                type="url"
-                value={franchiseImage}
-                onChange={(e) => setFranchiseImage(e.target.value)}
-                placeholder="https://images.unsplash.com/..."
-                className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Accent Glow Color</label>
-              <div className="flex items-center gap-3">
-                <input
-                  type="color"
-                  value={franchiseColor}
-                  onChange={(e) => setFranchiseColor(e.target.value)}
-                  className="h-9 w-12 cursor-pointer rounded-lg border-0 bg-transparent"
-                />
+          <form onSubmit={handleSaveFranchise} className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-end">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Anime Universe Name</label>
                 <input
                   type="text"
-                  value={franchiseColor}
-                  onChange={(e) => setFranchiseColor(e.target.value)}
-                  className="glass w-full rounded-xl px-3 py-2 text-xs font-mono text-neutral-900 dark:text-white uppercase"
+                  required
+                  value={franchiseName}
+                  onChange={(e) => {
+                    setFranchiseName(e.target.value);
+                    if (!editingFranchise) setFranchiseSlug(slugify(e.target.value));
+                  }}
+                  placeholder="e.g. Cyberpunk Edgerunners"
+                  className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
                 />
               </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">URL Slug</label>
+                <input
+                  type="text"
+                  required
+                  value={franchiseSlug}
+                  onChange={(e) => setFranchiseSlug(slugify(e.target.value))}
+                  placeholder="e.g. cyberpunk-edgerunners"
+                  className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white font-mono"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Accent Glow Color</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="color"
+                    value={franchiseColor}
+                    onChange={(e) => setFranchiseColor(e.target.value)}
+                    className="h-9 w-12 cursor-pointer rounded-lg border-0 bg-transparent"
+                  />
+                  <input
+                    type="text"
+                    value={franchiseColor}
+                    onChange={(e) => setFranchiseColor(e.target.value)}
+                    className="glass w-full rounded-xl px-3 py-2 text-xs font-mono text-neutral-900 dark:text-white uppercase"
+                  />
+                </div>
+              </div>
             </div>
-            <div className="sm:col-span-2 lg:col-span-4 flex justify-end gap-2 pt-2">
+
+            {/* Franchise Cover Image: File Explorer Upload + URL */}
+            <div className="space-y-2 rounded-2xl bg-neutral-100/70 dark:bg-white/[0.03] p-4 border border-neutral-200 dark:border-white/10">
+              <label className="block text-xs font-semibold text-neutral-900 dark:text-white">
+                Franchise Hero Cover Image
+              </label>
+              
+              <div className="grid gap-4 sm:grid-cols-2 items-start">
+                {/* File explorer upload */}
+                <div>
+                  <input
+                    type="file"
+                    id="franchise-file-upload"
+                    accept="image/*"
+                    onChange={handleFranchiseFileUpload}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="franchise-file-upload"
+                    className="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-neutral-300 dark:border-white/20 p-4 text-center cursor-pointer hover:border-accent-pink hover:bg-accent-pink/5 transition-all"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-pink/10 text-accent-pink">
+                      <UploadCloud size={20} />
+                    </div>
+                    <div>
+                      <span className="text-xs font-semibold text-neutral-800 dark:text-white block">
+                        Upload Cover from Device / Explorer
+                      </span>
+                      <span className="text-[11px] text-neutral-500 dark:text-white/40">
+                        PNG, JPG, WEBP or GIF
+                      </span>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Paste URL or Preview */}
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-[11px] font-medium text-neutral-500 dark:text-white/50 block mb-1">
+                      Or Paste Image URL
+                    </span>
+                    <input
+                      type="url"
+                      value={franchiseImage.startsWith("data:") ? "" : franchiseImage}
+                      onChange={(e) => setFranchiseImage(e.target.value)}
+                      placeholder="https://images.unsplash.com/..."
+                      className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
+                    />
+                  </div>
+
+                  {franchiseImage && (
+                    <div className="flex items-center gap-3 rounded-xl bg-neutral-200/50 dark:bg-white/5 p-2 border border-neutral-200 dark:border-white/10">
+                      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-neutral-300 dark:bg-base-800">
+                        <img
+                          src={franchiseImage}
+                          alt="Franchise cover preview"
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <span className="text-xs font-medium text-neutral-800 dark:text-white block truncate">
+                          {franchiseImage.startsWith("data:") ? "Local File Explorer Upload" : "Web Image URL"}
+                        </span>
+                        <span className="text-[10px] text-emerald-600 dark:text-emerald-400">Ready to save</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setFranchiseImage("")}
+                        className="rounded-full p-1.5 text-neutral-400 hover:text-accent-red transition-colors"
+                        title="Remove cover"
+                      >
+                        <X size={15} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => {
