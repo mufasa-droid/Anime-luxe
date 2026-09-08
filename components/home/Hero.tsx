@@ -33,26 +33,25 @@ interface HeroSlide {
 
 const HERO_SLIDES: HeroSlide[] = [
   {
-    id: "naruto-pain",
-    tabLabel: "Pain (Akatsuki)",
+    id: "naruto-itachi",
+    tabLabel: "Itachi (Uchiha)",
     anime: "Naruto",
-    tagline: "NEW SEASON DROP — AKATSUKI PAIN",
-    title: "KNOW PAIN,\nFEEL LUXURY",
+    tagline: "NEW SEASON DROP — TSUKUYOMI GENJUTSU",
+    title: "KNOW TSUKUYOMI,\nFEEL LUXURY",
     subtitle:
-      "Heavyweight graphic apparel, shinobi aesthetic silhouettes, and collector drops forged in the rain.",
-    ctaText: "Explore Pain Drop",
-    ctaHref: "/product/pain-tee",
+      "420GSM luxury heavyweight streetwear fleece, Akatsuki red cloud embroidery, and shinobi silhouette drops.",
+    ctaText: "Explore Itachi Drop",
+    ctaHref: "/product/itachi-blood-moon-crows-front-back-hoodie",
     themeGradient: "from-red-600 via-rose-500 to-amber-500",
     glowColor: "rgba(220, 38, 38, 0.25)",
     accentClass: "text-rose-400 border-rose-500/30 bg-rose-500/10",
     product: {
-      title: "Nagato “Pain” Tee Shirt",
-      category: "Heavyweight Cotton",
-      price: 24435,
-      rating: 4.9,
-      image:
-        "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
-      slug: "pain-tee",
+      title: "Itachi Blood Moon Crows Hoodie",
+      category: "Heavyweight Fleece",
+      price: 42000,
+      rating: 5.0,
+      image: "/images/products/itachi-blood-moon-crows-front-back-hoodie.jpeg",
+      slug: "itachi-blood-moon-crows-front-back-hoodie",
       badge: "Trending Drop",
     },
   },
@@ -60,96 +59,92 @@ const HERO_SLIDES: HeroSlide[] = [
     id: "solo-leveling",
     tabLabel: "Solo Leveling",
     anime: "Solo Leveling",
-    tagline: "SHADOW MONARCH COLLECTION",
-    title: "ARISE AS THE\nMONARCH",
+    tagline: "SHADOW MONARCH VAULT",
+    title: "ARISE AS THE\nSHADOW MONARCH",
     subtitle:
-      "Precision cut streetwear, obsidian windbreakers, and electric cyber apparel crafted for high-rank hunters.",
+      "Precision cut luxury streetwear, obsidian full-zip knitwear, and high-rank hunter drops engineered in Seoul.",
     ctaText: "Shop Solo Leveling",
-    ctaHref: "/product/shadow-monarch-jacket",
+    ctaHref: "/product/solo-leveling-arise-zip-jacket",
     themeGradient: "from-cyan-400 via-blue-500 to-indigo-600",
     glowColor: "rgba(6, 182, 212, 0.25)",
     accentClass: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10",
     product: {
-      title: "Shadow Monarch Jacket",
-      category: "Obsidian Streetwear",
-      price: 67500,
+      title: "Shadow Monarch 'Arise' Jacket",
+      category: "Obsidian Knitwear",
+      price: 48000,
       rating: 5.0,
-      image:
-        "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=800&q=80",
-      slug: "shadow-monarch-jacket",
+      image: "/images/products/solo-leveling-arise-zip-jacket.jpeg",
+      slug: "solo-leveling-arise-zip-jacket",
       badge: "Monarch Vault",
     },
   },
   {
     id: "jujutsu",
-    tabLabel: "Jujutsu Kaisen",
+    tabLabel: "Gojo Limitless",
     anime: "Jujutsu Kaisen",
     tagline: "SPECIAL GRADE APPAREL",
-    title: "UNLEASH YOUR\nCURSED ENERGY",
+    title: "DOMAIN EXPANSION,\nLIMITLESS DRIP",
     subtitle:
-      "Domain Expansion streetwear, luxury heavyweight tees, and talisman graphics engineered for modern sorcerers.",
-    ctaText: "Shop Jujutsu Kaisen",
-    ctaHref: "/product/jujutsu-kaisen-tee-shirt",
+      "420GSM varsity stripe heavyweight fleece, Gojo blindfold hand-signs, and talisman graphics engineered for modern sorcerers.",
+    ctaText: "Shop Gojo Drop",
+    ctaHref: "/product/gojo-satoru-limitless-varsity-hoodie",
     themeGradient: "from-purple-500 via-violet-400 to-blue-500",
     glowColor: "rgba(168, 85, 247, 0.25)",
     accentClass: "text-purple-400 border-purple-500/30 bg-purple-500/10",
     product: {
-      title: "Jujutsu Kaisen Tee Shirt",
-      category: "Luxury Streetwear",
-      price: 22050,
-      rating: 4.9,
-      image:
-        "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=800&q=80",
-      slug: "jujutsu-kaisen-tee-shirt",
+      title: "Satoru Gojo Limitless Hoodie",
+      category: "Varsity Stripe Fleece",
+      price: 40000,
+      rating: 5.0,
+      image: "/images/products/gojo-satoru-limitless-varsity-hoodie.jpeg",
+      slug: "gojo-satoru-limitless-varsity-hoodie",
       badge: "Special Grade",
     },
   },
   {
-    id: "attack-on-titan",
-    tabLabel: "Attack on Titan",
-    anime: "Attack on Titan",
-    tagline: "SCOUT REGIMENT EXCLUSIVE",
-    title: "DEDICATE YOUR\nHEART IN STYLE",
+    id: "hunter-x-hunter",
+    tabLabel: "Killua (HxH)",
+    anime: "Hunter x Hunter",
+    tagline: "ASSASSIN STREET CULTURE",
+    title: "ASSASSIN INSTINCT,\nSTREET CULTURE",
     subtitle:
-      "Humanity's strongest silhouettes, vintage washed graphic tees, and military precision tailoring.",
-    ctaText: "View Levi Drop",
-    ctaHref: "/product/levi-ackermann",
-    themeGradient: "from-emerald-500 via-teal-400 to-cyan-500",
-    glowColor: "rgba(168, 85, 247, 0.25)",
-    accentClass: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
+      "Ultra-heavyweight 420GSM French terry, lightning god aesthetics, and exclusive Tokyo streetwear drops.",
+    ctaText: "Shop Killua Drop",
+    ctaHref: "/product/killua-zoldyck-slurp-heavyweight-hoodie",
+    themeGradient: "from-emerald-400 via-teal-400 to-cyan-500",
+    glowColor: "rgba(16, 185, 129, 0.25)",
+    accentClass: "text-emerald-300 border-emerald-500/30 bg-emerald-500/10",
     product: {
-      title: "Levi Ackermann Aesthe Tee Shirt",
-      category: "Vintage Wash Heavyweight",
-      price: 23850,
+      title: "Killua Zoldyck 'Sip' Hoodie",
+      category: "French Terry Fleece",
+      price: 38000,
       rating: 4.9,
-      image:
-        "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80",
-      slug: "levi-ackermann",
-      badge: "Scout Elite",
+      image: "/images/products/killua-zoldyck-slurp-heavyweight-hoodie.jpeg",
+      slug: "killua-zoldyck-slurp-heavyweight-hoodie",
+      badge: "Best Seller",
     },
   },
   {
-    id: "naruto-ninja-way",
-    tabLabel: "Ninja Way",
-    anime: "Naruto",
-    tagline: "SHINOBI LEGACY EDITION",
-    title: "FORGE YOUR\nNINJA WAY",
+    id: "attack-on-titan",
+    tabLabel: "Scout Regiment",
+    anime: "Attack on Titan",
+    tagline: "SCOUT REGIMENT EXCLUSIVE",
+    title: "DEDICATE HEART,\nFORGE FREEDOM",
     subtitle:
-      "Signature heritage drops, premium spun cotton, and timeless iconography from the Hidden Leaf.",
-    ctaText: "Shop Ninja Way",
-    ctaHref: "/product/ninja-way-collection",
+      "Humanity's strongest silhouettes, Wings of Freedom dual sleeve graphics, and military precision tailoring.",
+    ctaText: "View Levi Drop",
+    ctaHref: "/product/levi-ackerman-wings-of-freedom-hoodie",
     themeGradient: "from-amber-400 via-orange-400 to-red-500",
     glowColor: "rgba(245, 158, 11, 0.25)",
     accentClass: "text-amber-300 border-amber-500/30 bg-amber-500/10",
     product: {
-      title: "Ninja Way Tee Shirt",
-      category: "Heritage Collection",
-      price: 22500,
-      rating: 4.8,
-      image:
-        "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
-      slug: "ninja-way-collection",
-      badge: "Best Seller",
+      title: "Captain Levi Wings Hoodie",
+      category: "Scout Elite Fleece",
+      price: 42000,
+      rating: 5.0,
+      image: "/images/products/levi-ackerman-wings-of-freedom-hoodie.jpeg",
+      slug: "levi-ackerman-wings-of-freedom-hoodie",
+      badge: "Scout Elite",
     },
   },
 ];
@@ -235,7 +230,7 @@ export function Hero() {
         </div>
 
         {/* Main Content Grid: Typography on Left, 3D Product Showcase on Right */}
-        <div className="grid items-center gap-12 lg:grid-cols-12">
+        <div className="grid items-center gap-10 lg:gap-12 lg:grid-cols-12">
           {/* Left Column: Story & CTAs */}
           <div className="text-center lg:text-left lg:col-span-7 space-y-6">
             <AnimatePresence mode="wait">
@@ -254,7 +249,7 @@ export function Hero() {
                   {slide.tagline}
                 </span>
 
-                <h1 className="font-heading text-5xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-6xl md:text-7xl whitespace-pre-line">
+                <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] tracking-tight text-white whitespace-pre-line break-words">
                   {slide.title.split("\n")[0]}
                   <br />
                   <span
@@ -264,7 +259,7 @@ export function Hero() {
                   </span>
                 </h1>
 
-                <p className="max-w-xl text-base sm:text-lg text-white/70 mx-auto lg:mx-0">
+                <p className="max-w-xl text-sm sm:text-base md:text-lg text-white/75 mx-auto lg:mx-0 leading-relaxed">
                   {slide.subtitle}
                 </p>
 
@@ -315,15 +310,15 @@ export function Hero() {
                 </div>
 
                 {/* Card Info */}
-                <div className="mt-4 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs text-white/50">{slide.product.category}</span>
-                    <h4 className="font-heading text-base font-bold text-white truncate max-w-[200px]">
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <span className="text-xs text-white/50 block truncate">{slide.product.category}</span>
+                    <h4 className="font-heading text-sm sm:text-base font-bold text-white truncate">
                       {slide.product.title}
                     </h4>
                   </div>
-                  <div className="text-right">
-                    <span className="font-heading text-lg font-bold text-white">
+                  <div className="text-right shrink-0">
+                    <span className="font-heading text-base sm:text-lg font-bold text-white block">
                       {formatCurrency(slide.product.price)}
                     </span>
                     <div className="flex items-center gap-1 text-[11px] text-amber-400 justify-end">
