@@ -161,13 +161,13 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Bleach",
     slug: "bleach",
     color: "#3B82F6",
-    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80",
+    image: "/images/anime/bleach.jpg",
   },
   {
     name: "Attack on Titan",
     slug: "attack-on-titan",
     color: "#8B5CF6",
-    image: "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=600&q=80",
+    image: "/images/anime/attack-on-titan.jpg",
   },
   {
     name: "Demon Slayer",
@@ -179,7 +179,7 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Jujutsu Kaisen",
     slug: "jujutsu-kaisen",
     color: "#8B5CF6",
-    image: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=600&q=80",
+    image: "/images/anime/jujutsu-kaisen.jpg",
   },
   {
     name: "Solo Leveling",
@@ -215,13 +215,13 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Black Clover",
     slug: "black-clover",
     color: "#181818",
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80",
+    image: "/images/anime/black-clover.png",
   },
   {
     name: "My Hero Academia",
     slug: "my-hero-academia",
     color: "#3B82F6",
-    image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80",
+    image: "/images/anime/my-hero-academia.jpg",
   },
   {
     name: "Hunter x Hunter",
