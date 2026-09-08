@@ -23,37 +23,55 @@ export function useAuthUser() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const supabase = createClient();
+    // If Supabase credentials are missing or placeholder, resolve immediately
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!url || url.includes("placeholder")) {
+      setLoaded(true);
+      return;
+    }
 
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(
-        data.user
-          ? {
+    try {
+      const supabase = createClient();
+
+      supabase.auth
+        .getUser()
+        .then(({ data, error }) => {
+          if (error || !data?.user) {
+            setUser(null);
+          } else {
+            setUser({
               email: data.user.email ?? "",
               name: (data.user.user_metadata?.full_name as string) ?? "",
               isAdmin: data.user.app_metadata?.role === "admin",
-            }
-          : null
-      );
-      setLoaded(true);
-    });
+            });
+          }
+        })
+        .catch(() => {
+          setUser(null);
+        })
+        .finally(() => {
+          setLoaded(true);
+        });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(
-        session?.user
-          ? {
-              email: session.user.email ?? "",
-              name: (session.user.user_metadata?.full_name as string) ?? "",
-              isAdmin: session.user.app_metadata?.role === "admin",
-            }
-          : null
-      );
-      setLoaded(true);
-    });
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(
+          session?.user
+            ? {
+                email: session.user.email ?? "",
+                name: (session.user.user_metadata?.full_name as string) ?? "",
+                isAdmin: session.user.app_metadata?.role === "admin",
+              }
+            : null
+        );
+        setLoaded(true);
+      });
 
-    return () => subscription.unsubscribe();
+      return () => subscription?.unsubscribe();
+    } catch {
+      setLoaded(true);
+    }
   }, []);
 
   return { user, loaded };

@@ -8,11 +8,11 @@ export const metadata = {
 };
 
 interface LoginPageProps {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; error?: string }>;
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
-  const { next } = await searchParams;
+  const { next, error } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -22,7 +22,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-6 pt-24">
-      <AuthForm next={next} />
+      <AuthForm next={next} initialError={error} />
     </div>
   );
 }

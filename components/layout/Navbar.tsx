@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Search, Heart, ShoppingBag, Menu, X } from "lucide-react";
+import { Search, Heart, ShoppingBag, Menu, X, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthUser } from "@/hooks/useAuthUser";
@@ -22,7 +22,7 @@ export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const openCart = useCartStore((s) => s.openCart);
   const itemCount = useCartStore((s) => s.itemCount());
-  const { user, loaded } = useAuthUser();
+  const { user } = useAuthUser();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -71,7 +71,7 @@ export function Navbar() {
             ))}
           </div>
 
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-4 md:gap-5">
             <button
               aria-label="Search products"
               onClick={() => setSearchOpen(true)}
@@ -82,23 +82,22 @@ export function Navbar() {
                 ⌘K
               </span>
             </button>
-          <Link
-            href={user ? "/account" : "/login"}
-            aria-label={user ? "Account" : "Sign In"}
-            className="flex items-center"
-          >
-            {!loaded ? (
-              <div className="h-7 w-7 rounded-full bg-white/5" />
-            ) : user ? (
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-accent-purple to-accent-pink font-heading text-xs font-bold text-white">
-                {(user.name || user.email || "?").charAt(0).toUpperCase()}
-              </span>
-            ) : (
-              <span className="font-heading text-sm font-medium text-white/80 transition-colors hover:text-white">
-                Sign In
-              </span>
-            )}
-          </Link>
+            <Link
+              href={user ? "/account" : "/login"}
+              aria-label={user ? "Account" : "Login"}
+              className="flex items-center"
+            >
+              {user ? (
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-accent-purple to-accent-pink font-heading text-xs font-bold text-white shadow-sm shadow-accent-purple/30">
+                  {(user.name || user.email || "?").charAt(0).toUpperCase()}
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-heading font-medium text-white/90 backdrop-blur-sm transition-all hover:border-accent-purple/50 hover:bg-white/10 hover:text-white">
+                  <User size={14} className="text-accent-purple" />
+                  <span>Login</span>
+                </span>
+              )}
+            </Link>
           <Link
             href="/account/wishlist"
             aria-label="Wishlist"
@@ -160,10 +159,11 @@ export function Navbar() {
               ))}
               <Link
                 href={user ? "/account" : "/login"}
-                className="font-heading text-white/80"
+                className="flex items-center gap-2 font-heading text-white/90"
                 onClick={() => setMobileOpen(false)}
               >
-                {user ? "My Account" : "Sign In"}
+                <User size={16} className="text-accent-purple" />
+                <span>{user ? "My Account" : "Login / Sign In"}</span>
               </Link>
             </div>
           </motion.div>

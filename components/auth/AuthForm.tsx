@@ -1,7 +1,16 @@
 "use client";
 
 import { useActionState, useState, useTransition } from "react";
-import { AlertCircle, CheckCircle2, MailCheck, ArrowLeft, KeyRound } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  MailCheck,
+  ArrowLeft,
+  KeyRound,
+  Eye,
+  EyeOff,
+  RotateCcw,
+} from "lucide-react";
 import {
   signInWithPasswordAction,
   signUpAction,
@@ -33,10 +42,19 @@ function GithubIcon() {
   );
 }
 
-export function AuthForm({ next }: { next?: string }) {
+export function AuthForm({
+  next,
+  initialError,
+}: {
+  next?: string;
+  initialError?: string;
+}) {
   const redirectTarget = next ?? "/account";
   const [tab, setTab] = useState<"signin" | "signup">("signin");
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   const [signInState, signInFormAction, signInPending] = useActionState(
     signInWithPasswordAction,
@@ -68,8 +86,13 @@ export function AuthForm({ next }: { next?: string }) {
   }
 
   const inputClass =
-    "glass w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none";
+    "glass w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-accent-purple/50";
   const labelClass = "mb-1.5 block text-xs font-medium text-white/60";
+
+  const callbackErrorMessage =
+    initialError === "auth_callback_failed"
+      ? "Authentication link expired or is invalid. Please sign in again or request a new reset link."
+      : initialError;
 
   // 1. Forgot Password View
   if (isForgotPassword) {
@@ -87,20 +110,35 @@ export function AuthForm({ next }: { next?: string }) {
         </p>
 
         {resetState?.success ? (
-          <div className="my-6 glass rounded-2xl p-5 text-left text-xs text-emerald-400 border border-emerald-500/20 space-y-2">
-            <div className="flex items-center gap-2 font-medium">
-              <CheckCircle2 size={16} />
-              Reset Email Dispatched
+          <div className="my-6 space-y-4">
+            <div className="glass rounded-2xl p-5 text-left text-xs text-emerald-400 border border-emerald-500/20 space-y-2.5">
+              <div className="flex items-center gap-2 font-medium">
+                <CheckCircle2 size={16} />
+                Reset Email Dispatched
+              </div>
+              <p className="text-white/80 leading-relaxed">
+                {resetState.success}
+              </p>
+              <p className="text-white/40 italic text-[11px]">
+                * If you don&apos;t see the email within 2 minutes, check your Spam / Junk folder or make sure an account exists with this email.
+              </p>
             </div>
-            <p className="text-white/70">
-              {resetState.success}
-            </p>
-            <p className="text-white/40 italic">
-              * Remember to check your Spam or Junk folder.
-            </p>
+
+            <button
+              type="button"
+              onClick={() => setResetKey((prev) => prev + 1)}
+              className="flex items-center justify-center gap-2 mx-auto text-xs text-accent-purple hover:underline"
+            >
+              <RotateCcw size={13} />
+              <span>Send to a different email or try again</span>
+            </button>
           </div>
         ) : (
-          <form action={resetFormAction} className="mt-6 space-y-4 text-left">
+          <form
+            key={resetKey}
+            action={resetFormAction}
+            className="mt-6 space-y-4 text-left"
+          >
             <div>
               <label className={labelClass}>Email Address</label>
               <input
@@ -109,6 +147,7 @@ export function AuthForm({ next }: { next?: string }) {
                 required
                 placeholder="you@email.com"
                 className={inputClass}
+                autoComplete="email"
               />
             </div>
 
@@ -124,7 +163,7 @@ export function AuthForm({ next }: { next?: string }) {
               disabled={resetPending}
               className="w-full text-center disabled:opacity-60"
             >
-              {resetPending ? "Sending link…" : "Send Reset Link"}
+              {resetPending ? "Sending reset link…" : "Send Reset Link"}
             </MagneticButton>
           </form>
         )}
@@ -230,6 +269,13 @@ export function AuthForm({ next }: { next?: string }) {
         </div>
       )}
 
+      {callbackErrorMessage && !signInState?.error && !oauthError && (
+        <div className="mt-3 flex items-start gap-2 rounded-xl bg-amber-500/10 border border-amber-500/20 px-3 py-2.5 text-xs text-amber-300">
+          <AlertCircle size={14} className="mt-0.5 shrink-0 text-amber-400" />
+          <span>{callbackErrorMessage}</span>
+        </div>
+      )}
+
       <div className="my-6 flex items-center gap-3">
         <div className="h-px flex-1 bg-white/10" />
         <span className="text-xs text-white/30">or</span>
@@ -247,6 +293,7 @@ export function AuthForm({ next }: { next?: string }) {
               required
               placeholder="you@email.com"
               className={inputClass}
+              autoComplete="email"
             />
           </div>
           <div>
@@ -260,13 +307,24 @@ export function AuthForm({ next }: { next?: string }) {
                 Forgot password?
               </button>
             </div>
-            <input
-              name="password"
-              type="password"
-              required
-              placeholder="••••••••"
-              className={inputClass}
-            />
+            <div className="relative">
+              <input
+                name="password"
+                type={showSignInPassword ? "text" : "password"}
+                required
+                placeholder="••••••••"
+                className={cn(inputClass, "pr-11")}
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowSignInPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-white/40 hover:text-white transition-colors focus:outline-none"
+                aria-label={showSignInPassword ? "Hide password" : "Show password"}
+              >
+                {showSignInPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
           <MagneticButton
             type="submit"
@@ -287,6 +345,7 @@ export function AuthForm({ next }: { next?: string }) {
               required
               placeholder="Jane Doe"
               className={inputClass}
+              autoComplete="name"
             />
           </div>
           <div>
@@ -297,17 +356,29 @@ export function AuthForm({ next }: { next?: string }) {
               required
               placeholder="you@email.com"
               className={inputClass}
+              autoComplete="email"
             />
           </div>
           <div>
             <label className={labelClass}>Password</label>
-            <input
-              name="password"
-              type="password"
-              required
-              placeholder="At least 8 characters"
-              className={inputClass}
-            />
+            <div className="relative">
+              <input
+                name="password"
+                type={showSignUpPassword ? "text" : "password"}
+                required
+                placeholder="At least 8 characters"
+                className={cn(inputClass, "pr-11")}
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowSignUpPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-white/40 hover:text-white transition-colors focus:outline-none"
+                aria-label={showSignUpPassword ? "Hide password" : "Show password"}
+              >
+                {showSignUpPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
           <MagneticButton
             type="submit"
@@ -334,3 +405,4 @@ export function AuthForm({ next }: { next?: string }) {
     </div>
   );
 }
+
