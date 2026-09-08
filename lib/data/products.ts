@@ -264,20 +264,24 @@ export async function getProductsByIds(ids: string[]): Promise<Product[]> {
     .filter((p): p is Product => !!p && idSet.has(p.id));
 }
 
-export async function getTrendingProducts(): Promise<Product[]> {
+export async function getTrendingProducts(limit = 4): Promise<Product[]> {
   const allProducts = await getAllProducts();
   const trending = allProducts.filter((p) => p.isTrending || p.isFeatured);
-  return trending.length > 0 ? trending : allProducts.slice(0, 8);
+  const pool = trending.length > 0 ? trending : allProducts;
+  return pool.slice(0, limit);
 }
 
-export async function getNewArrivals(): Promise<Product[]> {
+export async function getNewArrivals(limit = 4): Promise<Product[]> {
   const allProducts = await getAllProducts();
   const fresh = allProducts.filter((p) => p.isNew);
-  return fresh.length > 0 ? fresh : allProducts.slice(0, 8);
+  const pool = fresh.length > 0 ? fresh : allProducts;
+  return pool.slice(0, limit);
 }
 
-export async function getLimitedEditions(): Promise<Product[]> {
+export async function getLimitedEditions(limit = 4): Promise<Product[]> {
   const allProducts = await getAllProducts();
   const limited = allProducts.filter((p) => p.isLimited);
-  return limited.length > 0 ? limited : allProducts.slice(0, 8);
+  const pool = limited.length > 0 ? limited : allProducts;
+  return pool.slice(0, limit);
 }
+
