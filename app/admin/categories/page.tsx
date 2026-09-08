@@ -55,12 +55,15 @@ export default function AdminCategoriesPage() {
   const [categoryName, setCategoryName] = useState("");
   const [categorySlug, setCategorySlug] = useState("");
   const [categoryIcon, setCategoryIcon] = useState("shirt");
+  const [categoryImage, setCategoryImage] = useState("");
+  const [categoryDescription, setCategoryDescription] = useState("");
 
   const [editingFranchise, setEditingFranchise] = useState<AnimeMeta | null>(null);
   const [isAddingFranchise, setIsAddingFranchise] = useState(false);
   const [franchiseName, setFranchiseName] = useState("");
   const [franchiseSlug, setFranchiseSlug] = useState("");
   const [franchiseColor, setFranchiseColor] = useState("#8B5CF6");
+  const [franchiseImage, setFranchiseImage] = useState("");
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -75,12 +78,22 @@ export default function AdminCategoriesPage() {
     if (!categoryName.trim()) return;
 
     const finalSlug = categorySlug.trim() || slugify(categoryName);
+    const fallbackImage =
+      categoryImage.trim() ||
+      "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80";
 
     if (editingCategory) {
       setCategories((prev) =>
         prev.map((c) =>
           c.slug === editingCategory.slug
-            ? { ...c, name: categoryName as any, slug: finalSlug, icon: categoryIcon }
+            ? {
+                ...c,
+                name: categoryName as any,
+                slug: finalSlug,
+                icon: categoryIcon,
+                image: fallbackImage,
+                description: categoryDescription.trim() || c.description,
+              }
             : c
         )
       );
@@ -91,6 +104,8 @@ export default function AdminCategoriesPage() {
         name: categoryName as any,
         slug: finalSlug,
         icon: categoryIcon,
+        image: fallbackImage,
+        description: categoryDescription.trim() || "Curated anime collection drops",
       };
       setCategories((prev) => [newCat, ...prev]);
       showToast(`Created category "${categoryName}"`);
@@ -100,6 +115,8 @@ export default function AdminCategoriesPage() {
     setCategoryName("");
     setCategorySlug("");
     setCategoryIcon("shirt");
+    setCategoryImage("");
+    setCategoryDescription("");
   }
 
   function handleDeleteCategory(slug: string, name: string) {
@@ -115,12 +132,21 @@ export default function AdminCategoriesPage() {
     if (!franchiseName.trim()) return;
 
     const finalSlug = franchiseSlug.trim() || slugify(franchiseName);
+    const fallbackImage =
+      franchiseImage.trim() ||
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=600&q=80";
 
     if (editingFranchise) {
       setFranchises((prev) =>
         prev.map((f) =>
           f.slug === editingFranchise.slug
-            ? { ...f, name: franchiseName as any, slug: finalSlug, color: franchiseColor }
+            ? {
+                ...f,
+                name: franchiseName as any,
+                slug: finalSlug,
+                color: franchiseColor,
+                image: fallbackImage,
+              }
             : f
         )
       );
@@ -131,6 +157,7 @@ export default function AdminCategoriesPage() {
         name: franchiseName as any,
         slug: finalSlug,
         color: franchiseColor,
+        image: fallbackImage,
       };
       setFranchises((prev) => [newFranchise, ...prev]);
       showToast(`Added anime franchise "${franchiseName}"`);
@@ -140,6 +167,7 @@ export default function AdminCategoriesPage() {
     setFranchiseName("");
     setFranchiseSlug("");
     setFranchiseColor("#8B5CF6");
+    setFranchiseImage("");
   }
 
   function handleDeleteFranchise(slug: string, name: string) {
@@ -274,7 +302,7 @@ export default function AdminCategoriesPage() {
             </button>
           </div>
 
-          <form onSubmit={handleSaveCategory} className="grid gap-4 sm:grid-cols-3 items-end">
+          <form onSubmit={handleSaveCategory} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
             <div>
               <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Category Name</label>
               <input
@@ -289,6 +317,7 @@ export default function AdminCategoriesPage() {
                 className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
               />
             </div>
+
             <div>
               <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">URL Slug</label>
               <input
@@ -300,6 +329,18 @@ export default function AdminCategoriesPage() {
                 className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white font-mono"
               />
             </div>
+
+            <div>
+              <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Card Image URL</label>
+              <input
+                type="url"
+                value={categoryImage}
+                onChange={(e) => setCategoryImage(e.target.value)}
+                placeholder="https://images.unsplash.com/..."
+                className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
+              />
+            </div>
+
             <div>
               <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Icon Preset</label>
               <select
@@ -314,7 +355,19 @@ export default function AdminCategoriesPage() {
                 ))}
               </select>
             </div>
-            <div className="sm:col-span-3 flex justify-end gap-2 pt-2">
+
+            <div className="sm:col-span-2 lg:col-span-3">
+              <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Subtitle / Tagline</label>
+              <input
+                type="text"
+                value={categoryDescription}
+                onChange={(e) => setCategoryDescription(e.target.value)}
+                placeholder="e.g. 400gsm heavyweight fleece & embroidered drops"
+                className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => {
@@ -355,7 +408,7 @@ export default function AdminCategoriesPage() {
             </button>
           </div>
 
-          <form onSubmit={handleSaveFranchise} className="grid gap-4 sm:grid-cols-3 items-end">
+          <form onSubmit={handleSaveFranchise} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
             <div>
               <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Anime Universe Name</label>
               <input
@@ -382,6 +435,16 @@ export default function AdminCategoriesPage() {
               />
             </div>
             <div>
+              <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Cover Image URL</label>
+              <input
+                type="url"
+                value={franchiseImage}
+                onChange={(e) => setFranchiseImage(e.target.value)}
+                placeholder="https://images.unsplash.com/..."
+                className="glass w-full rounded-xl px-3.5 py-2 text-xs text-neutral-900 dark:text-white"
+              />
+            </div>
+            <div>
               <label className="mb-1 block text-xs font-medium text-neutral-600 dark:text-white/60">Accent Glow Color</label>
               <div className="flex items-center gap-3">
                 <input
@@ -398,7 +461,7 @@ export default function AdminCategoriesPage() {
                 />
               </div>
             </div>
-            <div className="sm:col-span-3 flex justify-end gap-2 pt-2">
+            <div className="sm:col-span-2 lg:col-span-4 flex justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => {
@@ -430,15 +493,27 @@ export default function AdminCategoriesPage() {
                 className="flex items-center justify-between gap-4 p-4 hover:bg-neutral-100/50 dark:hover:bg-white/[0.02] transition-colors"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-purple/10 text-accent-purple">
-                    <FolderTree size={18} />
+                  {/* Category Image Thumbnail */}
+                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-neutral-200 dark:bg-base-800 border border-neutral-200 dark:border-white/10">
+                    {cat.image ? (
+                      <img
+                        src={cat.image}
+                        alt={cat.name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-accent-purple bg-accent-purple/10">
+                        <FolderTree size={18} />
+                      </div>
+                    )}
                   </div>
+
                   <div className="min-w-0">
                     <p className="font-heading font-semibold text-sm text-neutral-900 dark:text-white">
                       {cat.name}
                     </p>
-                    <p className="text-xs text-neutral-500 dark:text-white/40 font-mono">
-                      /shop?category={cat.slug}
+                    <p className="text-xs text-neutral-500 dark:text-white/40 truncate max-w-sm">
+                      {cat.description || `/shop?category=${cat.slug}`}
                     </p>
                   </div>
                 </div>
@@ -459,6 +534,8 @@ export default function AdminCategoriesPage() {
                       setCategoryName(cat.name);
                       setCategorySlug(cat.slug);
                       setCategoryIcon(cat.icon || "shirt");
+                      setCategoryImage(cat.image || "");
+                      setCategoryDescription(cat.description || "");
                       setIsAddingCategory(false);
                     }}
                     aria-label={`Edit ${cat.name}`}
@@ -490,6 +567,14 @@ export default function AdminCategoriesPage() {
               key={series.slug}
               className="glass group relative flex flex-col justify-between overflow-hidden rounded-3xl p-5 border border-neutral-200 dark:border-white/10 transition-all hover:shadow-glow"
             >
+              {/* Franchise Cover Image or Glow */}
+              {series.image && (
+                <div className="absolute inset-0 opacity-15 transition-opacity group-hover:opacity-30">
+                  <img src={series.image} alt={series.name} className="h-full w-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                </div>
+              )}
+
               {/* Radial glow swatch */}
               <div
                 className="absolute inset-0 opacity-15 pointer-events-none transition-opacity group-hover:opacity-30"
@@ -517,6 +602,7 @@ export default function AdminCategoriesPage() {
                         setFranchiseName(series.name);
                         setFranchiseSlug(series.slug);
                         setFranchiseColor(series.color);
+                        setFranchiseImage(series.image || "");
                         setIsAddingFranchise(false);
                       }}
                       className="rounded-full p-1.5 text-neutral-500 hover:text-neutral-900 dark:text-white/50 dark:hover:text-white hover:bg-neutral-200/50 dark:hover:bg-white/10 transition-colors"
