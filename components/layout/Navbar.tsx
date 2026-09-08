@@ -8,6 +8,7 @@ import { useCartStore } from "@/store/cartStore";
 import { useAuthUser } from "@/hooks/useAuthUser";
 import { cn } from "@/lib/utils";
 import { SearchModal } from "@/components/layout/SearchModal";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const NAV_LINKS = [
   { label: "Shop", href: "/shop" },
@@ -71,7 +72,7 @@ export function Navbar() {
             ))}
           </div>
 
-          <div className="flex items-center gap-4 md:gap-5">
+          <div className="flex items-center gap-3 md:gap-4">
             <button
               aria-label="Search products"
               onClick={() => setSearchOpen(true)}
@@ -82,6 +83,9 @@ export function Navbar() {
                 ⌘K
               </span>
             </button>
+
+            <ThemeToggle />
+
             <Link
               href={user ? "/account" : "/login"}
               aria-label={user ? "Account" : "Login"}
@@ -157,6 +161,10 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              <div className="flex items-center justify-between border-t border-white/10 pt-3">
+                <span className="font-heading text-xs text-white/60">Theme Appearance</span>
+                <ThemeToggle />
+              </div>
               <Link
                 href={user ? "/account" : "/login"}
                 className="flex items-center gap-2 font-heading text-white/90"
@@ -173,3 +181,4 @@ export function Navbar() {
     </>
   );
 }
+
