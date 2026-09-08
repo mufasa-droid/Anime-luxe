@@ -2,6 +2,7 @@ export type ProductCategory =
   | "Hoodies"
   | "T-Shirts"
   | "Jackets"
+  | "Shorts"
   | "Rings"
   | "Necklaces"
   | "Masks"
@@ -32,6 +33,9 @@ export type AnimeSeries =
   | "Black Clover"
   | "My Hero Academia"
   | "Hunter x Hunter"
+  | "Fire Force"
+  | "Baki"
+  | "Mob Psycho 100"
   | "Spy x Family"
   | "JoJo"
   | "Haikyuu"
@@ -64,6 +68,7 @@ export interface Product {
   isLimited?: boolean;
   isNew?: boolean;
   isTrending?: boolean;
+  isFeatured?: boolean;
   tags: string[];
 }
 

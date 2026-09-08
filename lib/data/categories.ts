@@ -31,6 +31,13 @@ export const PRODUCT_CATEGORIES: CategoryMeta[] = [
     description: "Technical trench coats & bomber jackets",
   },
   {
+    name: "Shorts",
+    slug: "shorts",
+    icon: "shirt",
+    image: "/images/products/akatsuki-red-cloud-fleece-shorts.jpeg",
+    description: "Heavyweight French terry anime lounge & streetwear sweatshorts",
+  },
+  {
     name: "Rings",
     slug: "rings",
     icon: "gem",
@@ -220,7 +227,25 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Hunter x Hunter",
     slug: "hunter-x-hunter",
     color: "#22C55E",
-    image: "https://images.unsplash.com/photo-1614252369475-531eba835eb1?auto=format&fit=crop&w=600&q=80",
+    image: "/images/products/killua-zoldyck-slurp-heavyweight-hoodie.jpeg",
+  },
+  {
+    name: "Fire Force",
+    slug: "fire-force",
+    color: "#F97316",
+    image: "/images/products/shinra-devil-footprints-boxy-tee.jpeg",
+  },
+  {
+    name: "Baki",
+    slug: "baki",
+    color: "#DC2626",
+    image: "/images/products/baki-demon-back-swoosh-tee.jpeg",
+  },
+  {
+    name: "Mob Psycho 100",
+    slug: "mob-psycho-100",
+    color: "#8B5CF6",
+    image: "/images/products/mob-psycho-100-psychic-aura-tee.jpeg",
   },
   {
     name: "Spy x Family",

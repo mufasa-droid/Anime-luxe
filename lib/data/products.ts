@@ -1,6 +1,7 @@
 import { cache } from "react";
 import type { Product, ProductCategory, AnimeSeries } from "@/types";
 import { fetchAdminProducts, type AdminProductRow } from "@/lib/data/adminProducts";
+import { UPLOADED_PRODUCTS } from "@/lib/data/uploadedProducts";
 
 /**
  * MOCK DATA LAYER — now merged with the live admin-managed catalog.
@@ -17,6 +18,7 @@ const PLACEHOLDER_IMAGE = (seed: string) =>
   `https://images.unsplash.com/photo-1600000000000?ixid=${seed}&auto=format&fit=crop&w=800&q=80`;
 
 export const MOCK_PRODUCTS: Product[] = [
+  ...UPLOADED_PRODUCTS,
   {
     id: "p1",
     slug: "akatsuki-cloud-hoodie",
