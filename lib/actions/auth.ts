@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { getBaseUrl } from "@/lib/getBaseUrl";
 
 export interface AuthActionState {
@@ -18,6 +18,47 @@ function isRedirectError(err: unknown): boolean {
   return false;
 }
 
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+function formatAuthError(err: unknown, defaultFallback: string): string {
+  if (!isSupabaseConfigured()) {
+    return "Authentication database is not configured. Please add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to your environment.";
+  }
+
+  if (typeof err === "object" && err !== null) {
+    const error = err as { message?: string; code?: string; status?: number; error_description?: string };
+    const msg = (error.message || error.error_description || "").toLowerCase();
+    const code = (error.code || "").toLowerCase();
+
+    if (msg.includes("already registered") || msg.includes("user already exists") || code === "user_already_exists") {
+      return "An account with this email address already exists. Please sign in instead.";
+    }
+    if (msg.includes("invalid login credentials") || msg.includes("invalid_credentials") || code === "invalid_credentials") {
+      return "Incorrect email or password. Please verify your credentials and try again.";
+    }
+    if (msg.includes("email not confirmed") || code === "email_not_confirmed") {
+      return "Your email address has not been confirmed yet. Please check your inbox for the confirmation link.";
+    }
+    if (msg.includes("password should be") || msg.includes("weak password") || code === "weak_password") {
+      return "Password is too weak. Please use at least 8 characters with a mix of letters and numbers.";
+    }
+    if (msg.includes("rate limit") || code === "over_email_send_rate_limit" || code === "over_request_rate_limit") {
+      return "Too many attempts. Please wait a few minutes before trying again.";
+    }
+    if (msg.includes("signups not allowed") || msg.includes("signup disabled") || code === "signup_disabled") {
+      return "New registrations are currently disabled on this platform.";
+    }
+    if (msg.includes("fetch failed") || msg.includes("enotfound") || code === "fetch_failed") {
+      return "Unable to connect to the authentication server. Please check your internet connection or verify your Supabase settings.";
+    }
+    if (error.message && error.message.trim().length > 0 && !error.message.includes("fetch failed")) {
+      return error.message;
+    }
+  }
+
+  return defaultFallback;
+}
+
 export async function signInWithPasswordAction(
   _prevState: AuthActionState | null,
   formData: FormData
@@ -27,27 +68,27 @@ export async function signInWithPasswordAction(
     const password = String(formData.get("password") ?? "");
     const next = String(formData.get("next") ?? "/account");
 
-    if (!email || !password) {
-      return { error: "Email and password are required." };
+    if (!email) {
+      return { error: "Please enter your email address." };
+    }
+    if (!EMAIL_REGEX.test(email)) {
+      return { error: "Please enter a valid email address (e.g. name@example.com)." };
+    }
+    if (!password) {
+      return { error: "Please enter your password." };
+    }
+
+    if (!isSupabaseConfigured()) {
+      return {
+        error: "Authentication service not configured. Please add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to your environment.",
+      };
     }
 
     const supabase = await createClient();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      const msg = error.message?.toLowerCase() ?? "";
-      const code = (error as { code?: string }).code ?? "";
-
-      if (msg.includes("invalid login credentials") || msg.includes("invalid_credentials") || code === "invalid_credentials") {
-        return { error: "Incorrect email or password. Please check your credentials and try again." };
-      }
-      if (msg.includes("email not confirmed")) {
-        return { error: "Your email address has not been confirmed yet. Please check your inbox for the confirmation link." };
-      }
-      if (msg.includes("fetch failed") || code === "fetch_failed") {
-        return { error: "Unable to reach authentication server. Please check your connection and try again." };
-      }
-      return { error: error.message || "Failed to sign in. Please try again." };
+      return { error: formatAuthError(error, "Failed to sign in. Please verify your email and password.") };
     }
 
     redirect(next);
@@ -55,10 +96,7 @@ export async function signInWithPasswordAction(
     if (isRedirectError(err)) throw err;
     console.error("signInWithPasswordAction error:", err);
     return {
-      error:
-        err instanceof Error && err.message !== "fetch failed"
-          ? err.message
-          : "Incorrect email or password or network error. Please try again.",
+      error: formatAuthError(err, "Unable to sign in. Please check your credentials and connection."),
     };
   }
 }
@@ -73,11 +111,26 @@ export async function signUpAction(
     const password = String(formData.get("password") ?? "");
     const next = String(formData.get("next") ?? "/account");
 
-    if (!name || !email || !password) {
-      return { error: "Name, email, and password are all required." };
+    if (!name || name.length < 2) {
+      return { error: "Please enter your full name (at least 2 characters)." };
+    }
+    if (!email) {
+      return { error: "Please enter your email address." };
+    }
+    if (!EMAIL_REGEX.test(email)) {
+      return { error: "Please enter a valid email format (e.g. name@example.com)." };
+    }
+    if (!password) {
+      return { error: "Please enter a password." };
     }
     if (password.length < 8) {
       return { error: "Password must be at least 8 characters long." };
+    }
+
+    if (!isSupabaseConfigured()) {
+      return {
+        error: "Authentication service not configured. Please add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to your environment.",
+      };
     }
 
     const supabase = await createClient();
@@ -93,16 +146,7 @@ export async function signUpAction(
     });
 
     if (error) {
-      const msg = error.message?.toLowerCase() ?? "";
-      const code = (error as { code?: string }).code ?? "";
-
-      if (msg.includes("already registered") || code === "user_already_exists") {
-        return { error: "An account with this email already exists. Please sign in instead." };
-      }
-      if (msg.includes("rate limit") || code === "over_email_send_rate_limit") {
-        return { error: "Sign-up rate limit reached. Please wait a few minutes before trying again." };
-      }
-      return { error: error.message || "Could not complete sign up." };
+      return { error: formatAuthError(error, "Could not complete account registration.") };
     }
 
     // If email confirmation is disabled in the Supabase project, signUp
@@ -116,10 +160,7 @@ export async function signUpAction(
     if (isRedirectError(err)) throw err;
     console.error("signUpAction error:", err);
     return {
-      error:
-        err instanceof Error && err.message !== "fetch failed"
-          ? err.message
-          : "An unexpected error occurred during sign up. Please try again.",
+      error: formatAuthError(err, "An error occurred while creating your account. Please try again."),
     };
   }
 }
@@ -134,6 +175,15 @@ export async function requestPasswordResetAction(
     if (!email) {
       return { error: "Please enter your email address." };
     }
+    if (!EMAIL_REGEX.test(email)) {
+      return { error: "Please enter a valid email address (e.g. name@example.com)." };
+    }
+
+    if (!isSupabaseConfigured()) {
+      return {
+        error: "Authentication service not configured. Please add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to your environment.",
+      };
+    }
 
     const supabase = await createClient();
     const baseUrl = await getBaseUrl();
@@ -143,15 +193,7 @@ export async function requestPasswordResetAction(
     });
 
     if (error) {
-      const msg = error.message?.toLowerCase() ?? "";
-      const code = (error as { code?: string }).code ?? "";
-
-      if (msg.includes("rate limit") || code === "over_email_send_rate_limit") {
-        return {
-          error: "Too many password reset attempts. Please wait a few minutes before requesting another reset email.",
-        };
-      }
-      return { error: error.message || "Unable to send password reset email." };
+      return { error: formatAuthError(error, "Unable to send password reset email.") };
     }
 
     return {
@@ -160,10 +202,7 @@ export async function requestPasswordResetAction(
   } catch (err) {
     console.error("requestPasswordResetAction error:", err);
     return {
-      error:
-        err instanceof Error && err.message !== "fetch failed"
-          ? err.message
-          : "Unable to process password reset request. Please check your connection and try again.",
+      error: formatAuthError(err, "Unable to process password reset request. Please check your connection and try again."),
     };
   }
 }
@@ -183,17 +222,17 @@ export async function updatePasswordAction(
       return { error: "Passwords do not match." };
     }
 
+    if (!isSupabaseConfigured()) {
+      return {
+        error: "Authentication service not configured. Please add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to your environment.",
+      };
+    }
+
     const supabase = await createClient();
     const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
-      const msg = error.message?.toLowerCase() ?? "";
-      if (msg.includes("session missing") || msg.includes("auth session")) {
-        return {
-          error: "Your password reset session has expired or is invalid. Please request a new password reset link.",
-        };
-      }
-      return { error: error.message || "Failed to update password." };
+      return { error: formatAuthError(error, "Failed to update password.") };
     }
 
     redirect("/account");
@@ -201,18 +240,19 @@ export async function updatePasswordAction(
     if (isRedirectError(err)) throw err;
     console.error("updatePasswordAction error:", err);
     return {
-      error:
-        err instanceof Error && err.message !== "fetch failed"
-          ? err.message
-          : "Failed to update password. Please try again.",
+      error: formatAuthError(err, "Failed to update password. Please try again."),
     };
   }
 }
 
 export async function signInWithOAuthAction(
-  provider: "google" | "github",
+  provider: "google",
   next = "/account"
 ): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    throw new Error("Authentication service is not configured. Please check your Supabase environment variables.");
+  }
+
   const supabase = await createClient();
   const baseUrl = await getBaseUrl();
 
@@ -234,7 +274,12 @@ export async function signInWithOAuthAction(
 }
 
 export async function signOutAction(): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    redirect("/");
+    return;
+  }
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/");
 }
+

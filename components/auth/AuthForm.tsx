@@ -25,19 +25,23 @@ const initialState: AuthActionState = {};
 
 function GoogleIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
       <path
-        fill="currentColor"
-        d="M12 11v2.8h6.5c-.3 1.6-2 4.7-6.5 4.7-3.9 0-7.1-3.2-7.1-7.2s3.2-7.2 7.1-7.2c2.2 0 3.7.9 4.6 1.7l3.1-3C17.6 1 15 0 12 0 5.4 0 0 5.4 0 12s5.4 12 12 12c6.9 0 11.5-4.9 11.5-11.7 0-.8-.1-1.4-.2-2H12z"
+        fill="#EA4335"
+        d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"
       />
-    </svg>
-  );
-}
-
-function GithubIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 0C5.4 0 0 5.4 0 12c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6C20.6 21.8 24 17.3 24 12c0-6.6-5.4-12-12-12Z" />
+      <path
+        fill="#4285F4"
+        d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.1-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15.1s.7 5.4 1.9 7.8l3.7-2.9z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16c1.8 3.7 5.6 6.3 10.1 6.3z"
+      />
     </svg>
   );
 }
@@ -72,22 +76,22 @@ export function AuthForm({
   const [oauthError, setOauthError] = useState<string | null>(null);
   const [oauthPending, startOauthTransition] = useTransition();
 
-  function handleOAuth(provider: "google" | "github") {
+  function handleGoogleOAuth() {
     setOauthError(null);
     startOauthTransition(async () => {
       try {
-        await signInWithOAuthAction(provider, redirectTarget);
+        await signInWithOAuthAction("google", redirectTarget);
       } catch (err) {
         setOauthError(
-          err instanceof Error ? err.message : "Couldn't start sign-in."
+          err instanceof Error ? err.message : "Couldn't initiate Google sign-in."
         );
       }
     });
   }
 
   const inputClass =
-    "glass w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-accent-purple/50";
-  const labelClass = "mb-1.5 block text-xs font-medium text-white/60";
+    "glass w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-accent-purple/50 transition-all border border-white/10";
+  const labelClass = "mb-1.5 block text-xs font-medium text-white/70";
 
   const callbackErrorMessage =
     initialError === "auth_callback_failed"
@@ -97,7 +101,7 @@ export function AuthForm({
   // 1. Forgot Password View
   if (isForgotPassword) {
     return (
-      <div className="glass-strong w-full max-w-md rounded-3xl p-8 text-center">
+      <div className="glass-strong w-full max-w-md rounded-3xl p-8 text-center border border-white/10 shadow-2xl">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-purple/20 text-accent-purple shadow-glow">
           <KeyRound size={28} />
         </div>
@@ -120,7 +124,7 @@ export function AuthForm({
                 {resetState.success}
               </p>
               <p className="text-white/40 italic text-[11px]">
-                * If you don&apos;t see the email within 2 minutes, check your Spam / Junk folder or make sure an account exists with this email.
+                * If you don&apos;t see the email within 2 minutes, check your Spam / Junk folder or verify that an account exists with this email.
               </p>
             </div>
 
@@ -152,7 +156,7 @@ export function AuthForm({
             </div>
 
             {resetState?.error && (
-              <div className="flex items-start gap-2 rounded-xl bg-accent-red/10 px-3 py-2.5 text-xs text-accent-red">
+              <div className="flex items-start gap-2 rounded-xl bg-accent-red/10 border border-accent-red/20 px-3 py-2.5 text-xs text-accent-red">
                 <AlertCircle size={14} className="mt-0.5 shrink-0" />
                 <span>{resetState.error}</span>
               </div>
@@ -183,7 +187,7 @@ export function AuthForm({
   // 2. Sign Up Confirmation Screen
   if (tab === "signup" && signUpState?.success) {
     return (
-      <div className="glass-strong w-full max-w-md rounded-3xl p-8 text-center">
+      <div className="glass-strong w-full max-w-md rounded-3xl p-8 text-center border border-white/10 shadow-2xl">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-purple/20 text-accent-purple shadow-glow">
           <MailCheck size={32} />
         </div>
@@ -196,15 +200,15 @@ export function AuthForm({
           {signUpState.success}
         </p>
 
-        <div className="glass my-6 rounded-2xl p-4 text-left text-xs text-white/60 space-y-2">
+        <div className="glass my-6 rounded-2xl p-4 text-left text-xs text-white/60 space-y-2 border border-white/10">
           <p className="flex items-center gap-2 text-white font-medium">
             <CheckCircle2 size={14} className="text-emerald-400" />
             Next Steps:
           </p>
-          <p>1. Open your email client and check your inbox.</p>
-          <p>2. Click the verification link to activate your account.</p>
+          <p>1. Open your email inbox.</p>
+          <p>2. Click the confirmation link to activate your anime luxe account.</p>
           <p className="text-white/40 italic">
-            * Be sure to check your Spam or Junk folder if the email does not appear within a minute.
+            * Check your Spam or Junk folder if the message does not appear within a minute.
           </p>
         </div>
 
@@ -221,13 +225,13 @@ export function AuthForm({
   }
 
   return (
-    <div className="glass-strong w-full max-w-md rounded-3xl p-8">
-      <div className="mb-6 flex rounded-full bg-white/5 p-1">
+    <div className="glass-strong w-full max-w-md rounded-3xl p-8 border border-white/10 shadow-2xl">
+      <div className="mb-6 flex rounded-full bg-white/5 p-1 border border-white/10">
         <button
           onClick={() => setTab("signin")}
           className={cn(
-            "flex-1 rounded-full py-2 text-sm font-medium transition-colors",
-            tab === "signin" ? "bg-white/10 text-white" : "text-white/50"
+            "flex-1 rounded-full py-2 text-sm font-medium transition-all",
+            tab === "signin" ? "bg-white/15 text-white shadow-sm" : "text-white/50 hover:text-white/80"
           )}
         >
           Sign In
@@ -235,8 +239,8 @@ export function AuthForm({
         <button
           onClick={() => setTab("signup")}
           className={cn(
-            "flex-1 rounded-full py-2 text-sm font-medium transition-colors",
-            tab === "signup" ? "bg-white/10 text-white" : "text-white/50"
+            "flex-1 rounded-full py-2 text-sm font-medium transition-all",
+            tab === "signup" ? "bg-white/15 text-white shadow-sm" : "text-white/50 hover:text-white/80"
           )}
         >
           Sign Up
@@ -245,25 +249,18 @@ export function AuthForm({
 
       <div className="space-y-3">
         <button
-          onClick={() => handleOAuth("google")}
+          type="button"
+          onClick={handleGoogleOAuth}
           disabled={oauthPending}
-          className="glass flex w-full items-center justify-center gap-2.5 rounded-full py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/10 disabled:opacity-50"
+          className="glass flex w-full items-center justify-center gap-3 rounded-full py-2.5 text-sm font-medium text-white transition-all hover:bg-white/10 border border-white/10 disabled:opacity-50"
         >
           <GoogleIcon />
-          Continue with Google
-        </button>
-        <button
-          onClick={() => handleOAuth("github")}
-          disabled={oauthPending}
-          className="glass flex w-full items-center justify-center gap-2.5 rounded-full py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/10 disabled:opacity-50"
-        >
-          <GithubIcon />
-          Continue with GitHub
+          <span>Continue with Google</span>
         </button>
       </div>
 
       {oauthError && (
-        <div className="mt-3 flex items-start gap-2 rounded-xl bg-accent-red/10 px-3 py-2.5 text-xs text-accent-red">
+        <div className="mt-3 flex items-start gap-2 rounded-xl bg-accent-red/10 border border-accent-red/20 px-3 py-2.5 text-xs text-accent-red">
           <AlertCircle size={14} className="mt-0.5 shrink-0" />
           <span>{oauthError}</span>
         </div>
@@ -278,7 +275,7 @@ export function AuthForm({
 
       <div className="my-6 flex items-center gap-3">
         <div className="h-px flex-1 bg-white/10" />
-        <span className="text-xs text-white/30">or</span>
+        <span className="text-xs text-white/40">or with email</span>
         <div className="h-px flex-1 bg-white/10" />
       </div>
 
@@ -286,7 +283,7 @@ export function AuthForm({
         <form key="signin" action={signInFormAction} className="space-y-4">
           <input type="hidden" name="next" value={redirectTarget} />
           <div>
-            <label className={labelClass}>Email</label>
+            <label className={labelClass}>Email Address</label>
             <input
               name="email"
               type="email"
@@ -343,13 +340,13 @@ export function AuthForm({
               name="name"
               type="text"
               required
-              placeholder="Jane Doe"
+              placeholder="e.g. Levi Ackerman"
               className={inputClass}
               autoComplete="name"
             />
           </div>
           <div>
-            <label className={labelClass}>Email</label>
+            <label className={labelClass}>Email Address</label>
             <input
               name="email"
               type="email"
@@ -366,6 +363,7 @@ export function AuthForm({
                 name="password"
                 type={showSignUpPassword ? "text" : "password"}
                 required
+                minLength={8}
                 placeholder="At least 8 characters"
                 className={cn(inputClass, "pr-11")}
                 autoComplete="new-password"
@@ -379,6 +377,9 @@ export function AuthForm({
                 {showSignUpPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+            <p className="mt-1 text-[11px] text-white/40">
+              Must be at least 8 characters.
+            </p>
           </div>
           <MagneticButton
             type="submit"
@@ -391,18 +392,19 @@ export function AuthForm({
       )}
 
       {signInState?.error && tab === "signin" && (
-        <div className="mt-4 flex items-start gap-2 rounded-xl bg-accent-red/10 px-3 py-2.5 text-xs text-accent-red">
-          <AlertCircle size={14} className="mt-0.5 shrink-0" />
-          <span>{signInState.error}</span>
+        <div className="mt-4 flex items-start gap-2 rounded-xl bg-accent-red/10 border border-accent-red/20 px-3.5 py-2.5 text-xs text-accent-red">
+          <AlertCircle size={15} className="mt-0.5 shrink-0" />
+          <span className="leading-relaxed">{signInState.error}</span>
         </div>
       )}
       {signUpState?.error && tab === "signup" && (
-        <div className="mt-4 flex items-start gap-2 rounded-xl bg-accent-red/10 px-3 py-2.5 text-xs text-accent-red">
-          <AlertCircle size={14} className="mt-0.5 shrink-0" />
-          <span>{signUpState.error}</span>
+        <div className="mt-4 flex items-start gap-2 rounded-xl bg-accent-red/10 border border-accent-red/20 px-3.5 py-2.5 text-xs text-accent-red">
+          <AlertCircle size={15} className="mt-0.5 shrink-0" />
+          <span className="leading-relaxed">{signUpState.error}</span>
         </div>
       )}
     </div>
   );
 }
+
 
