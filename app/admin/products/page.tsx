@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Plus, Pencil, Package as PackageIcon } from "lucide-react";
 import { getAdminProducts } from "@/lib/actions/admin/products";
 import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { formatCurrency } from "@/lib/utils";
 
 export default async function AdminProductsPage() {
@@ -11,14 +12,25 @@ export default async function AdminProductsPage() {
     !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   return (
-    <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="font-heading text-xl font-bold text-white">
-          Products ({products.length})
-        </h2>
+    <div className="space-y-6">
+      <Breadcrumbs
+        items={[{ label: "Admin", href: "/admin" }, { label: "Products" }]}
+        backHref="/admin"
+        backLabel="Admin Dashboard"
+      />
+
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="font-heading text-2xl font-bold text-neutral-900 dark:text-white">
+            Products ({products.length})
+          </h2>
+          <p className="mt-1 text-xs text-neutral-500 dark:text-white/50">
+            View, edit, search, and manage all active drops in the store catalog.
+          </p>
+        </div>
         <Link
           href="/admin/products/new"
-          className="flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 text-sm text-white hover:bg-white/20"
+          className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-accent-purple to-accent-pink px-4 py-2 text-xs font-semibold text-white shadow-md hover:opacity-95 transition-opacity"
         >
           <Plus size={14} /> Add Product
         </Link>

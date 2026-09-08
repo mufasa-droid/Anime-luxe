@@ -539,10 +539,16 @@ function mapAdminRowToProduct(row: AdminProductRow): Product {
  */
 export const getAllProducts = cache(async (): Promise<Product[]> => {
   const adminRows = await fetchAdminProducts();
-  if (adminRows && adminRows.length > 0) {
-    return adminRows.map(mapAdminRowToProduct);
+  if (!adminRows || adminRows.length === 0) {
+    return MOCK_PRODUCTS;
   }
-  return [];
+  const adminProducts = adminRows.map(mapAdminRowToProduct);
+  const adminSlugs = new Set(adminProducts.map((p) => p.slug));
+  const merged = [
+    ...adminProducts,
+    ...MOCK_PRODUCTS.filter((p) => !adminSlugs.has(p.slug)),
+  ];
+  return merged;
 });
 
 /**

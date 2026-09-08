@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
@@ -12,8 +12,14 @@ import { useWishlistStore } from "@/store/wishlistStore";
 export function ProductCard({ product }: { product: Product }) {
   const ref = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
-  const wishlisted = useWishlistStore((s) => s.productIds.includes(product.id));
+  const [mounted, setMounted] = useState(false);
+  const isWishlistedInStore = useWishlistStore((s) => s.productIds.includes(product.id));
   const toggleWishlist = useWishlistStore((s) => s.toggle);
+  const wishlisted = mounted && isWishlistedInStore;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -55,14 +61,22 @@ export function ProductCard({ product }: { product: Product }) {
           e.stopPropagation();
           toggleWishlist(product.id);
         }}
-        aria-label="Toggle wishlist"
-        className="absolute right-4 top-4 z-10 rounded-full bg-black/40 p-2 backdrop-blur-sm transition-all hover:bg-black/60 hover:scale-110 active:scale-90"
+        aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+        className={cn(
+          "absolute right-4 top-4 z-20 rounded-full p-2.5 backdrop-blur-md transition-all duration-300 active:scale-75",
+          wishlisted
+            ? "bg-pink-500/25 text-pink-500 ring-2 ring-pink-500/70 shadow-[0_0_16px_rgba(236,72,153,0.5)] scale-105"
+            : "bg-black/40 text-white hover:bg-black/70 hover:scale-110"
+        )}
       >
         <Heart
           size={16}
           className={cn(
-            "transition-colors duration-200",
-            wishlisted ? "fill-accent-pink text-accent-pink" : "text-white"
+            "transition-all duration-200",
+            wishlisted
+              ? "fill-pink-500 text-pink-500 scale-110"
+              : "fill-transparent text-white"
           )}
         />
       </button>

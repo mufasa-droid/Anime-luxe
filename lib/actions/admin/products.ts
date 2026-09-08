@@ -11,6 +11,7 @@ import {
   isProductsTableConfigured,
   type AdminProductRow,
 } from "@/lib/data/adminProducts";
+import { MOCK_PRODUCTS } from "@/lib/data/products";
 
 export type AdminProduct = AdminProductRow;
 
@@ -37,11 +38,61 @@ export interface ProductFormState {
 }
 
 export async function getAdminProducts(): Promise<AdminProduct[]> {
-  return fetchAdminProducts();
+  const dbProducts = await fetchAdminProducts();
+  const dbSlugs = new Set(dbProducts.map((p) => p.slug));
+  const mockRows: AdminProduct[] = MOCK_PRODUCTS.filter(
+    (m) => !dbSlugs.has(m.slug)
+  ).map((mock) => ({
+    id: mock.id,
+    slug: mock.slug,
+    title: mock.title,
+    description: mock.description,
+    price: mock.price,
+    compare_at_price: mock.compareAtPrice ?? null,
+    category: mock.category,
+    anime: mock.anime,
+    images: mock.images,
+    stock:
+      mock.variants.reduce((acc, v) => acc + (v.stock || 0), 0) || 50,
+    is_limited: !!mock.isLimited,
+    is_new: !!mock.isNew,
+    is_trending: !!mock.isTrending,
+    rating: mock.rating,
+    review_count: mock.reviewCount,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }));
+  return [...dbProducts, ...mockRows];
 }
 
 export async function getAdminProductById(id: string): Promise<AdminProduct | null> {
-  return fetchAdminProductById(id);
+  const dbProduct = await fetchAdminProductById(id);
+  if (dbProduct) return dbProduct;
+
+  const mock = MOCK_PRODUCTS.find((p) => p.id === id || p.slug === id);
+  if (mock) {
+    return {
+      id: mock.id,
+      slug: mock.slug,
+      title: mock.title,
+      description: mock.description,
+      price: mock.price,
+      compare_at_price: mock.compareAtPrice ?? null,
+      category: mock.category,
+      anime: mock.anime,
+      images: mock.images,
+      stock:
+        mock.variants.reduce((acc, v) => acc + (v.stock || 0), 0) || 50,
+      is_limited: !!mock.isLimited,
+      is_new: !!mock.isNew,
+      is_trending: !!mock.isTrending,
+      rating: mock.rating,
+      review_count: mock.reviewCount,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+  }
+  return null;
 }
 
 type ParsedProductForm =

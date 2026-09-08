@@ -15,27 +15,24 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const BUILT_ITEMS = [
+const ADMIN_NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/products", label: "Products", icon: Package },
+  { href: "/admin/categories", label: "Categories & Franchises", icon: Tags },
+  { href: "/admin/inventory", label: "Inventory", icon: Boxes },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
-  { href: "/admin/users", label: "Users", icon: Users },
-];
-
-const COMING_SOON_ITEMS = [
-  { label: "Categories", icon: Tags },
-  { label: "Coupons", icon: Ticket },
-  { label: "Analytics", icon: BarChart3 },
-  { label: "Inventory", icon: Boxes },
-  { label: "Reviews", icon: Star },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/admin/coupons", label: "Coupons", icon: Ticket },
+  { href: "/admin/reviews", label: "Reviews", icon: Star },
+  { href: "/admin/users", label: "Users & Admins", icon: Users },
 ];
 
 export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <nav className="glass h-fit w-full shrink-0 rounded-2xl p-3 md:w-56">
-      {BUILT_ITEMS.map((item) => {
+    <nav className="glass h-fit w-full shrink-0 rounded-3xl p-3 border border-neutral-200 dark:border-white/10 md:w-60 space-y-1">
+      {ADMIN_NAV_ITEMS.map((item) => {
         const active = item.exact
           ? pathname === item.href
           : pathname.startsWith(item.href);
@@ -45,34 +42,17 @@ export function AdminSidebar() {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors",
+              "flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-xs font-semibold transition-all",
               active
-                ? "bg-gradient-to-r from-accent-purple/30 to-accent-pink/20 text-white"
-                : "text-white/60 hover:bg-white/5 hover:text-white"
+                ? "bg-gradient-to-r from-accent-purple to-accent-pink text-white shadow-md shadow-accent-purple/20"
+                : "text-neutral-600 dark:text-white/60 hover:bg-neutral-200/50 dark:hover:bg-white/5 hover:text-neutral-900 dark:hover:text-white"
             )}
           >
-            <Icon size={16} />
-            {item.label}
+            <Icon size={16} className={active ? "text-white" : "text-neutral-500 dark:text-white/50"} />
+            <span className="truncate">{item.label}</span>
           </Link>
         );
       })}
-
-      <div className="mt-2 border-t border-white/10 pt-2">
-        {COMING_SOON_ITEMS.map((item) => (
-          <div
-            key={item.label}
-            className="flex cursor-not-allowed items-center justify-between rounded-xl px-4 py-2.5 text-sm text-white/25"
-          >
-            <span className="flex items-center gap-3">
-              <item.icon size={16} />
-              {item.label}
-            </span>
-            <span className="rounded-full bg-white/5 px-2 py-0.5 text-[10px]">
-              Soon
-            </span>
-          </div>
-        ))}
-      </div>
     </nav>
   );
 }

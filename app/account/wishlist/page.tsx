@@ -30,7 +30,7 @@ export default function WishlistPage() {
         device.
       </NoAuthNotice>
 
-      <h2 className="mb-6 font-heading text-xl font-bold text-white">
+      <h2 className="mb-6 font-heading text-xl font-bold text-neutral-900 dark:text-white">
         My Wishlist
       </h2>
 

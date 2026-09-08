@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, Star } from "lucide-react";
@@ -8,8 +9,14 @@ import { formatCurrency, cn } from "@/lib/utils";
 import { useWishlistStore } from "@/store/wishlistStore";
 
 export function ProductListItem({ product }: { product: Product }) {
-  const wishlisted = useWishlistStore((s) => s.productIds.includes(product.id));
+  const [mounted, setMounted] = useState(false);
+  const isWishlistedInStore = useWishlistStore((s) => s.productIds.includes(product.id));
   const toggleWishlist = useWishlistStore((s) => s.toggle);
+  const wishlisted = mounted && isWishlistedInStore;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <Link
@@ -65,14 +72,22 @@ export function ProductListItem({ product }: { product: Product }) {
             e.stopPropagation();
             toggleWishlist(product.id);
           }}
-          aria-label="Toggle wishlist"
-          className="rounded-full bg-white/10 p-2 hover:bg-white/20 hover:scale-110 active:scale-90 transition-all"
+          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          className={cn(
+            "rounded-full p-2.5 backdrop-blur-md transition-all duration-300 active:scale-75",
+            wishlisted
+              ? "bg-pink-500/25 text-pink-500 ring-2 ring-pink-500/70 shadow-[0_0_16px_rgba(236,72,153,0.5)] scale-105"
+              : "bg-white/10 text-white hover:bg-white/20 hover:scale-110"
+          )}
         >
           <Heart
             size={16}
             className={cn(
-              "transition-colors duration-200",
-              wishlisted ? "fill-accent-pink text-accent-pink" : "text-white"
+              "transition-all duration-200",
+              wishlisted
+                ? "fill-pink-500 text-pink-500 scale-110"
+                : "fill-transparent text-white"
             )}
           />
         </button>

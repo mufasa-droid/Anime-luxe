@@ -25,8 +25,14 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
   const [justAdded, setJustAdded] = useState(false);
 
   const addItem = useCartStore((s) => s.addItem);
-  const wishlisted = useWishlistStore((s) => s.productIds.includes(product.id));
+  const [mounted, setMounted] = useState(false);
+  const isWishlistedInStore = useWishlistStore((s) => s.productIds.includes(product.id));
   const toggleWishlist = useWishlistStore((s) => s.toggle);
+  const wishlisted = mounted && isWishlistedInStore;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const selectedVariant: ProductVariant | undefined = product.variants.find(
     (v) =>
@@ -223,14 +229,20 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
         <button
           type="button"
           onClick={() => toggleWishlist(product.id)}
-          aria-label="Toggle wishlist"
-          className="glass rounded-full p-4 text-white/70 hover:text-white hover:scale-105 active:scale-90 transition-all"
+          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          className={cn(
+            "glass rounded-full p-4 transition-all duration-300 active:scale-75 hover:scale-105",
+            wishlisted
+              ? "bg-pink-500/25 text-pink-500 ring-2 ring-pink-500/70 shadow-[0_0_18px_rgba(236,72,153,0.5)]"
+              : "text-neutral-700 dark:text-white/70 hover:text-neutral-900 dark:hover:text-white"
+          )}
         >
           <Heart
             size={18}
             className={cn(
-              "transition-colors duration-200",
-              wishlisted && "fill-accent-pink text-accent-pink"
+              "transition-all duration-200",
+              wishlisted ? "fill-pink-500 text-pink-500 scale-110" : "fill-transparent"
             )}
           />
         </button>
