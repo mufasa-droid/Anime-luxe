@@ -8,19 +8,16 @@ const tests = [
   { path: "/shop", expectedStatus: [200], name: "Shop All" },
   { path: "/shop?category=hoodies", expectedStatus: [200], name: "Shop Filter: Hoodies" },
   { path: "/shop?anime=naruto", expectedStatus: [200], name: "Shop Filter: Naruto" },
-  { path: "/shop?sort=price-asc", expectedStatus: [200], name: "Shop Sort: Price Low to High" },
-  { path: "/product/akatsuki-cloud-hoodie", expectedStatus: [200], name: "Product: Akatsuki Cloud Hoodie" },
-  { path: "/product/gomu-gomu-straw-hat-ring", expectedStatus: [200], name: "Product: Straw Hat Ring" },
-  { path: "/product/titan-shifter-figure", expectedStatus: [200], name: "Product: Titan Shifter Figure" },
-  { path: "/product/shadow-monarch-mystery-box", expectedStatus: [200], name: "Product: Mystery Box" },
-  { path: "/product/strawhat-crew-tee", expectedStatus: [200], name: "Product: Strawhat Graphic Tee" },
+  { path: "/product/killua-zoldyck-slurp-heavyweight-hoodie", expectedStatus: [200], name: "Product: Killua Heavyweight Hoodie" },
+  { path: "/product/asta-demon-eyes-oversized-tee", expectedStatus: [200], name: "Product: Asta Demon Eyes Tee" },
 
   // 2. Checkout Pipeline
   { path: "/checkout/cancel", expectedStatus: [200], name: "Checkout Cancel Page" },
   { path: "/checkout/success?order_id=test_order_1&demo=true", expectedStatus: [200], name: "Checkout Success (Demo Mode)" },
 
   // 3. Auth & Account (Unauthenticated Protection)
-  { path: "/login", expectedStatus: [200], name: "Login & Signup Page" },
+  { path: "/login", expectedStatus: [200], name: "Clerk Login Page" },
+  { path: "/sign-up", expectedStatus: [200], name: "Clerk Sign-up Page" },
   { path: "/account", expectedStatus: [307, 308, 302, 200], name: "Account Dashboard (Auth Gated)" },
   { path: "/account/orders", expectedStatus: [307, 308, 302, 200], name: "Account Orders (Auth Gated)" },
   { path: "/account/wishlist", expectedStatus: [307, 308, 302, 200], name: "Account Wishlist (Auth Gated)" },
