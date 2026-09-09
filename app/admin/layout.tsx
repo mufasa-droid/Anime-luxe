@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AccessDenied } from "@/components/admin/AccessDenied";
 
@@ -14,14 +14,11 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser();
 
-  if (!user) redirect("/login?next=/admin");
+  if (!user) redirect("/login");
 
-  const isAdmin = user.app_metadata?.role === "admin";
+  const isAdmin = user.publicMetadata?.role === "admin";
   if (!isAdmin) return <AccessDenied />;
 
   return (

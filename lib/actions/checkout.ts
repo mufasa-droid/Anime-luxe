@@ -7,7 +7,7 @@ import {
 } from "@/lib/services/paystack";
 import { createPendingOrder, confirmPaidOrder } from "@/lib/services/orders";
 import { getBaseUrl } from "@/lib/getBaseUrl";
-import { createClient } from "@/lib/supabase/server";
+import { currentUser } from "@clerk/nextjs/server";
 import type { CartItem } from "@/types";
 
 export interface CheckoutOptions {
@@ -43,17 +43,16 @@ export async function checkoutAction(
   let userId: string | undefined;
 
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
+    const user = await currentUser();
     if (user) {
       userId = user.id;
-      userEmail = user.email ?? guestEmail;
+      const primaryEmail =
+        user.primaryEmailAddress?.emailAddress ??
+        user.emailAddresses?.[0]?.emailAddress;
+      userEmail = primaryEmail ?? guestEmail;
     }
   } catch {
-    // Auth client unconfigured
+    // Clerk unconfigured or running in standalone demo mode
   }
 
   const effectiveEmail = userEmail?.trim() || "shopper@example.com";

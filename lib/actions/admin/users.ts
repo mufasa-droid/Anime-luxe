@@ -1,8 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getSupabaseServerClient } from "@/lib/services/supabase";
-import { createClient } from "@/lib/supabase/server";
+import { clerkClient, auth } from "@clerk/nextjs/server";
 
 export interface AdminUserRow {
   id: string;
@@ -12,61 +11,69 @@ export interface AdminUserRow {
   createdAt: string;
 }
 
-/**
- * Uses the Supabase Admin API (`auth.admin.*`), which requires the
- * service-role key — never expose this client or these functions to the
- * browser. Only call from admin-gated Server Components/Actions.
- */
 export async function getAllUsers(): Promise<AdminUserRow[]> {
-  if (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.SUPABASE_SERVICE_ROLE_KEY
-  ) {
+  try {
+    const client = await clerkClient();
+    const response = await client.users.getUserList({ limit: 100 });
+
+    const users = response.data || [];
+
+    return users
+      .map((u) => {
+        const email =
+          u.primaryEmailAddressId && u.emailAddresses
+            ? u.emailAddresses.find((e) => e.id === u.primaryEmailAddressId)?.emailAddress ?? u.emailAddresses[0]?.emailAddress ?? ""
+            : u.emailAddresses?.[0]?.emailAddress ?? "";
+        const name: string =
+          u.fullName ||
+          u.firstName ||
+          (email ? email.split("@")[0] : "Customer") ||
+          "Customer";
+        const role = (u.publicMetadata?.role as string) === "admin" ? ("admin" as const) : ("customer" as const);
+
+        return {
+          id: u.id,
+          email,
+          name,
+          role,
+          createdAt: new Date(u.createdAt).toISOString(),
+        };
+      })
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  } catch (err) {
+    if (typeof err === "object" && err !== null && "digest" in err && (err as { digest?: string }).digest === "DYNAMIC_SERVER_USAGE") {
+      throw err;
+    }
+    console.error("getAllUsers error:", err);
     return [];
   }
-
-  const supabase = getSupabaseServerClient();
-  const { data, error } = await supabase.auth.admin.listUsers();
-  if (error) return [];
-
-  return data.users
-    .map((u) => ({
-      id: u.id,
-      email: u.email ?? "",
-      name: (u.user_metadata?.full_name as string) ?? "",
-      role: (u.app_metadata?.role as string) === "admin" ? "admin" as const : "customer" as const,
-      createdAt: u.created_at,
-    }))
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
 
 export async function setUserAdminRoleAction(
   userId: string,
   makeAdmin: boolean
 ): Promise<{ error?: string }> {
-  const authClient = await createClient();
-  const {
-    data: { user: currentUser },
-  } = await authClient.auth.getUser();
+  try {
+    const { userId: currentUserId } = await auth();
 
-  if (currentUser?.id === userId) {
-    return { error: "You can't modify your own admin status." };
+    if (currentUserId === userId) {
+      return { error: "You can't modify your own admin status." };
+    }
+
+    const client = await clerkClient();
+
+    await client.users.updateUserMetadata(userId, {
+      publicMetadata: {
+        role: makeAdmin ? "admin" : null,
+      },
+    });
+
+    revalidatePath("/admin/users");
+    return {};
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : "Failed to update user role.",
+    };
   }
-
-  const supabase = getSupabaseServerClient();
-
-  const { data: existing } = await supabase.auth.admin.getUserById(userId);
-  const currentAppMetadata = existing.user?.app_metadata ?? {};
-
-  const { error } = await supabase.auth.admin.updateUserById(userId, {
-    app_metadata: {
-      ...currentAppMetadata,
-      role: makeAdmin ? "admin" : undefined,
-    },
-  });
-
-  if (error) return { error: error.message };
-
-  revalidatePath("/admin/users");
-  return {};
 }
+

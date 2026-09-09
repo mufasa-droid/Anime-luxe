@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 export interface ProfileActionState {
   error?: string;
@@ -15,13 +15,28 @@ export async function updateProfileAction(
   const name = String(formData.get("name") ?? "").trim();
   if (!name) return { error: "Name is required." };
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.updateUser({
-    data: { full_name: name },
-  });
+  const { userId } = await auth();
+  if (!userId) {
+    return { error: "You must be signed in to update your profile." };
+  }
 
-  if (error) return { error: error.message };
+  try {
+    const client = await clerkClient();
+    const parts = name.split(" ");
+    const firstName = parts[0];
+    const lastName = parts.slice(1).join(" ") || undefined;
 
-  revalidatePath("/account/profile");
-  return { success: "Profile updated." };
+    await client.users.updateUser(userId, {
+      firstName,
+      lastName,
+    });
+
+    revalidatePath("/account/profile");
+    return { success: "Profile updated successfully." };
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : "Failed to update profile.",
+    };
+  }
 }
+

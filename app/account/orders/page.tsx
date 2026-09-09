@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Package } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@clerk/nextjs/server";
 import { getOrdersForUser } from "@/lib/actions/orders";
 import { formatCurrency, cn } from "@/lib/utils";
 
@@ -12,12 +12,9 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 export default async function OrdersPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { userId } = await auth();
 
-  const orders = user ? await getOrdersForUser(user.id) : [];
+  const orders = userId ? await getOrdersForUser(userId) : [];
 
   return (
     <div>

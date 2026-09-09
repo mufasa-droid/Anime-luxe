@@ -16,7 +16,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { signOutAction } from "@/lib/actions/auth";
+import { useClerk } from "@clerk/nextjs";
 
 const ADMIN_NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -32,6 +32,7 @@ const ADMIN_NAV_ITEMS = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const { signOut } = useClerk();
 
   return (
     <nav className="glass h-fit w-full shrink-0 rounded-3xl p-3 border border-neutral-200 dark:border-white/10 md:w-60 space-y-1">
@@ -66,17 +67,17 @@ export function AdminSidebar() {
           <span>Back to Store</span>
         </Link>
 
-        <form action={signOutAction}>
-          <button
-            type="submit"
-            className="flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-xs font-semibold text-rose-500 hover:bg-rose-500/10 transition-all"
-          >
-            <LogOut size={16} />
-            <span>Sign Out</span>
-          </button>
-        </form>
+        <button
+          type="button"
+          onClick={() => signOut({ redirectUrl: "/" })}
+          className="flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-xs font-semibold text-rose-500 hover:bg-rose-500/10 transition-all"
+        >
+          <LogOut size={16} />
+          <span>Sign Out</span>
+        </button>
       </div>
     </nav>
   );
 }
+
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Search,
   Heart,
@@ -18,7 +19,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthUser } from "@/hooks/useAuthUser";
-import { signOutAction } from "@/lib/actions/auth";
+import { useClerk } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { SearchModal } from "@/components/layout/SearchModal";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -40,6 +41,7 @@ export function Navbar() {
   const openCart = useCartStore((s) => s.openCart);
   const itemCount = useCartStore((s) => s.itemCount());
   const { user } = useAuthUser();
+  const { signOut } = useClerk();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -116,19 +118,30 @@ export function Navbar() {
 
             <ThemeToggle />
 
-            {/* Desktop User Menu Dropdown */}
+            {/* Desktop User Menu / Auth Buttons */}
             {user ? (
               <div ref={userMenuRef} className="relative hidden md:block">
                 <button
                   type="button"
                   onClick={() => setUserMenuOpen((prev) => !prev)}
-                  className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 p-1 pr-2.5 transition-all hover:bg-white/10 hover:border-white/25 focus:outline-none"
+                  className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1 pr-2.5 transition-all hover:bg-white/10 hover:border-white/25 focus:outline-none"
                   aria-expanded={userMenuOpen}
                   aria-label="User account menu"
                 >
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 font-heading text-[11px] font-bold text-white shadow-sm">
-                    {(user.name || user.email || "?").charAt(0).toUpperCase()}
-                  </span>
+                  {user.imageUrl ? (
+                    <Image
+                      src={user.imageUrl}
+                      alt={user.name || "User avatar"}
+                      width={24}
+                      height={24}
+                      className="h-6 w-6 rounded-full object-cover ring-1 ring-white/20"
+                      unoptimized
+                    />
+                  ) : (
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 font-heading text-[11px] font-bold text-white shadow-sm">
+                      {(user.name || user.email || "?").charAt(0).toUpperCase()}
+                    </span>
+                  )}
                   <ChevronDown
                     size={12}
                     className={cn(
@@ -148,13 +161,29 @@ export function Navbar() {
                       className="glass-strong absolute right-0 mt-2.5 w-60 rounded-2xl border border-white/15 p-2 shadow-2xl backdrop-blur-xl"
                     >
                       {/* User Info Header */}
-                      <div className="border-b border-white/10 px-3 py-2.5">
-                        <p className="font-heading text-xs font-bold text-white truncate">
-                          {user.name || "Collector"}
-                        </p>
-                        <p className="text-[11px] text-white/50 truncate">
-                          {user.email}
-                        </p>
+                      <div className="flex items-center gap-2.5 border-b border-white/10 px-3 py-2.5">
+                        {user.imageUrl ? (
+                          <Image
+                            src={user.imageUrl}
+                            alt={user.name || "User avatar"}
+                            width={32}
+                            height={32}
+                            className="h-8 w-8 rounded-full object-cover ring-1 ring-white/20"
+                            unoptimized
+                          />
+                        ) : (
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 font-heading text-xs font-bold text-white shadow-sm">
+                            {(user.name || user.email || "?").charAt(0).toUpperCase()}
+                          </span>
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <p className="font-heading text-xs font-bold text-white truncate">
+                            {user.name || "Collector"}
+                          </p>
+                          <p className="text-[11px] text-white/50 truncate">
+                            {user.email}
+                          </p>
+                        </div>
                       </div>
 
                       {/* Menu Links */}
@@ -197,31 +226,44 @@ export function Navbar() {
 
                       {/* Log Out Action */}
                       <div className="border-t border-white/10 pt-1.5">
-                        <form action={signOutAction}>
-                          <button
-                            type="submit"
-                            className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-rose-400 transition-colors hover:bg-rose-500/10 hover:text-rose-300"
-                          >
-                            <LogOut size={14} />
-                            <span>Log Out</span>
-                          </button>
-                        </form>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            setUserMenuOpen(false);
+                            await signOut({ redirectUrl: "/" });
+                          }}
+                          className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-rose-400 transition-colors hover:bg-rose-500/10 hover:text-rose-300"
+                        >
+                          <LogOut size={14} />
+                          <span>Log Out</span>
+                        </button>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
             ) : (
-              <Link
-                href="/login"
-                aria-label="Login"
-                className="hidden md:flex items-center"
-              >
-                <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1 text-xs font-heading font-medium text-white/90 backdrop-blur-sm transition-all hover:border-accent-purple/50 hover:bg-white/10 hover:text-white">
-                  <User size={14} className="text-accent-purple" />
-                  <span>Login</span>
-                </span>
-              </Link>
+              <div className="hidden md:flex items-center gap-2">
+                <Link
+                  href="/login"
+                  aria-label="Sign In"
+                  className="flex items-center"
+                >
+                  <span className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1 text-xs font-heading font-medium text-white/90 backdrop-blur-sm transition-all hover:border-accent-purple/50 hover:bg-white/10 hover:text-white">
+                    <User size={13} className="text-accent-purple" />
+                    <span>Sign In</span>
+                  </span>
+                </Link>
+                <Link
+                  href="/sign-up"
+                  aria-label="Sign Up"
+                  className="flex items-center"
+                >
+                  <span className="flex items-center rounded-full bg-gradient-to-r from-purple-500 to-pink-500 px-3.5 py-1 text-xs font-heading font-semibold text-white shadow-sm transition-all hover:opacity-90 active:scale-95">
+                    <span>Sign Up</span>
+                  </span>
+                </Link>
+              </div>
             )}
 
             <Link
@@ -309,9 +351,20 @@ export function Navbar() {
                   {user ? (
                     <>
                       <div className="flex items-center gap-3 rounded-2xl bg-white/5 p-3 border border-white/10">
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 font-heading text-sm font-bold text-white shadow-sm">
-                          {(user.name || user.email || "?").charAt(0).toUpperCase()}
-                        </span>
+                        {user.imageUrl ? (
+                          <Image
+                            src={user.imageUrl}
+                            alt={user.name || "User avatar"}
+                            width={36}
+                            height={36}
+                            className="h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-white/20"
+                            unoptimized
+                          />
+                        ) : (
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 font-heading text-sm font-bold text-white shadow-sm">
+                            {(user.name || user.email || "?").charAt(0).toUpperCase()}
+                          </span>
+                        )}
                         <div className="min-w-0 flex-1">
                           <p className="font-heading text-sm font-bold text-white truncate">
                             {user.name || "Collector"}
@@ -360,25 +413,38 @@ export function Navbar() {
                       </div>
 
                       {/* Prominent Mobile Log Out Button */}
-                      <form action={signOutAction} className="pt-2">
+                      <div className="pt-2">
                         <button
-                          type="submit"
+                          type="button"
+                          onClick={async () => {
+                            setMobileOpen(false);
+                            await signOut({ redirectUrl: "/" });
+                          }}
                           className="flex w-full items-center justify-center gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 py-2.5 font-heading text-xs font-semibold text-rose-400 transition-colors hover:bg-rose-500/20 active:scale-95"
                         >
                           <LogOut size={15} />
                           <span>Log Out</span>
                         </button>
-                      </form>
+                      </div>
                     </>
                   ) : (
-                    <Link
-                      href="/login"
-                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-white/10 py-3 font-heading text-sm font-semibold text-white transition-colors hover:bg-white/20"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      <User size={16} className="text-accent-purple" />
-                      <span>Login / Sign In</span>
-                    </Link>
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <Link
+                        href="/login"
+                        className="flex items-center justify-center gap-2 rounded-2xl bg-white/10 py-3 font-heading text-sm font-semibold text-white transition-colors hover:bg-white/20"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        <User size={15} className="text-accent-purple" />
+                        <span>Sign In</span>
+                      </Link>
+                      <Link
+                        href="/sign-up"
+                        className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 py-3 font-heading text-sm font-semibold text-white transition-colors hover:opacity-95"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        <span>Sign Up</span>
+                      </Link>
+                    </div>
                   )}
                 </div>
               </div>

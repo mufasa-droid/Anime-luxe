@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@clerk/nextjs/server";
 import { AccountSidebar } from "@/components/account/AccountSidebar";
 
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -15,12 +15,9 @@ export default async function AccountLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { userId } = await auth();
 
-  if (!user) redirect("/login?next=/account");
+  if (!userId) redirect("/login");
 
   return (
     <div className="mx-auto max-w-6xl px-6 pb-24 pt-28 md:pt-32">

@@ -1,15 +1,13 @@
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@clerk/nextjs/server";
 import { getOrdersForUser } from "@/lib/actions/orders";
 import { DashboardStats } from "@/components/account/DashboardStats";
 
 export default async function AccountDashboardPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { userId } = await auth();
 
   // Layout already redirects if there's no user, but keep this safe.
-  const orders = user ? await getOrdersForUser(user.id) : [];
+  const orders = userId ? await getOrdersForUser(userId) : [];
 
   return <DashboardStats orders={orders} />;
 }
+

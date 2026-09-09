@@ -14,8 +14,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { signOutAction } from "@/lib/actions/auth";
 import { useAuthUser } from "@/hooks/useAuthUser";
+import { useClerk } from "@clerk/nextjs";
 
 const NAV_ITEMS = [
   { href: "/account", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -30,6 +30,7 @@ const NAV_ITEMS = [
 export function AccountSidebar() {
   const pathname = usePathname();
   const { user } = useAuthUser();
+  const { signOut } = useClerk();
 
   return (
     <nav className="glass h-fit w-full shrink-0 rounded-2xl p-3 md:w-56">
@@ -65,15 +66,17 @@ export function AccountSidebar() {
         </Link>
       )}
 
-      <form action={signOutAction} className="mt-2 border-t border-white/10 pt-2">
+      <div className="mt-2 border-t border-white/10 pt-2">
         <button
-          type="submit"
+          type="button"
+          onClick={() => signOut({ redirectUrl: "/" })}
           className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/5 hover:text-accent-red"
         >
           <LogOut size={16} />
           Sign Out
         </button>
-      </form>
+      </div>
     </nav>
   );
 }
+

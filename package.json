@@ -10,6 +10,7 @@
     "admin:grant": "node --env-file=.env.local scripts/make-admin.mjs"
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.9.1",
     "@hookform/resolvers": "^3.9.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.45.0",

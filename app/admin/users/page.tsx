@@ -1,18 +1,13 @@
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@clerk/nextjs/server";
 import { getAllUsers } from "@/lib/actions/admin/users";
 import { ToggleAdminButton } from "@/components/admin/ToggleAdminButton";
 import { Users as UsersIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default async function AdminUsersPage() {
-  const supabase = await createClient();
-  const {
-    data: { user: currentUser },
-  } = await supabase.auth.getUser();
-
+  const { userId: currentUserId } = await auth();
   const users = await getAllUsers();
-  const configured =
-    !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const configured = Boolean(process.env.CLERK_SECRET_KEY);
 
   return (
     <div>
@@ -22,7 +17,7 @@ export default async function AdminUsersPage() {
 
       {!configured && (
         <div className="mb-6 rounded-2xl bg-accent-blue/10 px-4 py-3 text-sm text-white/60">
-          Supabase isn&apos;t configured — see the README for setup.
+          Clerk secret key is not set. Add CLERK_SECRET_KEY to .env.local to manage users.
         </div>
       )}
 
@@ -30,7 +25,7 @@ export default async function AdminUsersPage() {
         <div className="glass rounded-2xl p-10 text-center">
           <UsersIcon size={28} className="mx-auto mb-3 text-white/30" />
           <p className="text-white/60">
-            {configured ? "No users yet." : "Connect Supabase to view users."}
+            {configured ? "No users found in Clerk." : "Connect Clerk to view users."}
           </p>
         </div>
       ) : (
@@ -43,7 +38,7 @@ export default async function AdminUsersPage() {
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-white">
                   {u.name || u.email}
-                  {u.id === currentUser?.id && (
+                  {u.id === currentUserId && (
                     <span className="ml-2 text-xs text-white/40">(you)</span>
                   )}
                 </p>
@@ -60,7 +55,7 @@ export default async function AdminUsersPage() {
                 {u.role}
               </span>
               <div className="shrink-0">
-                {u.id === currentUser?.id ? (
+                {u.id === currentUserId ? (
                   <span className="text-xs text-white/30">Can&apos;t modify yourself</span>
                 ) : (
                   <ToggleAdminButton userId={u.id} isAdmin={u.role === "admin"} />

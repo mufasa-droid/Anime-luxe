@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { auth } from "@clerk/nextjs/server";
 
 export async function getSavedCardsAction(): Promise<{
   cards?: Array<{
@@ -13,12 +13,9 @@ export async function getSavedCardsAction(): Promise<{
   error?: string;
 }> {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { userId } = await auth();
 
-    if (!user) {
+    if (!userId) {
       return { error: "You need to be signed in to view saved cards." };
     }
 

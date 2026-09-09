@@ -1,78 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useUser } from "@clerk/nextjs";
 
 export interface AuthUser {
+  id: string;
   email: string;
   name: string;
+  imageUrl?: string;
   isAdmin: boolean;
 }
 
-/**
- * Deliberately client-only: fetching the session server-side (via
- * cookies()) would force every page that renders the Navbar into dynamic
- * rendering, killing static generation for the homepage, /shop, and
- * product pages. Instead this resolves after hydration — a brief
- * "logged out" flash is an acceptable tradeoff for keeping the rest of
- * the site static. Swap to a server-fetched value later if/when the app
- * adopts Partial Prerendering.
- */
 export function useAuthUser() {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const { isLoaded, isSignedIn, user } = useUser();
 
-  useEffect(() => {
-    // If Supabase credentials are missing or placeholder, resolve immediately
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (!url || url.includes("placeholder")) {
-      setLoaded(true);
-      return;
-    }
+  if (!isLoaded) {
+    return { user: null, loaded: false, isSignedIn: false, clerkUser: null };
+  }
 
-    try {
-      const supabase = createClient();
+  if (!isSignedIn || !user) {
+    return { user: null, loaded: true, isSignedIn: false, clerkUser: null };
+  }
 
-      supabase.auth
-        .getUser()
-        .then(({ data, error }) => {
-          if (error || !data?.user) {
-            setUser(null);
-          } else {
-            setUser({
-              email: data.user.email ?? "",
-              name: (data.user.user_metadata?.full_name as string) ?? "",
-              isAdmin: data.user.app_metadata?.role === "admin",
-            });
-          }
-        })
-        .catch(() => {
-          setUser(null);
-        })
-        .finally(() => {
-          setLoaded(true);
-        });
+  const email =
+    user.primaryEmailAddress?.emailAddress ??
+    user.emailAddresses?.[0]?.emailAddress ??
+    "";
+  const name: string =
+    user.fullName ||
+    user.firstName ||
+    (email ? email.split("@")[0] : "Collector") ||
+    "Collector";
 
-      const {
-        data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
-        setUser(
-          session?.user
-            ? {
-                email: session.user.email ?? "",
-                name: (session.user.user_metadata?.full_name as string) ?? "",
-                isAdmin: session.user.app_metadata?.role === "admin",
-              }
-            : null
-        );
-        setLoaded(true);
-      });
+  const isAdmin = user.publicMetadata?.role === "admin";
 
-      return () => subscription?.unsubscribe();
-    } catch {
-      setLoaded(true);
-    }
-  }, []);
+  const authUser: AuthUser = {
+    id: user.id,
+    email,
+    name,
+    imageUrl: user.imageUrl,
+    isAdmin,
+  };
 
-  return { user, loaded };
+  return { user: authUser, loaded: true, isSignedIn: true, clerkUser: user };
 }
+
