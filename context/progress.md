@@ -13,10 +13,10 @@
 - [x] Update `AGENTS.md` to require reading these files
 
 ## Phase 1 — 3D Foundation
-- [ ] Verify existing framework/build setup
-- [ ] Install Three.js
-- [ ] Install React Three Fiber
-- [ ] Install Drei
+- [x] Verify existing framework/build setup
+- [x] Install Three.js
+- [x] Install React Three Fiber
+- [x] Install Drei
 - [ ] Install GSAP
 - [ ] Create first 3D scene
 - [ ] Render a basic object
