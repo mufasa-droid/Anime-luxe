@@ -1,7 +1,7 @@
 # Progress
 
 ## Status
-**Phase:** Planning — 3D integration has not started.
+**Phase:** Phase 1 — 3D Foundation (First 3D experiment implemented).
 
 ## Phase 0 — Context
 - [x] Create `context/`
@@ -18,10 +18,10 @@
 - [x] Install React Three Fiber
 - [x] Install Drei
 - [ ] Install GSAP
-- [ ] Create first 3D scene
-- [ ] Render a basic object
-- [ ] Add camera and lighting
-- [ ] Add basic interaction
+- [x] Create first 3D scene
+- [x] Render a basic object
+- [x] Add camera and lighting
+- [x] Add basic interaction
 
 ## Phase 2 — Assets
 - [ ] Learn GLB/GLTF
