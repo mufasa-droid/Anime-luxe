@@ -1,7 +1,7 @@
 # Progress
 
 ## Status
-**Phase:** Phase 1 — 3D Foundation (First 3D experiment implemented).
+**Phase:** Phase 2 — Assets (First GLB model loaded).
 
 ## Phase 0 — Context
 - [x] Create `context/`
@@ -24,9 +24,9 @@
 - [x] Add basic interaction
 
 ## Phase 2 — Assets
-- [ ] Learn GLB/GLTF
-- [ ] Add first GLB model
-- [ ] Add loading state
+- [x] Learn GLB/GLTF
+- [x] Add first GLB model
+- [x] Add loading state
 - [ ] Add error fallback
 - [ ] Optimize model
 - [ ] Test mobile performance
