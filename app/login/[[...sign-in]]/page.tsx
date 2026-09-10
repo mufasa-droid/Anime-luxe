@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-28 md:py-32">
+    <div className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden px-4 pt-32 pb-20 md:pt-36 md:pb-24">
       {/* Background Neon Ambient Glows */}
       <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-accent-purple/15 blur-[120px]" />
       <div className="pointer-events-none absolute -bottom-40 right-1/4 -z-10 h-[400px] w-[400px] rounded-full bg-accent-pink/15 blur-[120px]" />
@@ -32,7 +32,7 @@ export default function LoginPage() {
           <h1 className="font-heading text-2xl font-bold tracking-tight text-white md:text-3xl">
             Welcome to <span className="text-gradient">ANIME LUXE</span>
           </h1>
-          <p className="text-xs text-white/60">
+          <p className="text-xs text-white/70">
             Sign in with your email to access your orders, wishlist & collector perks.
           </p>
         </div>
