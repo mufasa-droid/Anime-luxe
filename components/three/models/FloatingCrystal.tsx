@@ -18,7 +18,7 @@ const MODEL_PATH = "/models/crystal/floating-energy-crystal.glb";
  * without triggering React state re-renders.
  */
 export function FloatingCrystal({
-  scale = 1.0,
+  scale = 1.25,
   position = [0, 0, 0],
 }: FloatingCrystalProps) {
   const { scene } = useGLTF(MODEL_PATH);
