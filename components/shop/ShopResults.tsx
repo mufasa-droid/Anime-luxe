@@ -37,7 +37,7 @@ export function ShopResults({
           </p>
         </div>
       ) : view === "grid" ? (
-        <div className="grid grid-cols-2 gap-5 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

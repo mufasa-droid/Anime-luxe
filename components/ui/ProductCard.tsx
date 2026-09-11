@@ -63,10 +63,10 @@ export function ProductCard({ product }: { product: Product }) {
         }}
         aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
         title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-        className="absolute right-3.5 top-3.5 z-20 rounded-full bg-black/45 p-2.5 backdrop-blur-md border border-white/10 text-white transition-all duration-200 hover:bg-black/70 hover:scale-110 active:scale-90"
+        className="absolute right-2.5 top-2.5 sm:right-3.5 sm:top-3.5 z-20 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-black/50 p-1.5 sm:p-2 backdrop-blur-md border border-white/10 text-white transition-all duration-200 hover:bg-black/70 hover:scale-110 active:scale-90"
       >
         <Heart
-          size={16}
+          size={15}
           className={cn(
             "transition-all duration-200",
             wishlisted
@@ -79,7 +79,7 @@ export function ProductCard({ product }: { product: Product }) {
       {(product.isNew || product.isLimited || product.isTrending) && (
         <span
           className={cn(
-            "absolute left-4 top-4 z-10 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider",
+            "absolute left-2.5 top-2.5 sm:left-4 sm:top-4 z-10 rounded-full px-2.5 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider",
             product.isLimited && "bg-accent-gold !text-slate-950 font-black",
             product.isNew && "bg-accent-blue text-white text-white-always",
             product.isTrending && !product.isNew && !product.isLimited && "bg-accent-pink text-white text-white-always"
@@ -89,7 +89,7 @@ export function ProductCard({ product }: { product: Product }) {
         </span>
       )}
 
-      <Link href={`/product/${product.slug}`}>
+      <Link href={`/product/${product.slug}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-base-800">
           <Image
             src={product.images[0] ?? "/placeholder-product.png"}
@@ -98,25 +98,25 @@ export function ProductCard({ product }: { product: Product }) {
             sizes="(max-width: 768px) 50vw, 25vw"
             className={cn(
               "object-cover transition-transform duration-700",
-              hovered && "scale-110"
+              hovered && "scale-105 sm:scale-110"
             )}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
         </div>
 
-        <div className="p-5">
-          <p className="text-xs uppercase tracking-wider text-white/40">
+        <div className="p-3 sm:p-5">
+          <p className="text-[10px] sm:text-xs uppercase tracking-wider text-white/40 truncate">
             {product.anime}
           </p>
-          <h3 className="mt-1 font-heading text-base font-medium text-white line-clamp-1">
+          <h3 className="mt-0.5 font-heading text-xs sm:text-base font-semibold text-white line-clamp-1">
             {product.title}
           </h3>
-          <div className="mt-3 flex items-center gap-2">
-            <span className="font-heading text-lg font-bold text-white">
+          <div className="mt-1.5 sm:mt-3 flex items-baseline gap-1.5 sm:gap-2">
+            <span className="font-heading text-sm sm:text-lg font-bold text-white">
               {formatCurrency(product.price)}
             </span>
             {product.compareAtPrice && (
-              <span className="text-sm text-white/40 line-through">
+              <span className="text-[11px] sm:text-sm text-white/40 line-through">
                 {formatCurrency(product.compareAtPrice)}
               </span>
             )}

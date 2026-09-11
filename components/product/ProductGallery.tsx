@@ -80,23 +80,23 @@ export function ProductGallery({
           }
         />
 
-        <div className="absolute right-4 top-4 flex gap-2">
+        <div className="absolute right-3.5 top-3.5 sm:right-4 sm:top-4 flex gap-2">
           {has360 && (
             <button
               onClick={() => setMode((m) => (m === "360" ? "gallery" : "360"))}
               className={cn(
-                "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium backdrop-blur-sm transition-colors",
+                "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium backdrop-blur-sm transition-colors shadow-md",
                 mode === "360"
                   ? "bg-accent-purple text-white"
-                  : "bg-black/40 text-white/80 hover:bg-black/60"
+                  : "bg-black/50 text-white/90 hover:bg-black/70 border border-white/15"
               )}
             >
               <RotateCw size={12} />
-              360°
+              <span>360°</span>
             </button>
           )}
           {mode === "gallery" && (
-            <span className="flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 text-xs text-white/60">
+            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 text-xs text-white/60 border border-white/10 backdrop-blur-sm">
               <ZoomIn size={12} />
               Hover to zoom
             </span>
@@ -104,14 +104,14 @@ export function ProductGallery({
         </div>
 
         {mode === "360" && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1 text-xs text-white/70">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/60 backdrop-blur-md px-3.5 py-1 text-xs text-white/80 border border-white/15 shadow-lg">
             Drag to rotate
           </div>
         )}
       </div>
 
       {images.length > 1 && (
-        <div className="mt-4 flex gap-3">
+        <div className="mt-3.5 sm:mt-4 flex gap-2.5 sm:gap-3 overflow-x-auto no-scrollbar pb-1">
           {images.map((img, i) => (
             <button
               key={img + i}
@@ -120,9 +120,9 @@ export function ProductGallery({
                 setMode("gallery");
               }}
               className={cn(
-                "relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border transition-colors",
+                "relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-xl border transition-colors",
                 i === activeIndex
-                  ? "border-accent-purple"
+                  ? "border-accent-purple ring-2 ring-accent-purple/30"
                   : "border-white/10 hover:border-white/30"
               )}
             >

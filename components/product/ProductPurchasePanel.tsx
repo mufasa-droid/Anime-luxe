@@ -88,16 +88,16 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
       <p className="text-xs uppercase tracking-wider text-white/40">
         {product.anime} · {product.category}
       </p>
-      <h1 className="mt-2 font-heading text-3xl font-bold text-white sm:text-4xl">
+      <h1 className="mt-1.5 font-heading text-2xl sm:text-4xl font-bold text-white">
         {product.title}
       </h1>
 
       <a
         href="#reviews"
-        className="mt-3 flex items-center gap-2 text-sm text-white/60 hover:text-white"
+        className="mt-2.5 flex items-center gap-2 text-xs sm:text-sm text-white/60 hover:text-white"
       >
         <span className="flex items-center gap-1">
-          <Star size={14} className="fill-accent-gold text-accent-gold" />
+          <Star size={13} className="fill-accent-gold text-accent-gold" />
           {product.rating}
         </span>
         <span className="text-white/30">·</span>
@@ -106,17 +106,17 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
         </span>
       </a>
 
-      <div className="mt-5 flex items-center gap-3">
-        <span className="font-heading text-3xl font-bold text-white">
+      <div className="mt-4 flex items-center gap-3">
+        <span className="font-heading text-2xl sm:text-3xl font-bold text-white">
           {formatCurrency(finalPrice)}
         </span>
         {product.compareAtPrice && (
-          <span className="text-lg text-white/40 line-through">
+          <span className="text-base sm:text-lg text-white/40 line-through">
             {formatCurrency(product.compareAtPrice)}
           </span>
         )}
         {product.compareAtPrice && (
-          <span className="rounded-full bg-accent-red/20 px-2 py-0.5 text-xs font-semibold text-accent-red">
+          <span className="rounded-full bg-accent-red/20 px-2.5 py-0.5 text-xs font-semibold text-accent-red border border-accent-red/30">
             Save{" "}
             {Math.round(
               ((product.compareAtPrice - product.price) / product.compareAtPrice) * 100
@@ -126,12 +126,12 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
         )}
       </div>
 
-      <p className="mt-5 text-white/60">{product.description}</p>
+      <p className="mt-4 text-xs sm:text-sm text-white/60 leading-relaxed">{product.description}</p>
 
       {/* Color picker */}
       {colors.length > 0 && (
-        <div className="mt-6">
-          <p className="mb-2 text-sm font-medium text-white/80">
+        <div className="mt-5 sm:mt-6">
+          <p className="mb-2 text-xs sm:text-sm font-medium text-white/80">
             Color{selectedColor ? `: ${selectedColor}` : ""}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -144,7 +144,7 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
                   onClick={() => setSelectedColor(color)}
                   disabled={!available}
                   className={cn(
-                    "rounded-full border px-4 py-2 text-sm transition-colors",
+                    "rounded-full border px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm transition-colors",
                     active
                       ? "border-accent-purple bg-accent-purple/20 text-accent-purple dark:text-white font-bold shadow-sm"
                       : "border-white/15 text-white/70 hover:border-white/30",
@@ -161,8 +161,8 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
 
       {/* Size picker */}
       {sizes.length > 0 && (
-        <div className="mt-6">
-          <p className="mb-2 text-sm font-medium text-white/80">
+        <div className="mt-5 sm:mt-6">
+          <p className="mb-2 text-xs sm:text-sm font-medium text-white/80">
             Size{selectedSize ? `: ${selectedSize}` : ""}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -175,7 +175,7 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
                   onClick={() => setSelectedSize(size)}
                   disabled={!available}
                   className={cn(
-                    "min-w-[48px] rounded-xl border px-3 py-2 text-sm transition-colors",
+                    "min-w-[44px] sm:min-w-[48px] rounded-xl border px-3 py-1.5 sm:py-2 text-xs sm:text-sm transition-colors",
                     active
                       ? "border-accent-purple bg-accent-purple/20 text-accent-purple dark:text-white font-bold shadow-sm"
                       : "border-white/15 text-white/70 hover:border-white/30",
@@ -191,19 +191,19 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
       )}
 
       {/* Quantity + CTA */}
-      <div ref={ctaRef} className="mt-8 flex items-center gap-3">
-        <div className="glass flex items-center rounded-full">
+      <div ref={ctaRef} className="mt-6 sm:mt-8 flex items-center gap-2.5 sm:gap-3">
+        <div className="glass flex items-center rounded-full border border-white/15">
           <button
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className="p-3 text-white/70 hover:text-white"
+            className="p-2.5 sm:p-3 text-white/70 hover:text-white"
             aria-label="Decrease quantity"
           >
             <Minus size={14} />
           </button>
-          <span className="w-8 text-center text-sm text-white">{quantity}</span>
+          <span className="w-7 sm:w-8 text-center text-xs sm:text-sm font-semibold text-white">{quantity}</span>
           <button
             onClick={() => setQuantity((q) => q + 1)}
-            className="p-3 text-white/70 hover:text-white"
+            className="p-2.5 sm:p-3 text-white/70 hover:text-white"
             aria-label="Increase quantity"
           >
             <Plus size={14} />
@@ -213,7 +213,7 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
         <MagneticButton
           onClick={handleAddToCart}
           disabled={!inStock}
-          className={cn("flex-1 disabled:cursor-not-allowed disabled:opacity-40")}
+          className={cn("flex-1 !py-3 !px-5 text-xs sm:text-sm disabled:cursor-not-allowed disabled:opacity-40")}
         >
           {!inStock ? (
             "Out of Stock"
@@ -231,7 +231,7 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
           onClick={() => toggleWishlist(product.id)}
           aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
           title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className="glass rounded-full p-4 border border-neutral-200 dark:border-white/15 text-neutral-700 dark:text-white/70 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/10 transition-all duration-200 active:scale-90 hover:scale-105"
+          className="glass flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-neutral-200 dark:border-white/15 text-neutral-700 dark:text-white/70 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-white/10 transition-all duration-200 active:scale-90 shrink-0 shadow-sm"
         >
           <Heart
             size={18}
@@ -251,9 +251,9 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
 
       {/* Sticky bar */}
       {showSticky && (
-        <div className="glass-strong fixed inset-x-0 bottom-0 z-40 border-t border-white/10 px-6 py-4 md:left-64">
-          <div className="mx-auto flex max-w-3xl items-center gap-4">
-            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-base-800">
+        <div className="glass-strong fixed inset-x-0 bottom-0 z-40 border-t border-white/15 px-4 py-3 sm:px-6 sm:py-4 shadow-2xl backdrop-blur-2xl pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
+          <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 sm:gap-4">
+            <div className="relative h-11 w-11 sm:h-12 sm:w-12 shrink-0 overflow-hidden rounded-xl bg-base-800 border border-white/10">
               <Image
                 src={product.images[0] ?? ""}
                 alt={product.title}
@@ -262,15 +262,15 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
               />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-white">
+              <p className="truncate text-xs sm:text-sm font-semibold text-white">
                 {product.title}
               </p>
-              <p className="text-sm text-white/50">{formatCurrency(finalPrice)}</p>
+              <p className="text-xs sm:text-sm font-bold text-accent-pink">{formatCurrency(finalPrice)}</p>
             </div>
             <MagneticButton
               onClick={handleAddToCart}
               disabled={!inStock}
-              className="shrink-0 !px-6 !py-2 text-sm disabled:opacity-40"
+              className="shrink-0 !px-5 sm:!px-6 !py-2.5 text-xs sm:text-sm disabled:opacity-40"
             >
               {!inStock ? "Out of Stock" : "Add to Cart"}
             </MagneticButton>

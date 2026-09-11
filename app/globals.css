@@ -55,16 +55,39 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Ultra sleek & thin */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 92, 246, 0.6) transparent;
+}
+
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 5px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-950);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #8b5cf6, #ec4899);
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.7), rgba(236, 72, 153, 0.7));
   border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #8b5cf6, #ec4899);
+}
+
+/* Utilities to cleanly hide scrollbars while maintaining smooth touch/swipe scrolling */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar,
+.scrollbar-hide {
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
 }
 
 /* Glassmorphism card */

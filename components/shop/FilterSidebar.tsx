@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useState, useTransition } from "react";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { setParam, toggleMultiParam } from "@/lib/shop/query";
 import { PRODUCT_CATEGORIES, ANIME_SERIES } from "@/lib/data/categories";
@@ -50,6 +50,7 @@ export function FilterSidebar({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [, startTransition] = useTransition();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const [priceMin, setPriceMin] = useState(
     activeFilters.priceMin?.toString() ?? ""
@@ -74,34 +75,60 @@ export function FilterSidebar({
     navigate(next.toString());
   }
 
-  const hasActiveFilters =
-    !!activeFilters.category ||
-    (activeFilters.anime?.length ?? 0) > 0 ||
-    (activeFilters.colors?.length ?? 0) > 0 ||
-    (activeFilters.sizes?.length ?? 0) > 0 ||
-    !!activeFilters.priceMin ||
-    !!activeFilters.priceMax ||
-    !!activeFilters.inStockOnly ||
-    !!activeFilters.discountedOnly ||
-    !!activeFilters.limitedOnly;
+  const activeCount =
+    (activeFilters.category ? 1 : 0) +
+    (activeFilters.anime?.length ?? 0) +
+    (activeFilters.colors?.length ?? 0) +
+    (activeFilters.sizes?.length ?? 0) +
+    (activeFilters.priceMin || activeFilters.priceMax ? 1 : 0) +
+    (activeFilters.inStockOnly ? 1 : 0) +
+    (activeFilters.discountedOnly ? 1 : 0) +
+    (activeFilters.limitedOnly ? 1 : 0);
+
+  const hasActiveFilters = activeCount > 0;
 
   return (
     <aside className="w-full shrink-0 md:w-64">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="font-heading text-lg font-bold text-white">Filters</h2>
-        {hasActiveFilters && (
-          <button
-            onClick={() => navigate("")}
-            className="flex items-center gap-1 text-xs text-white/50 hover:text-white"
-          >
-            Clear all <X size={12} />
-          </button>
-        )}
-      </div>
+      {/* Mobile Filter Trigger Button */}
+      <button
+        type="button"
+        onClick={() => setMobileOpen((v) => !v)}
+        className="glass mb-4 flex w-full items-center justify-between rounded-2xl p-4 md:hidden border border-white/15 shadow-md active:scale-98 transition-transform"
+      >
+        <span className="flex items-center gap-2 font-heading text-sm font-bold text-white">
+          <SlidersHorizontal size={16} className="text-accent-purple" />
+          <span>Filter & Refine</span>
+          {activeCount > 0 && (
+            <span className="rounded-full bg-accent-pink px-2 py-0.5 text-[10px] font-black text-white">
+              {activeCount}
+            </span>
+          )}
+        </span>
+        <span className="text-xs font-semibold text-accent-purple flex items-center gap-1">
+          {mobileOpen ? "Hide Filters" : `Show Filters (${resultCount})`}
+          <ChevronDown size={14} className={cn("transition-transform duration-200", mobileOpen && "rotate-180")} />
+        </span>
+      </button>
 
-      <p className="mb-4 text-xs text-white/40">
-        {resultCount} {resultCount === 1 ? "product" : "products"}
-      </p>
+      {/* Main Filter Content (Collapsible on mobile, static on desktop) */}
+      <div className={cn("space-y-1", !mobileOpen && "hidden md:block")}>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-heading text-base sm:text-lg font-bold text-white">
+            Filters {activeCount > 0 && `(${activeCount})`}
+          </h2>
+          {hasActiveFilters && (
+            <button
+              onClick={() => navigate("")}
+              className="flex items-center gap-1 text-xs font-medium text-accent-pink hover:underline"
+            >
+              Clear all <X size={12} />
+            </button>
+          )}
+        </div>
+
+        <p className="mb-4 text-xs text-white/50">
+          Showing {resultCount} {resultCount === 1 ? "product" : "products"}
+        </p>
 
       {/* Availability */}
       <FilterSection title="Availability">
@@ -272,9 +299,9 @@ export function FilterSidebar({
                     navigate(toggleMultiParam(searchParams, "size", size))
                   }
                   className={cn(
-                    "min-w-[36px] rounded-lg border px-2 py-1 text-xs transition-colors",
+                    "min-w-[36px] rounded-lg border px-2.5 py-1.5 text-xs transition-colors",
                     active
-                      ? "border-accent-purple bg-accent-purple/20 text-white"
+                      ? "border-accent-purple bg-accent-purple/20 text-white font-bold"
                       : "border-white/15 text-white/60 hover:border-white/30"
                   )}
                 >
@@ -285,6 +312,18 @@ export function FilterSidebar({
           </div>
         </FilterSection>
       )}
+
+      {/* Mobile-only Apply / Close button */}
+      <div className="pt-4 pb-2 md:hidden">
+        <button
+          type="button"
+          onClick={() => setMobileOpen(false)}
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-accent-purple to-accent-pink py-3 text-xs font-bold text-white shadow-lg active:scale-95 transition-transform"
+        >
+          <span>Show {resultCount} {resultCount === 1 ? "Product" : "Products"}</span>
+        </button>
+      </div>
+      </div>
     </aside>
   );
 }

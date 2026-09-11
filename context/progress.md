@@ -72,6 +72,17 @@
 
 ## Change Log
 ### 2026-09-11
+- Comprehensive Mobile Experience Optimization:
+  - Redesigned Navigation drawer with touch-friendly hitboxes, quick search, franchise links, and mobile-safe padding.
+  - Optimized Hero banner with fluid typography (`text-2xl xs:text-3xl sm:text-5xl`), touch drag carousel with mobile chevron tap buttons, full-width stacked CTAs, and hidden desktop-only playback controls.
+  - Enhanced Shop By Anime, CategoryGrid, and ProductRails with responsive 2-column mobile grids, mobile-proportional cards, and full-width mobile explore triggers.
+  - Adjusted Flash Sale countdown timer blocks to fit narrow screens (320px–375px) without wrapping, and fixed sale link routing.
+  - Streamlined Shop Catalog Toolbar by hiding desktop view-switch toggles, refining filters with a mobile "Show Products" drawer trigger, and tuning ProductCard typography and 36px touch targets.
+  - Enhanced Product Details page (`/product/[slug]`): gallery thumbnail horizontal swipe, mobile single-column review cards, fixed sticky Add-to-Cart bar offset and safe-area padding.
+  - Converted Account sidebar navigation into a horizontal swipeable pill bar on mobile (`/account/*`).
+  - Mobile-optimized CartDrawer and SearchModal with edge-to-edge sheet layouts and safe-area padding.
+  - Fixed corrupted Clerk publishable key string in `.env.local` to restore Next.js build verification.
+  - Successfully verified with TypeScript typecheck (`npx tsc --noEmit`) and full production build (`npm run build` - 106 static/SSG pages).
 - Implemented procedural `EnergyAura` component (`components/three/effects/EnergyAura.tsx`) with animated Fresnel shader shell, deterministic floating energy sparks, and subtle orbital flux rings.
 - Integrated `EnergyAura` cleanly into `FloatingCrystal.tsx` preserving all idle rotation, pointer reaction, and floating levitation.
 - Added uploaded franchise artwork to Shop by Anime categories (Naruto, One Piece, Solo Leveling, Dragon Ball, Chainsaw Man, Death Note, Baki, Mob Psycho 100, Vinland Saga, Blue Lock, One Punch Man, Tokyo Ghoul, Spy x Family, JoJo) and the main Anime Directory.

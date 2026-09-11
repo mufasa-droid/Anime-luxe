@@ -5,18 +5,18 @@ import { ANIME_SERIES } from "@/lib/data/categories";
 
 export function ShopByAnime() {
   return (
-    <section className="px-6 py-20 bg-base-950">
+    <section className="px-4 sm:px-6 py-12 sm:py-20 bg-base-950">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-6 sm:mb-10 flex flex-col gap-2 sm:gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-pink/40 bg-accent-pink/15 px-3.5 py-1 text-xs font-bold tracking-widest text-accent-pink shadow-sm">
-              <Sparkles size={12} />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-pink/40 bg-accent-pink/15 px-3 py-0.5 sm:px-3.5 sm:py-1 text-[11px] sm:text-xs font-bold tracking-widest text-accent-pink shadow-sm">
+              <Sparkles size={11} />
               ICONIC UNIVERSES
             </span>
-            <h2 className="mt-2.5 font-heading text-3xl sm:text-4xl font-black text-white tracking-tight drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]">
+            <h2 className="mt-2 font-heading text-2xl sm:text-4xl font-black text-white tracking-tight drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]">
               Shop by Anime
             </h2>
-            <p className="mt-1 text-sm font-medium text-neutral-200">
+            <p className="mt-1 text-xs sm:text-sm font-medium text-neutral-200">
               Select your favorite universe to explore exclusive themed drops & streetwear collections.
             </p>
           </div>
@@ -30,12 +30,12 @@ export function ShopByAnime() {
           </Link>
         </div>
 
-        <div className="scrollbar-hide flex gap-4 overflow-x-auto pb-4 -mx-6 px-6 sm:mx-0 sm:px-0">
+        <div className="scrollbar-hide flex gap-3 sm:gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scroll-pl-4 sm:scroll-pl-6">
           {ANIME_SERIES.map((series) => (
             <Link
               key={series.slug}
               href={`/anime/${series.slug}`}
-              className="group relative flex h-64 w-52 sm:h-72 sm:w-60 shrink-0 flex-col justify-between overflow-hidden rounded-2xl p-3 sm:p-3.5 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/20 bg-base-900 shadow-xl"
+              className="group relative flex h-60 w-44 sm:h-72 sm:w-60 shrink-0 flex-col justify-between overflow-hidden rounded-2xl p-2.5 sm:p-3.5 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/20 bg-base-900 shadow-xl snap-start"
             >
               {/* Background Franchise Image - Clean and Visible */}
               {series.image && (
@@ -76,6 +76,17 @@ export function ShopByAnime() {
               </div>
             </Link>
           ))}
+        </div>
+
+        {/* Mobile-only full width Explore All button */}
+        <div className="mt-6 block sm:hidden">
+          <Link
+            href="/anime"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-accent-purple/30 bg-accent-purple/10 py-3 text-xs font-bold text-accent-purple shadow-sm active:scale-98 transition-transform"
+          >
+            <span>Explore All 24 Anime Franchises</span>
+            <ArrowRight size={14} />
+          </Link>
         </div>
       </div>
     </section>

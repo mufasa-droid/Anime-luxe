@@ -55,32 +55,32 @@ export function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="glass-strong fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col border-l border-white/10 p-6"
+            className="glass-strong fixed right-0 top-0 z-[70] flex h-full w-full max-w-full sm:max-w-md flex-col border-l border-white/10 p-4 sm:p-6 pb-[calc(1rem+env(safe-area-inset-bottom,0px))]"
           >
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="font-heading text-xl font-bold text-white">
+            <div className="mb-4 sm:mb-6 flex items-center justify-between border-b border-white/10 pb-3">
+              <h2 className="font-heading text-lg sm:text-xl font-bold text-white">
                 Your Bag ({items.length})
               </h2>
-              <button onClick={closeCart} aria-label="Close cart">
-                <X className="text-white/70 hover:text-white" />
+              <button onClick={closeCart} aria-label="Close cart" className="rounded-full p-1.5 hover:bg-white/10 text-white/70 hover:text-white transition-colors">
+                <X size={20} />
               </button>
             </div>
 
-            <div className="flex-1 space-y-4 overflow-y-auto pr-1">
+            <div className="flex-1 space-y-3 overflow-y-auto pr-1">
               {items.length === 0 && (
                 <div className="mt-16 flex flex-col items-center justify-center text-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 text-white/30">
                     <CreditCard size={28} />
                   </div>
-                  <p className="mt-4 text-white/50">Your bag is empty.</p>
+                  <p className="mt-4 text-xs sm:text-sm text-white/50">Your bag is empty.</p>
                 </div>
               )}
               {items.map((item) => (
                 <div
                   key={item.variantId}
-                  className="glass flex gap-4 rounded-2xl p-3"
+                  className="glass flex gap-3 sm:gap-4 rounded-2xl p-2.5 sm:p-3 border border-white/10"
                 >
-                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-base-800">
+                  <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-xl bg-base-800 border border-white/10">
                     <Image
                       src={item.image}
                       alt={item.title}
@@ -88,17 +88,17 @@ export function CartDrawer() {
                       className="object-cover"
                     />
                   </div>
-                  <div className="flex flex-1 flex-col justify-between">
+                  <div className="flex flex-1 flex-col justify-between min-w-0">
                     <div>
-                      <p className="font-heading text-sm font-medium text-white">
+                      <p className="font-heading text-xs sm:text-sm font-semibold text-white truncate">
                         {item.title}
                       </p>
-                      <p className="text-xs text-white/50">
+                      <p className="text-[11px] text-white/50 truncate">
                         {[item.size, item.color].filter(Boolean).join(" / ")}
                       </p>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 rounded-full bg-white/5 border border-white/10 p-0.5">
                         <button
                           onClick={() =>
                             updateQuantity(
@@ -106,23 +106,23 @@ export function CartDrawer() {
                               Math.max(1, item.quantity - 1)
                             )
                           }
-                          className="rounded-full bg-white/10 p-1 hover:bg-white/20"
+                          className="rounded-full bg-white/10 p-1 hover:bg-white/20 active:scale-90"
                         >
-                          <Minus size={12} className="text-white" />
+                          <Minus size={11} className="text-white" />
                         </button>
-                        <span className="text-sm text-white">
+                        <span className="min-w-[18px] text-center text-xs font-semibold text-white">
                           {item.quantity}
                         </span>
                         <button
                           onClick={() =>
                             updateQuantity(item.variantId, item.quantity + 1)
                           }
-                          className="rounded-full bg-white/10 p-1 hover:bg-white/20"
+                          className="rounded-full bg-white/10 p-1 hover:bg-white/20 active:scale-90"
                         >
-                          <Plus size={12} className="text-white" />
+                          <Plus size={11} className="text-white" />
                         </button>
                       </div>
-                      <span className="font-heading text-sm text-white">
+                      <span className="font-heading text-xs sm:text-sm font-bold text-white shrink-0">
                         {formatCurrency(item.price * item.quantity)}
                       </span>
                     </div>
@@ -130,9 +130,9 @@ export function CartDrawer() {
                   <button
                     onClick={() => removeItem(item.variantId)}
                     aria-label="Remove item"
-                    className="self-start text-white/40 hover:text-accent-red"
+                    className="self-start text-white/40 hover:text-accent-red p-1"
                   >
-                    <Trash2 size={16} />
+                    <Trash2 size={15} />
                   </button>
                 </div>
               ))}

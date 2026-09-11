@@ -31,19 +31,19 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
   ]);
 
   return (
-    <div className="mx-auto max-w-7xl px-6 pb-24 pt-28 md:pt-32">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 pb-20 pt-20 sm:pt-28 md:pt-32">
       <Breadcrumbs items={[{ label: "Shop" }]} backHref="/" backLabel="Home" />
 
-      <div className="mb-10">
-        <h1 className="font-heading text-4xl font-bold text-neutral-900 dark:text-white sm:text-5xl">
+      <div className="mb-6 sm:mb-10">
+        <h1 className="font-heading text-2xl sm:text-4xl md:text-5xl font-bold text-neutral-900 dark:text-white">
           Shop All
         </h1>
-        <p className="mt-2 text-neutral-500 dark:text-white/50">
+        <p className="mt-1 text-xs sm:text-base text-neutral-500 dark:text-white/50">
           {total} products across every series and category
         </p>
       </div>
 
-      <div className="flex flex-col gap-10 md:flex-row">
+      <div className="flex flex-col gap-6 md:flex-row md:gap-10">
         <Suspense fallback={<div className="w-full md:w-64" />}>
           <FilterSidebar
             facets={facets}

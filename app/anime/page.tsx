@@ -22,7 +22,7 @@ export default async function AnimeDirectoryPage() {
   }, {} as Record<string, number>);
 
   return (
-    <div className="mx-auto max-w-7xl px-6 pb-24 pt-32">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 pb-20 pt-20 sm:pt-28 md:pt-32">
       <Breadcrumbs
         items={[{ label: "Shop by Anime" }]}
         backHref="/shop"
@@ -30,29 +30,29 @@ export default async function AnimeDirectoryPage() {
       />
 
       {/* Header Banner */}
-      <div className="mb-12 text-center lg:text-left">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-purple/30 bg-accent-purple/10 px-3.5 py-1 text-xs font-semibold tracking-widest text-accent-purple">
-          <Sparkles size={12} />
+      <div className="mb-8 sm:mb-12 text-center lg:text-left">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-purple/30 bg-accent-purple/10 px-3 py-0.5 sm:px-3.5 sm:py-1 text-[11px] sm:text-xs font-semibold tracking-widest text-accent-purple">
+          <Sparkles size={11} />
           FRANCHISE DIRECTORY
         </span>
-        <h1 className="mt-3 font-heading text-4xl font-extrabold tracking-tight text-neutral-900 dark:text-white sm:text-5xl">
+        <h1 className="mt-2.5 font-heading text-2xl sm:text-4xl font-extrabold tracking-tight text-neutral-900 dark:text-white md:text-5xl">
           Shop by Anime Universe
         </h1>
-        <p className="mt-2.5 max-w-2xl text-base text-neutral-600 dark:text-neutral-300">
+        <p className="mt-1.5 max-w-2xl text-xs sm:text-base text-neutral-600 dark:text-neutral-300">
           Discover exclusive designer streetwear, jewelry, and limited edition
           collector drops tailored for every legendary series.
         </p>
       </div>
 
       {/* Anime Grid */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5">
         {ANIME_SERIES.map((series) => {
           const count = countsByAnime[series.name] || 0;
           return (
             <Link
               key={series.slug}
               href={`/anime/${series.slug}`}
-              className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-3xl p-5 sm:p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-glow border border-white/15 bg-base-900 shadow-xl"
+              className="group relative flex min-h-[220px] sm:min-h-[260px] flex-col justify-between overflow-hidden rounded-3xl p-3.5 sm:p-5 transition-all duration-300 hover:scale-[1.02] hover:shadow-glow border border-white/15 bg-base-900 shadow-xl"
             >
               {/* Franchise Cover Background */}
               {series.image && (

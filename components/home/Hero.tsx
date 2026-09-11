@@ -221,12 +221,12 @@ export function Hero() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative flex min-h-[92vh] sm:min-h-screen items-center justify-center overflow-hidden bg-base-950 pt-24 pb-12 sm:pt-32 sm:pb-20"
+      className="relative flex min-h-[90vh] sm:min-h-screen items-center justify-center overflow-hidden bg-base-950 pt-20 pb-10 sm:pt-32 sm:pb-20"
     >
       {/* Dynamic Mouse-reactive atmospheric glow */}
       <motion.div
         style={{ left: glowX, top: glowY, backgroundColor: slide.glowColor }}
-        className="pointer-events-none absolute h-[400px] w-[400px] sm:h-[650px] sm:w-[650px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px] sm:blur-[140px] transition-colors duration-1000 opacity-60 sm:opacity-100"
+        className="pointer-events-none absolute h-[320px] w-[320px] sm:h-[650px] sm:w-[650px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[80px] sm:blur-[140px] transition-colors duration-1000 opacity-60 sm:opacity-100"
       />
 
       {/* Floating gradient orbs */}
@@ -247,11 +247,11 @@ export function Hero() {
       />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 w-full">
-        {/* Anime Universe Selector Tabs (Smooth horizontal scroll on mobile, wrap on desktop) */}
-        <div className="mb-6 sm:mb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
+        {/* Anime Universe Selector Tabs (Smooth horizontal swipe on mobile, wrap on desktop) */}
+        <div className="mb-4 sm:mb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
           <div
             ref={tabsScrollRef}
-            className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 sm:flex-wrap sm:justify-center"
+            className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar scrollbar-hide py-1 sm:flex-wrap sm:justify-center"
           >
             {HERO_SLIDES.map((s, idx) => (
               <button
@@ -260,7 +260,7 @@ export function Hero() {
                   setDragDirection(idx > activeIdx ? 1 : -1);
                   setActiveIdx(idx);
                 }}
-                className={`shrink-0 rounded-full px-3.5 sm:px-4 py-1.5 text-[11px] sm:text-xs font-semibold tracking-wide transition-all ${
+                className={`shrink-0 rounded-full px-2.5 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold tracking-wide transition-all ${
                   activeIdx === idx
                     ? "bg-accent-purple text-white shadow-glow scale-105"
                     : "glass text-white/70 hover:text-white hover:bg-white/10"
@@ -273,9 +273,9 @@ export function Hero() {
         </div>
 
         {/* Main Content Grid: Typography on Left, 3D Product Showcase on Right */}
-        <div className="grid items-center gap-8 lg:gap-12 lg:grid-cols-12">
+        <div className="grid items-center gap-6 lg:gap-12 lg:grid-cols-12">
           {/* Left Column: Story & CTAs */}
-          <div className="text-center lg:text-left lg:col-span-7 space-y-4 sm:space-y-6">
+          <div className="text-center lg:text-left lg:col-span-7 space-y-3.5 sm:space-y-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={slide.id}
@@ -283,7 +283,7 @@ export function Hero() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.45 }}
-                className="space-y-4 sm:space-y-6"
+                className="space-y-3.5 sm:space-y-6"
               >
                 <div>
                   <span
@@ -294,7 +294,7 @@ export function Hero() {
                   </span>
                 </div>
 
-                <h1 className="font-heading text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] tracking-tight text-white whitespace-pre-line break-words">
+                <h1 className="font-heading text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.12] sm:leading-[1.08] tracking-tight text-white whitespace-pre-line break-words">
                   {slide.title.split("\n")[0]}
                   <br />
                   <span
@@ -444,7 +444,7 @@ export function Hero() {
           </div>
 
           {/* Autoplay Pause/Play & Arrow Controls */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">
             <button
               onClick={() => setIsPaused((prev) => !prev)}
               aria-label={isPaused ? "Play carousel" : "Pause carousel"}

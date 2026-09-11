@@ -91,7 +91,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center px-4 pt-20 sm:pt-28">
+        <div className="fixed inset-0 z-[100] flex items-start justify-center px-3 pt-4 sm:px-4 sm:pt-24 pb-4">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -107,23 +107,23 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -10 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="glass-strong relative z-[110] flex w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-white/15 bg-base-950/90 shadow-2xl shadow-accent-purple/10"
+            className="glass-strong relative z-[110] flex w-full max-w-2xl max-h-[90vh] flex-col overflow-hidden rounded-2xl sm:rounded-3xl border border-white/15 bg-base-950/95 shadow-2xl shadow-accent-purple/10"
           >
             {/* Search Input Bar */}
             <form
               onSubmit={handleSearchSubmit}
-              className="relative flex items-center border-b border-white/10 px-5 py-4"
+              className="relative flex items-center border-b border-white/10 px-3.5 py-3 sm:px-5 sm:py-4"
             >
-              <Search size={22} className="shrink-0 text-accent-purple" />
+              <Search size={20} className="shrink-0 text-accent-purple" />
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search anime apparel, figures, jewelry, collections..."
-                className="w-full bg-transparent px-4 font-heading text-base text-white placeholder-white/40 focus:outline-none"
+                placeholder="Search anime apparel, figures, jewelry..."
+                className="w-full bg-transparent px-3 sm:px-4 font-heading text-sm sm:text-base text-white placeholder-white/40 focus:outline-none"
               />
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 {isPending && (
                   <Loader2
                     size={18}
@@ -185,10 +185,10 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 <div
                   key={product.id}
                   onClick={() => handleNavigate(`/product/${product.slug}`)}
-                  className="group flex cursor-pointer items-center justify-between gap-4 rounded-2xl p-2.5 transition-all hover:bg-white/10"
+                  className="group flex cursor-pointer items-center justify-between gap-2.5 sm:gap-4 rounded-2xl p-2 sm:p-2.5 transition-all hover:bg-white/10 active:bg-white/15"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-base-800 border border-white/10">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                    <div className="relative h-12 w-12 sm:h-14 sm:w-14 shrink-0 overflow-hidden rounded-xl bg-base-800 border border-white/10">
                       {product.image && (
                         <Image
                           src={product.image}
@@ -199,20 +199,20 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       )}
                     </div>
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="rounded-full bg-accent-purple/20 px-2 py-0.5 text-[10px] font-semibold text-accent-purple">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <span className="rounded-full bg-accent-purple/20 px-2 py-0.5 text-[9px] sm:text-[10px] font-semibold text-accent-purple truncate">
                           {product.anime}
                         </span>
-                        <span className="text-[10px] text-white/40">
+                        <span className="text-[9px] sm:text-[10px] text-white/40 truncate">
                           {product.category}
                         </span>
                       </div>
-                      <h4 className="truncate font-heading text-sm font-semibold text-white group-hover:text-accent-pink transition-colors">
+                      <h4 className="truncate font-heading text-xs sm:text-sm font-semibold text-white group-hover:text-accent-pink transition-colors mt-0.5">
                         {product.title}
                       </h4>
-                      <div className="flex items-center gap-2 text-xs text-white/50">
-                        <span className="flex items-center gap-1 text-amber-400">
-                          <Star size={11} className="fill-amber-400" />
+                      <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-white/50">
+                        <span className="flex items-center gap-0.5 text-amber-400 font-semibold">
+                          <Star size={10} className="fill-amber-400" />
                           {product.rating.toFixed(1)}
                         </span>
                         <span>•</span>
@@ -221,9 +221,9 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     </div>
                   </div>
 
-                  <div className="flex shrink-0 items-center gap-3 text-right">
+                  <div className="flex shrink-0 items-center gap-2 sm:gap-3 text-right">
                     <div>
-                      <span className="font-heading text-sm font-bold text-white">
+                      <span className="font-heading text-xs sm:text-sm font-bold text-white block">
                         {formatCurrency(product.price)}
                       </span>
                       {product.compareAtPrice && (
@@ -232,8 +232,8 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         </div>
                       )}
                     </div>
-                    <div className="rounded-full bg-white/5 p-2 text-white/30 transition-colors group-hover:bg-accent-purple/20 group-hover:text-accent-purple">
-                      <ArrowRight size={14} />
+                    <div className="rounded-full bg-white/5 p-1.5 sm:p-2 text-white/30 transition-colors group-hover:bg-accent-purple/20 group-hover:text-accent-purple">
+                      <ArrowRight size={13} />
                     </div>
                   </div>
                 </div>

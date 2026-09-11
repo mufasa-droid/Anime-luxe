@@ -81,15 +81,15 @@ export function Navbar() {
       <header
         className={cn(
           "fixed top-0 z-50 w-full transition-all duration-500",
-          scrolled ? "glass-strong py-3 shadow-lg" : "bg-transparent py-6"
+          scrolled ? "glass-strong py-2.5 sm:py-3 shadow-lg" : "bg-transparent py-4 sm:py-6"
         )}
       >
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6">
           <Link
             href="/"
-            className="font-heading text-xl font-bold tracking-tight text-white"
+            className="font-heading text-lg sm:text-xl font-bold tracking-tight text-white flex items-center gap-1"
           >
-            ANIME<span className="text-gradient">LUXE</span>
+            <span>ANIME</span><span className="text-gradient">LUXE</span>
           </Link>
 
           <div className="hidden items-center gap-8 md:flex">
@@ -104,19 +104,21 @@ export function Navbar() {
             ))}
           </div>
 
-          <div className="flex items-center gap-3 md:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-3 md:gap-4">
             <button
               aria-label="Search products"
               onClick={() => setSearchOpen(true)}
-              className="group flex items-center gap-2 text-white/80 transition-colors hover:text-white"
+              className="group flex h-9 w-9 sm:h-auto sm:w-auto items-center justify-center sm:justify-start gap-2 text-white/80 transition-colors hover:text-white rounded-full hover:bg-white/10"
             >
-              <Search size={20} className="transition-transform group-hover:scale-110" />
+              <Search size={19} className="transition-transform group-hover:scale-110" />
               <span className="hidden rounded-md border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-white/40 lg:inline-block">
                 ⌘K
               </span>
             </button>
 
-            <ThemeToggle />
+            <div className="hidden sm:block">
+              <ThemeToggle />
+            </div>
 
             {/* Desktop User Menu / Auth Buttons */}
             {user ? (
@@ -304,44 +306,48 @@ export function Navbar() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="glass-strong mt-4 overflow-hidden border-t border-white/10 md:hidden"
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="glass-strong mt-2 max-h-[calc(100vh-4.5rem)] overflow-y-auto border-t border-white/10 shadow-2xl backdrop-blur-2xl md:hidden pb-6"
             >
-              <div className="flex flex-col gap-4 px-6 py-6">
+              <div className="flex flex-col gap-3 px-4 py-4">
                 <button
                   type="button"
                   onClick={() => {
                     setMobileOpen(false);
                     setSearchOpen(true);
                   }}
-                  className="flex items-center gap-2.5 rounded-2xl bg-white/5 px-4 py-2.5 font-heading text-sm text-white/70 text-left border border-white/10"
+                  className="flex items-center gap-2.5 rounded-2xl bg-white/5 px-4 py-3 font-heading text-sm text-white/70 text-left border border-white/10 active:bg-white/10 transition-colors"
                 >
                   <Search size={16} className="text-accent-purple" />
-                  <span>Search anime gear...</span>
+                  <span>Search anime gear, collections...</span>
                 </button>
 
-                <Link
-                  href="/"
-                  className="flex items-center gap-2 font-heading font-semibold text-white/90"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <Home size={18} className="text-accent-pink" />
-                  <span>Home</span>
-                </Link>
-
-                {NAV_LINKS.map((link) => (
+                <div className="space-y-1 pt-1">
                   <Link
-                    key={link.href}
-                    href={link.href}
-                    className="font-heading text-white/80 transition-colors hover:text-white"
+                    href="/"
+                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 font-heading text-sm font-semibold text-white/90 active:bg-white/10 transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
-                    {link.label}
+                    <Home size={17} className="text-accent-pink" />
+                    <span>Home</span>
                   </Link>
-                ))}
 
-                <div className="flex items-center justify-between border-t border-white/10 pt-3">
-                  <span className="font-heading text-xs text-white/60">
-                    Theme Appearance
+                  {NAV_LINKS.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="flex items-center justify-between rounded-xl px-3 py-2.5 font-heading text-sm font-medium text-white/80 active:bg-white/10 transition-colors hover:text-white"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      <span>{link.label}</span>
+                      <ChevronDown size={14} className="-rotate-90 text-white/30" />
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="flex items-center justify-between rounded-2xl bg-white/5 border border-white/10 px-4 py-2.5 mt-1">
+                  <span className="font-heading text-xs font-semibold text-white/70">
+                    Appearance Theme
                   </span>
                   <ThemeToggle />
                 </div>

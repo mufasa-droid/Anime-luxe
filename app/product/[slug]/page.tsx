@@ -57,10 +57,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
     product.anime.toLowerCase().replace(/\s+/g, "-");
 
   return (
-    <div className="pt-28 md:pt-32">
+    <div className="pt-20 sm:pt-28 md:pt-32">
       <TrackRecentlyViewed product={product} />
 
-      <div className="mx-auto max-w-7xl px-6 pb-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 pb-12 sm:pb-16">
         <Breadcrumbs
           items={[
             { label: "Shop", href: "/shop" },
@@ -71,7 +71,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           backLabel="Back to Shop"
         />
 
-        <div className="grid gap-12 md:grid-cols-2">
+        <div className="grid gap-8 md:gap-12 md:grid-cols-2">
           <ProductGallery images={product.images} title={product.title} />
           <div>
             <ProductPurchasePanel product={product} />

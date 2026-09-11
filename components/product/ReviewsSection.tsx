@@ -34,23 +34,23 @@ export function ReviewsSection({
   const breakdown = getRatingBreakdown(reviews, reviewCount);
 
   return (
-    <section id="reviews" className="px-6 py-20">
+    <section id="reviews" className="px-4 sm:px-6 py-12 sm:py-20">
       <div className="mx-auto max-w-5xl">
-        <h2 className="mb-10 font-heading text-3xl font-bold text-white">
-          Reviews
+        <h2 className="mb-6 sm:mb-10 font-heading text-2xl sm:text-3xl font-bold text-white">
+          Customer Reviews
         </h2>
 
-        <div className="grid gap-10 md:grid-cols-[280px_1fr]">
-          <div className="glass h-fit rounded-2xl p-6">
+        <div className="grid gap-6 md:gap-10 md:grid-cols-[260px_1fr]">
+          <div className="glass h-fit rounded-2xl p-5 sm:p-6 border border-white/10 shadow-lg">
             <div className="text-center">
-              <p className="font-heading text-5xl font-bold text-white">
+              <p className="font-heading text-4xl sm:text-5xl font-bold text-white">
                 {rating.toFixed(1)}
               </p>
-              <div className="mt-2 flex justify-center">
-                <Stars rating={rating} size={18} />
+              <div className="mt-1.5 flex justify-center">
+                <Stars rating={rating} size={16} />
               </div>
-              <p className="mt-1 text-sm text-white/50">
-                {reviewCount.toLocaleString()} reviews
+              <p className="mt-1 text-xs sm:text-sm text-white/50">
+                {reviewCount.toLocaleString()} verified ratings
               </p>
             </div>
 

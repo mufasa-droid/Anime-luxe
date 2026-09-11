@@ -26,31 +26,31 @@ export function Newsletter() {
   }
 
   return (
-    <section className="px-6 py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <h2 className="font-heading text-3xl font-bold text-white sm:text-4xl">
+    <section className="px-4 sm:px-6 py-14 sm:py-24">
+      <div className="glass-strong mx-auto max-w-2xl rounded-3xl p-6 sm:p-10 text-center border border-white/10 shadow-xl">
+        <h2 className="font-heading text-2xl font-bold text-white sm:text-4xl">
           Never Miss a Drop
         </h2>
-        <p className="mt-3 text-white/50">
-          Join the list for early access to limited editions and restocks.
+        <p className="mt-2 text-xs sm:text-sm text-white/50 max-w-md mx-auto">
+          Join the elite collector circle for early access to limited streetwear editions and restocks.
         </p>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center"
+          className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center"
         >
           <input
             {...register("email")}
             type="email"
-            placeholder="you@email.com"
-            className="glass w-full rounded-full px-6 py-3 text-white placeholder:text-white/40 focus:outline-none sm:w-80"
+            placeholder="Enter your email address..."
+            className="glass w-full rounded-2xl sm:rounded-full px-5 py-3 text-sm text-white placeholder:text-white/40 focus:outline-none sm:w-80 border border-white/15"
           />
-          <MagneticButton type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Joining..." : isSubmitSuccessful ? "Joined!" : "Join"}
+          <MagneticButton type="submit" disabled={isSubmitting} className="w-full sm:w-auto !py-3 !px-8">
+            {isSubmitting ? "Joining..." : isSubmitSuccessful ? "Joined!" : "Join Drop List"}
           </MagneticButton>
         </form>
         {errors.email && (
-          <p className="mt-2 text-sm text-accent-red">{errors.email.message}</p>
+          <p className="mt-2 text-xs text-accent-red">{errors.email.message}</p>
         )}
       </div>
     </section>

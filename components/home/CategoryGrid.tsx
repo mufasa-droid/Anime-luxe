@@ -5,32 +5,32 @@ import { PRODUCT_CATEGORIES } from "@/lib/data/categories";
 
 export function CategoryGrid() {
   return (
-    <section className="px-6 py-20 bg-base-950">
+    <section className="px-4 sm:px-6 py-12 sm:py-20 bg-base-950">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-6 sm:mb-10 flex flex-col gap-2 sm:gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-purple/30 bg-accent-purple/10 px-3.5 py-1 text-xs font-semibold tracking-widest text-accent-purple">
-              <Sparkles size={12} />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-purple/30 bg-accent-purple/10 px-3 py-0.5 sm:px-3.5 sm:py-1 text-[11px] sm:text-xs font-semibold tracking-widest text-accent-purple">
+              <Sparkles size={11} />
               CURATED DEPARTMENTS
             </span>
-            <h2 className="mt-2.5 font-heading text-3xl font-bold text-white sm:text-4xl">
+            <h2 className="mt-2 font-heading text-2xl sm:text-4xl font-bold text-white">
               Popular Categories
             </h2>
-            <p className="mt-1 text-sm text-neutral-300">
+            <p className="mt-1 text-xs sm:text-sm text-neutral-300">
               Browse official inspired apparel, jewelry, limited accessories, and collector gear.
             </p>
           </div>
 
           <Link
             href="/shop"
-            className="group inline-flex items-center gap-2 text-xs font-semibold text-accent-purple hover:underline"
+            className="group inline-flex items-center gap-2 text-xs font-semibold text-accent-purple hover:underline self-start sm:self-auto"
           >
             <span>Explore Full Vault</span>
             <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {PRODUCT_CATEGORIES.map((cat) => (
             <Link
               key={cat.slug}

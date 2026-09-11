@@ -47,7 +47,7 @@ export function ShopToolbar({
   }
 
   return (
-    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mb-6 sm:mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <form onSubmit={handleSearchSubmit} className="relative w-full sm:max-w-xs">
         <Search
           size={16}
@@ -58,15 +58,15 @@ export function ShopToolbar({
           onChange={(e) => setQuery(e.target.value)}
           type="text"
           placeholder="Search products..."
-          className="glass w-full rounded-full py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/40 focus:outline-none"
+          className="glass w-full rounded-2xl sm:rounded-full py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-white/40 focus:outline-none border border-white/15"
         />
       </form>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
         <select
           value={currentSort}
           onChange={(e) => navigate(setParam(searchParams, "sort", e.target.value))}
-          className="glass rounded-full px-4 py-2.5 text-sm text-white focus:outline-none [&>option]:bg-base-900"
+          className="glass w-full sm:w-auto rounded-2xl sm:rounded-full px-4 py-2.5 text-xs sm:text-sm font-medium text-white focus:outline-none border border-white/15 [&>option]:bg-base-900"
         >
           {SORT_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -75,7 +75,8 @@ export function ShopToolbar({
           ))}
         </select>
 
-        <div className="glass flex rounded-full p-1">
+        {/* Desktop-only Grid/List view toggle */}
+        <div className="glass hidden sm:flex rounded-full p-1 border border-white/15">
           <button
             onClick={() => onViewChange("grid")}
             aria-label="Grid view"
