@@ -238,10 +238,10 @@ export function Hero() {
 
       {/* Cyber Grid background */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.04] dark:opacity-[0.03] text-neutral-950 dark:text-white"
         style={{
           backgroundImage:
-            "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+            "linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg, currentColor 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
       />

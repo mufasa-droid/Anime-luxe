@@ -146,7 +146,7 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
                   className={cn(
                     "rounded-full border px-4 py-2 text-sm transition-colors",
                     active
-                      ? "border-accent-purple bg-accent-purple/20 text-white"
+                      ? "border-accent-purple bg-accent-purple/20 text-accent-purple dark:text-white font-bold shadow-sm"
                       : "border-white/15 text-white/70 hover:border-white/30",
                     !available && "cursor-not-allowed opacity-30 line-through"
                   )}
@@ -177,7 +177,7 @@ export function ProductPurchasePanel({ product }: { product: Product }) {
                   className={cn(
                     "min-w-[48px] rounded-xl border px-3 py-2 text-sm transition-colors",
                     active
-                      ? "border-accent-purple bg-accent-purple/20 text-white"
+                      ? "border-accent-purple bg-accent-purple/20 text-accent-purple dark:text-white font-bold shadow-sm"
                       : "border-white/15 text-white/70 hover:border-white/30",
                     !available && "cursor-not-allowed opacity-30 line-through"
                   )}
