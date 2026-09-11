@@ -9,19 +9,6 @@ import { Sparkles, ArrowRight, ChevronLeft, ChevronRight, Star, Flame, Pause, Pl
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { formatCurrency } from "@/lib/utils";
 
-// Lazy-load client-only 3D Canvas scene to isolate WebGL from SSR
-const HeroScene = dynamic(
-  () => import("@/components/three/scenes/HeroScene").then((mod) => mod.HeroScene),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex h-full w-full items-center justify-center">
-        <div className="h-6 w-6 rounded-full border-2 border-accent-purple/30 border-t-accent-purple animate-spin" />
-      </div>
-    ),
-  }
-);
-
 interface HeroSlide {
   id: string;
   tabLabel: string;
@@ -343,24 +330,6 @@ export function Hero() {
                 </div>
               </motion.div>
             </AnimatePresence>
-
-            {/* 3D Scene Viewport (Phase 1 Experiment) */}
-            <div className="pt-2 sm:pt-4 max-w-sm mx-auto lg:mx-0">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm p-3">
-                <div className="flex items-center justify-between px-1 pb-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-white/60">
-                      3D Core • Phase 1
-                    </span>
-                  </div>
-                  <span className="text-[10px] font-mono text-white/30">Interactive R3F</span>
-                </div>
-                <div className="h-28 sm:h-36 w-full overflow-hidden rounded-xl bg-base-950/60 border border-white/5">
-                  <HeroScene />
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Right Column: Touch-Swipeable 3D Floating Merchandise Card */}
