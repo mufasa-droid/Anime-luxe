@@ -679,7 +679,7 @@ export default function AdminCategoriesPage() {
                     <p className="font-heading font-semibold text-sm text-neutral-900 dark:text-white">
                       {cat.name}
                     </p>
-                    <p className="text-xs text-neutral-500 dark:text-white/40 truncate max-w-sm">
+                    <p className="text-xs text-neutral-600 dark:text-neutral-300 truncate max-w-sm">
                       {cat.description || `/shop?category=${cat.slug}`}
                     </p>
                   </div>
