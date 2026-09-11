@@ -5,9 +5,12 @@ import { useFrame } from "@react-three/fiber";
 import { useGLTF, Center } from "@react-three/drei";
 import * as THREE from "three";
 
+import { EnergyAura } from "../effects/EnergyAura";
+
 export interface FloatingCrystalProps {
   scale?: number;
   position?: [number, number, number];
+  auraIntensity?: number;
 }
 
 const MODEL_PATH = "/models/crystal/floating-energy-crystal.glb";
@@ -20,6 +23,7 @@ const MODEL_PATH = "/models/crystal/floating-energy-crystal.glb";
 export function FloatingCrystal({
   scale = 1.25,
   position = [0, 0, 0],
+  auraIntensity = 0.8,
 }: FloatingCrystalProps) {
   const { scene } = useGLTF(MODEL_PATH);
   const groupRef = useRef<THREE.Group>(null);
@@ -55,6 +59,7 @@ export function FloatingCrystal({
       <Center>
         <primitive object={scene} />
       </Center>
+      <EnergyAura intensity={auraIntensity} />
     </group>
   );
 }

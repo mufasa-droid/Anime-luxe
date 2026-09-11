@@ -40,7 +40,7 @@
 
 ## Phase 4 — Effects
 - [ ] Particle foundation
-- [ ] Energy effect
+- [x] Energy effect (Procedural EnergyAura around FloatingCrystal)
 - [ ] Water-style effect
 - [ ] Trail effect
 - [ ] Glow/lighting effect
@@ -71,6 +71,10 @@
 - [ ] Final UX review
 
 ## Change Log
+### 2026-09-11
+- Implemented procedural `EnergyAura` component (`components/three/effects/EnergyAura.tsx`) with animated Fresnel shader shell, deterministic floating energy sparks, and subtle orbital flux rings.
+- Integrated `EnergyAura` cleanly into `FloatingCrystal.tsx` preserving all idle rotation, pointer reaction, and floating levitation.
+
 ### 2026-09-09
 - Established the 3D learning/build direction.
 - Decided to integrate 3D incrementally into the existing anime merchandise website.
