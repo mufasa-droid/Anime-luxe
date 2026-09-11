@@ -9,21 +9,21 @@ export function ShopByAnime() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-pink/30 bg-accent-pink/10 px-3.5 py-1 text-xs font-semibold tracking-widest text-accent-pink">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-pink/40 bg-accent-pink/15 px-3.5 py-1 text-xs font-bold tracking-widest text-accent-pink shadow-sm">
               <Sparkles size={12} />
               ICONIC UNIVERSES
             </span>
-            <h2 className="mt-2.5 font-heading text-3xl font-bold text-white sm:text-4xl">
+            <h2 className="mt-2.5 font-heading text-3xl sm:text-4xl font-black text-white tracking-tight drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]">
               Shop by Anime
             </h2>
-            <p className="mt-1 text-sm text-neutral-300">
+            <p className="mt-1 text-sm font-medium text-neutral-200">
               Select your favorite universe to explore exclusive themed drops & streetwear collections.
             </p>
           </div>
 
           <Link
             href="/anime"
-            className="group hidden sm:inline-flex items-center gap-2 text-xs font-semibold text-accent-purple hover:underline"
+            className="group hidden sm:inline-flex items-center gap-2 text-xs font-bold text-accent-purple hover:text-white transition-colors"
           >
             <span>View All Franchises</span>
             <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
@@ -35,39 +35,43 @@ export function ShopByAnime() {
             <Link
               key={series.slug}
               href={`/anime/${series.slug}`}
-              className="group relative flex h-52 w-72 shrink-0 flex-col justify-end overflow-hidden rounded-3xl p-3 sm:p-4 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/15 bg-base-900 shadow-xl"
+              className="group relative flex h-64 w-52 sm:h-72 sm:w-60 shrink-0 flex-col justify-between overflow-hidden rounded-2xl p-3 sm:p-3.5 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/20 bg-base-900 shadow-xl"
             >
-              {/* Background Franchise Image */}
+              {/* Background Franchise Image - Clean and Visible */}
               {series.image && (
                 <Image
                   src={series.image}
                   alt={series.name}
                   fill
-                  sizes="288px"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  sizes="240px"
+                  className="object-cover object-top sm:object-center transition-transform duration-700 ease-out group-hover:scale-105"
                 />
               )}
 
-              {/* Dynamic Gradient Overlay ensuring rich dark backing behind text */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/65 via-45% to-black/20 transition-opacity duration-300 group-hover:from-black/98 group-hover:via-black/75" />
+              {/* Subtle Bottom Vignette so artwork is clearly visible while text has contrast */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 via-40% to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-black/95" />
 
-              {/* High-Contrast Frosted Scrim Content Box */}
-              <div className="relative z-10 w-full rounded-2xl bg-black/80 backdrop-blur-md p-3 border border-white/20 shadow-2xl transition-colors group-hover:bg-black/90 group-hover:border-accent-pink/60">
-                <div className="flex items-center gap-2 mb-1">
-                  <span
-                    className="h-1.5 w-6 rounded-full transition-all duration-300 group-hover:w-10 shadow-sm"
-                    style={{ backgroundColor: series.color }}
-                  />
-                  <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-neutral-200 drop-shadow-[0_1px_3px_rgba(0,0,0,1)]">
-                    Universe
-                  </span>
+              {/* Compact Floating Universe Pill at Top */}
+              <div className="relative z-10 self-start flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 border border-white/20 shadow-md">
+                <span
+                  className="h-2 w-2 rounded-full shadow-sm"
+                  style={{ backgroundColor: series.color }}
+                />
+                <span className="text-[10px] font-mono font-black uppercase tracking-wider text-white">
+                  Universe
+                </span>
+              </div>
+
+              {/* Moderate & Sleek High-Contrast Bottom Content Box */}
+              <div className="relative z-10 w-full rounded-xl bg-black/75 backdrop-blur-md px-3 py-2 sm:py-2.5 border border-white/20 shadow-xl transition-all group-hover:bg-black/85 group-hover:border-accent-pink/50">
+                <div className="flex items-center justify-between gap-1.5">
+                  <h3 className="font-heading text-sm sm:text-base font-black text-white group-hover:text-accent-pink transition-colors truncate drop-shadow-[0_2px_4px_rgba(0,0,0,1)] tracking-wide">
+                    {series.name}
+                  </h3>
+                  <ArrowRight size={13} className="transition-transform group-hover:translate-x-1 text-accent-pink shrink-0" />
                 </div>
-                <h3 className="font-heading text-base sm:text-lg font-black text-white group-hover:text-accent-pink transition-colors line-clamp-1 drop-shadow-[0_2px_6px_rgba(0,0,0,1)] tracking-wide">
-                  {series.name}
-                </h3>
-                <p className="mt-0.5 text-xs text-neutral-100 font-semibold line-clamp-1 flex items-center justify-between drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
-                  <span>Explore Drops</span>
-                  <ArrowRight size={12} className="transition-transform group-hover:translate-x-1 text-accent-pink" />
+                <p className="text-[11px] text-neutral-200 font-medium line-clamp-1 drop-shadow-[0_1px_2px_rgba(0,0,0,1)]">
+                  Explore Drops
                 </p>
               </div>
             </Link>

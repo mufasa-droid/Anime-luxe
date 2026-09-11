@@ -203,7 +203,7 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Tokyo Ghoul",
     slug: "tokyo-ghoul",
     color: "#EC4899",
-    image: "/images/products/itachi-tsukuyomi-hand-sign-split-hoodie.jpeg",
+    image: "/images/anime/tokyo-ghoul.png",
   },
   {
     name: "Death Note",
@@ -251,13 +251,13 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Spy x Family",
     slug: "spy-x-family",
     color: "#EC4899",
-    image: "/images/products/killua-zoldyck-white-front-back-tee.jpeg",
+    image: "/images/anime/spy-x-family.jpg",
   },
   {
     name: "JoJo",
     slug: "jojo",
     color: "#F5B700",
-    image: "/images/products/kurapika-scarlet-eyes-chains-tee.jpeg",
+    image: "/images/anime/jojo.png",
   },
   {
     name: "Haikyuu",
@@ -281,6 +281,6 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "One Punch Man",
     slug: "one-punch-man",
     color: "#F5B700",
-    image: "/images/products/saitama-hero-uppercut-graphic-tee.jpeg",
+    image: "/images/anime/one-punch-man.png",
   },
 ];

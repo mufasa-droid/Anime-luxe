@@ -65,40 +65,40 @@ export default async function AnimeDirectoryPage() {
                 />
               )}
 
-              {/* Dynamic Gradient Overlay ensuring crisp readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 via-50% to-black/25 transition-opacity duration-300 group-hover:from-black/98 group-hover:via-black/75" />
+              {/* Dynamic Gradient Overlay - subtle at top, solid contrast at bottom */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 via-45% to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-black/95" />
 
               <div className="relative z-10 flex items-center justify-between">
-                <span className="inline-flex items-center gap-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-md">
+                <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-white shadow-md">
                   {count} {count === 1 ? "Drop" : "Drops"}
                 </span>
                 {count > 0 && (
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-accent-pink shadow-md">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-accent-pink shadow-md">
                     <Flame size={14} />
                   </span>
                 )}
               </div>
 
-              <div className="relative z-10 mt-6 rounded-2xl bg-black/65 backdrop-blur-md p-3.5 border border-white/15 shadow-xl transition-colors group-hover:bg-black/80 group-hover:border-accent-pink/40">
+              <div className="relative z-10 mt-6 rounded-2xl bg-black/75 backdrop-blur-md p-3 sm:p-3.5 border border-white/20 shadow-xl transition-all group-hover:bg-black/85 group-hover:border-accent-pink/50">
                 <div className="flex items-center gap-2 mb-1">
                   <span
-                    className="h-1.5 w-6 rounded-full transition-all duration-300 group-hover:w-10"
+                    className="h-1.5 w-6 rounded-full transition-all duration-300 group-hover:w-10 shadow-sm"
                     style={{ backgroundColor: series.color }}
                   />
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-300">
+                  <span className="text-[10px] font-mono font-black uppercase tracking-wider text-neutral-200">
                     Universe
                   </span>
                 </div>
-                <h3 className="font-heading text-lg sm:text-xl font-extrabold text-white group-hover:text-accent-pink transition-colors line-clamp-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                <h3 className="font-heading text-base sm:text-lg font-black text-white group-hover:text-accent-pink transition-colors line-clamp-1 drop-shadow-[0_2px_4px_rgba(0,0,0,1)] tracking-wide">
                   {series.name}
                 </h3>
-                <p className="mt-1 text-xs text-neutral-200 font-medium line-clamp-2 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                <p className="mt-0.5 text-xs text-neutral-200 font-medium line-clamp-1 drop-shadow-[0_1px_2px_rgba(0,0,0,1)]">
                   {count > 0
                     ? `Explore the complete ${series.name} vault.`
                     : `Upcoming ${series.name} drops.`}
                 </p>
 
-                <div className="mt-3 flex items-center justify-between border-t border-white/15 pt-2.5 text-xs font-semibold text-white/90 group-hover:text-white">
+                <div className="mt-2.5 flex items-center justify-between border-t border-white/15 pt-2 text-xs font-bold text-white group-hover:text-accent-pink transition-colors">
                   <span>View Collection</span>
                   <ArrowRight
                     size={13}

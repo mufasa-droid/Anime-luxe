@@ -35,7 +35,7 @@ export function CategoryGrid() {
             <Link
               key={cat.slug}
               href={`/shop?category=${cat.slug}`}
-              className="group relative flex aspect-square flex-col justify-end overflow-hidden rounded-3xl p-3 sm:p-4 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/20 bg-black shadow-xl"
+              className="group relative flex aspect-square flex-col justify-end overflow-hidden rounded-2xl p-2.5 sm:p-3 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/20 bg-base-900 shadow-xl"
             >
               {/* High-res background product image */}
               {cat.image && (
@@ -44,19 +44,19 @@ export function CategoryGrid() {
                   alt={cat.name}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-90"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 />
               )}
 
-              {/* Dynamic Gradient Overlay ensuring strong contrast across all image brightness levels */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/65 via-45% to-black/20 transition-opacity duration-300 group-hover:from-black/98 group-hover:via-black/75" />
+              {/* Gentle bottom gradient for clear image visibility and sharp text contrast */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 via-45% to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-black/95" />
 
-              {/* High-Contrast Frosted Scrim Content Box */}
-              <div className="relative z-10 w-full rounded-2xl bg-black/80 backdrop-blur-md p-2.5 sm:p-3 border border-white/20 shadow-2xl transition-colors group-hover:bg-black/90 group-hover:border-accent-pink/60">
-                <span className="font-heading text-sm sm:text-base font-black text-white group-hover:text-accent-pink transition-colors line-clamp-1 block drop-shadow-[0_2px_6px_rgba(0,0,0,1)] tracking-wide">
+              {/* Moderate & Sleek High-Contrast Frosted Content Box */}
+              <div className="relative z-10 w-full rounded-xl bg-black/75 backdrop-blur-md px-2.5 py-2 border border-white/20 shadow-xl transition-all group-hover:bg-black/85 group-hover:border-accent-pink/50">
+                <span className="font-heading text-xs sm:text-sm font-black text-white group-hover:text-accent-pink transition-colors line-clamp-1 block drop-shadow-[0_2px_4px_rgba(0,0,0,1)] tracking-wide">
                   {cat.name}
                 </span>
-                <p className="mt-0.5 text-[11px] sm:text-xs text-neutral-100 line-clamp-1 font-semibold drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
+                <p className="text-[10px] sm:text-[11px] text-neutral-200 line-clamp-1 font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,1)]">
                   {cat.description || "View drops"}
                 </p>
               </div>
