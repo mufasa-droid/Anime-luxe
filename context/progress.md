@@ -74,8 +74,8 @@
 ### 2026-09-11
 - Implemented procedural `EnergyAura` component (`components/three/effects/EnergyAura.tsx`) with animated Fresnel shader shell, deterministic floating energy sparks, and subtle orbital flux rings.
 - Integrated `EnergyAura` cleanly into `FloatingCrystal.tsx` preserving all idle rotation, pointer reaction, and floating levitation.
-- Added uploaded franchise artwork to Shop by Anime categories (Naruto, One Piece, Solo Leveling, Dragon Ball, Chainsaw Man, Death Note, Baki, Mob Psycho 100, Vinland Saga, Blue Lock) and the main Anime Directory.
-- Enhanced title and description text visibility across Shop by Anime, CategoryGrid, and FilterSidebar cards using heavy frosted glassmorphic scrim containers and bold text styling.
+- Added uploaded franchise artwork to Shop by Anime categories (Naruto, One Piece, Solo Leveling, Dragon Ball, Chainsaw Man, Death Note, Baki, Mob Psycho 100, Vinland Saga, Blue Lock, One Punch Man, Tokyo Ghoul, Spy x Family, JoJo) and the main Anime Directory.
+- Redesigned Shop by Anime and CategoryGrid card proportions: switched to portrait frames with gentle bottom vignettes, floating universe pills, and moderate sleek frosted caption bars so character artwork remains bright, prominent, and clearly visible.
 
 ### 2026-09-09
 - Established the 3D learning/build direction.
