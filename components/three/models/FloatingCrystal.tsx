@@ -27,6 +27,8 @@ export function FloatingCrystal({
 }: FloatingCrystalProps) {
   const { scene } = useGLTF(MODEL_PATH);
   const groupRef = useRef<THREE.Group>(null);
+  const dynamicIntensityRef = useRef<number>(auraIntensity);
+  const tempWorldPos = useRef(new THREE.Vector3());
 
   useFrame((state, delta) => {
     if (!groupRef.current) return;
@@ -52,6 +54,35 @@ export function FloatingCrystal({
       targetY,
       0.06
     );
+
+    // 4. Calculate pointer proximity to crystal in projected screen space (NDC: -1 to 1)
+    groupRef.current.getWorldPosition(tempWorldPos.current);
+    tempWorldPos.current.project(state.camera);
+
+    const dx = state.pointer.x - tempWorldPos.current.x;
+    const dy = state.pointer.y - tempWorldPos.current.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Proximity factor: 1.0 when pointer is right over crystal, 0.0 when distance >= maxProximityRadius
+    const maxProximityRadius = 0.95;
+    const rawProximity = THREE.MathUtils.clamp(
+      1.0 - distance / maxProximityRadius,
+      0.0,
+      1.0
+    );
+
+    // Smoothstep curve for natural organic falloff (no harsh threshold jumps)
+    const smoothProximity = rawProximity * rawProximity * (3.0 - 2.0 * rawProximity);
+
+    // Target intensity: modest +40% boost at closest proximity, returning to base auraIntensity when far
+    const targetIntensity = auraIntensity * (1.0 + smoothProximity * 0.4);
+
+    // Smooth interpolation to avoid abrupt visual changes
+    dynamicIntensityRef.current = THREE.MathUtils.lerp(
+      dynamicIntensityRef.current,
+      targetIntensity,
+      0.08
+    );
   });
 
   return (
@@ -59,7 +90,10 @@ export function FloatingCrystal({
       <Center>
         <primitive object={scene} />
       </Center>
-      <EnergyAura intensity={auraIntensity} />
+      <EnergyAura
+        intensity={auraIntensity}
+        dynamicIntensityRef={dynamicIntensityRef}
+      />
     </group>
   );
 }

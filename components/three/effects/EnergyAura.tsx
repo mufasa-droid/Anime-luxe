@@ -7,6 +7,8 @@ import * as THREE from "three";
 export interface EnergyAuraProps {
   /** Overall intensity multiplier for the aura (default: 0.8) */
   intensity?: number;
+  /** Dynamic intensity ref for real-time smooth animation without re-renders */
+  dynamicIntensityRef?: React.RefObject<number | null>;
   /** Scale multiplier for the aura bounds (default: 1.0) */
   scale?: number;
   /** Primary inner energy color (default: violet #8b5cf6) */
@@ -181,6 +183,7 @@ function createParticleGeometry(count: number): THREE.BufferGeometry {
  */
 export function EnergyAura({
   intensity = 0.8,
+  dynamicIntensityRef,
   scale = 1.0,
   colorViolet = "#8b5cf6",
   colorCyan = "#22d3ee",
@@ -226,6 +229,7 @@ export function EnergyAura({
   // Real-time animation loop (no React state updates)
   useFrame((state, delta) => {
     const elapsed = state.clock.elapsedTime;
+    const currentIntensity = dynamicIntensityRef?.current ?? intensity;
 
     // 1. Update shader uniforms safely with strict null checks
     if (shellMatRef.current?.uniforms) {
@@ -233,7 +237,7 @@ export function EnergyAura({
         shellMatRef.current.uniforms.uTime.value = elapsed;
       }
       if (shellMatRef.current.uniforms.uIntensity) {
-        shellMatRef.current.uniforms.uIntensity.value = intensity;
+        shellMatRef.current.uniforms.uIntensity.value = currentIntensity;
       }
     }
 
@@ -242,7 +246,7 @@ export function EnergyAura({
         particleMatRef.current.uniforms.uTime.value = elapsed;
       }
       if (particleMatRef.current.uniforms.uIntensity) {
-        particleMatRef.current.uniforms.uIntensity.value = intensity;
+        particleMatRef.current.uniforms.uIntensity.value = currentIntensity;
       }
     }
 
@@ -252,7 +256,7 @@ export function EnergyAura({
       ring1Ref.current.rotation.x = Math.sin(elapsed * 0.8) * 0.2 + 0.4;
       const ringMat = ring1Ref.current.material as THREE.MeshBasicMaterial;
       if (ringMat) {
-        ringMat.opacity = (0.15 + 0.08 * Math.sin(elapsed * 2.0)) * intensity;
+        ringMat.opacity = (0.15 + 0.08 * Math.sin(elapsed * 2.0)) * currentIntensity;
       }
     }
 
@@ -261,7 +265,7 @@ export function EnergyAura({
       ring2Ref.current.rotation.y = Math.cos(elapsed * 0.7) * 0.2 - 0.3;
       const ringMat = ring2Ref.current.material as THREE.MeshBasicMaterial;
       if (ringMat) {
-        ringMat.opacity = (0.12 + 0.06 * Math.cos(elapsed * 2.2)) * intensity;
+        ringMat.opacity = (0.12 + 0.06 * Math.cos(elapsed * 2.2)) * currentIntensity;
       }
     }
   });
