@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { ANIME_SERIES } from "@/lib/data/categories";
 import { getAllProducts } from "@/lib/data/products";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -37,7 +38,7 @@ export default async function AnimeDirectoryPage() {
         <h1 className="mt-3 font-heading text-4xl font-extrabold tracking-tight text-neutral-900 dark:text-white sm:text-5xl">
           Shop by Anime Universe
         </h1>
-        <p className="mt-2.5 max-w-2xl text-base text-neutral-600 dark:text-white/60">
+        <p className="mt-2.5 max-w-2xl text-base text-neutral-600 dark:text-neutral-300">
           Discover exclusive designer streetwear, jewelry, and limited edition
           collector drops tailored for every legendary series.
         </p>
@@ -51,44 +52,59 @@ export default async function AnimeDirectoryPage() {
             <Link
               key={series.slug}
               href={`/anime/${series.slug}`}
-              className="glass group relative flex flex-col justify-between overflow-hidden rounded-3xl p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-glow"
+              className="group relative flex min-h-[260px] flex-col justify-between overflow-hidden rounded-3xl p-5 sm:p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-glow border border-white/15 bg-base-900 shadow-xl"
             >
-              {/* Radial gradient background accent */}
-              <div
-                className="absolute inset-0 opacity-15 transition-opacity duration-300 group-hover:opacity-35"
-                style={{
-                  background: `radial-gradient(circle at 80% 20%, ${series.color}, transparent 75%)`,
-                }}
-              />
+              {/* Franchise Cover Background */}
+              {series.image && (
+                <Image
+                  src={series.image}
+                  alt={series.name}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                />
+              )}
 
-              <div className="relative z-10">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-neutral-200 dark:bg-white/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-neutral-800 dark:text-white">
-                    {count} {count === 1 ? "Drop" : "Drops"}
+              {/* Dynamic Gradient Overlay ensuring crisp readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 via-50% to-black/25 transition-opacity duration-300 group-hover:from-black/98 group-hover:via-black/75" />
+
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="inline-flex items-center gap-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-md">
+                  {count} {count === 1 ? "Drop" : "Drops"}
+                </span>
+                {count > 0 && (
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-accent-pink shadow-md">
+                    <Flame size={14} />
                   </span>
-                  {count > 0 && (
-                    <span className="text-accent-pink opacity-80">
-                      <Flame size={14} />
-                    </span>
-                  )}
-                </div>
+                )}
+              </div>
 
-                <h3 className="mt-6 font-heading text-xl font-bold text-neutral-900 dark:text-white transition-colors group-hover:text-accent-purple">
+              <div className="relative z-10 mt-6 rounded-2xl bg-black/65 backdrop-blur-md p-3.5 border border-white/15 shadow-xl transition-colors group-hover:bg-black/80 group-hover:border-accent-pink/40">
+                <div className="flex items-center gap-2 mb-1">
+                  <span
+                    className="h-1.5 w-6 rounded-full transition-all duration-300 group-hover:w-10"
+                    style={{ backgroundColor: series.color }}
+                  />
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-300">
+                    Universe
+                  </span>
+                </div>
+                <h3 className="font-heading text-lg sm:text-xl font-extrabold text-white group-hover:text-accent-pink transition-colors line-clamp-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                   {series.name}
                 </h3>
-                <p className="mt-1 text-xs text-neutral-500 dark:text-white/50">
+                <p className="mt-1 text-xs text-neutral-200 font-medium line-clamp-2 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
                   {count > 0
                     ? `Explore the complete ${series.name} vault.`
                     : `Upcoming ${series.name} drops.`}
                 </p>
-              </div>
 
-              <div className="relative z-10 mt-6 flex items-center justify-between border-t border-neutral-200 dark:border-white/10 pt-4 text-xs font-semibold text-neutral-700 dark:text-white/70 group-hover:text-neutral-900 dark:group-hover:text-white">
-                <span>View Collection</span>
-                <ArrowRight
-                  size={14}
-                  className="transition-transform group-hover:translate-x-1"
-                />
+                <div className="mt-3 flex items-center justify-between border-t border-white/15 pt-2.5 text-xs font-semibold text-white/90 group-hover:text-white">
+                  <span>View Collection</span>
+                  <ArrowRight
+                    size={13}
+                    className="transition-transform group-hover:translate-x-1 text-accent-pink"
+                  />
+                </div>
               </div>
             </Link>
           );

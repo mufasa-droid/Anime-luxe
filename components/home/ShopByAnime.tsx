@@ -5,7 +5,7 @@ import { ANIME_SERIES } from "@/lib/data/categories";
 
 export function ShopByAnime() {
   return (
-    <section className="px-6 py-20">
+    <section className="px-6 py-20 bg-base-950">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -16,7 +16,7 @@ export function ShopByAnime() {
             <h2 className="mt-2.5 font-heading text-3xl font-bold text-white sm:text-4xl">
               Shop by Anime
             </h2>
-            <p className="mt-1 text-sm text-white/60">
+            <p className="mt-1 text-sm text-neutral-300">
               Select your favorite universe to explore exclusive themed drops & streetwear collections.
             </p>
           </div>
@@ -35,7 +35,7 @@ export function ShopByAnime() {
             <Link
               key={series.slug}
               href={`/anime/${series.slug}`}
-              className="glass group relative flex h-48 w-64 shrink-0 flex-col justify-end overflow-hidden rounded-3xl p-5 transition-all duration-300 hover:scale-[1.03] border border-white/10 hover:border-white/25 shadow-lg"
+              className="group relative flex h-52 w-72 shrink-0 flex-col justify-end overflow-hidden rounded-3xl p-3 sm:p-4 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/15 bg-base-900 shadow-xl"
             >
               {/* Background Franchise Image */}
               {series.image && (
@@ -43,33 +43,32 @@ export function ShopByAnime() {
                   src={series.image}
                   alt={series.name}
                   fill
-                  sizes="256px"
+                  sizes="288px"
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                 />
               )}
 
-              {/* Dynamic Gradient & Tint Overlay */}
-              <div
-                className="absolute inset-0 transition-opacity duration-300 group-hover:opacity-60 opacity-30 mix-blend-screen"
-                style={{
-                  background: `radial-gradient(circle at 30% 20%, ${series.color}, transparent 75%)`,
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
+              {/* Dynamic Gradient Overlay ensuring rich dark backing behind text */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 via-50% to-black/20 transition-opacity duration-300 group-hover:from-black/98 group-hover:via-black/75" />
 
-              {/* Text & Content */}
-              <div className="relative z-10">
-                <span
-                  className="mb-1 inline-block h-1.5 w-6 rounded-full transition-all duration-300 group-hover:w-10"
-                  style={{ backgroundColor: series.color }}
-                />
-                <h3 className="font-heading text-lg font-bold text-white group-hover:text-accent-pink transition-colors line-clamp-1">
+              {/* High-Contrast Frosted Scrim Content Box */}
+              <div className="relative z-10 w-full rounded-2xl bg-black/65 backdrop-blur-md p-3 border border-white/15 shadow-xl transition-colors group-hover:bg-black/80 group-hover:border-accent-pink/40">
+                <div className="flex items-center gap-2 mb-1">
+                  <span
+                    className="h-1.5 w-6 rounded-full transition-all duration-300 group-hover:w-10"
+                    style={{ backgroundColor: series.color }}
+                  />
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-300">
+                    Universe
+                  </span>
+                </div>
+                <h3 className="font-heading text-base sm:text-lg font-extrabold text-white group-hover:text-accent-pink transition-colors line-clamp-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                   {series.name}
                 </h3>
-                <span className="flex items-center gap-1 text-[11px] font-medium text-white/60 group-hover:text-white/90 transition-colors">
+                <p className="mt-0.5 text-xs text-neutral-200 font-medium line-clamp-1 flex items-center justify-between drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
                   <span>Explore Drops</span>
-                  <ArrowRight size={11} className="transition-transform group-hover:translate-x-0.5" />
-                </span>
+                  <ArrowRight size={12} className="transition-transform group-hover:translate-x-1 text-accent-pink" />
+                </p>
               </div>
             </Link>
           ))}

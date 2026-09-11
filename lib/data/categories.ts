@@ -149,13 +149,13 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Naruto",
     slug: "naruto",
     color: "#F5B700",
-    image: "/images/products/itachi-blood-moon-crows-front-back-hoodie.jpeg",
+    image: "/images/anime/naruto.jpg",
   },
   {
     name: "One Piece",
     slug: "one-piece",
     color: "#EF4444",
-    image: "/images/products/trafalgar-law-heart-pirates-hoodie.jpeg",
+    image: "/images/anime/one-piece.jpg",
   },
   {
     name: "Bleach",
@@ -185,19 +185,19 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Solo Leveling",
     slug: "solo-leveling",
     color: "#3B82F6",
-    image: "/images/products/solo-leveling-arise-zip-jacket.jpeg",
+    image: "/images/anime/solo-leveling.png",
   },
   {
     name: "Dragon Ball",
     slug: "dragon-ball",
     color: "#F5B700",
-    image: "/images/products/naruto-uzumaki-believe-heavyweight-hoodie.jpeg",
+    image: "/images/anime/dragon-ball.jpg",
   },
   {
     name: "Chainsaw Man",
     slug: "chainsaw-man",
     color: "#EF4444",
-    image: "/images/products/killua-assassin-eyes-box-hoodie.jpeg",
+    image: "/images/anime/chainsaw-man.png",
   },
   {
     name: "Tokyo Ghoul",
