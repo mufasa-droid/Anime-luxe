@@ -49,23 +49,23 @@ export function ShopByAnime() {
               )}
 
               {/* Dynamic Gradient Overlay ensuring rich dark backing behind text */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 via-50% to-black/20 transition-opacity duration-300 group-hover:from-black/98 group-hover:via-black/75" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/65 via-45% to-black/20 transition-opacity duration-300 group-hover:from-black/98 group-hover:via-black/75" />
 
               {/* High-Contrast Frosted Scrim Content Box */}
-              <div className="relative z-10 w-full rounded-2xl bg-black/65 backdrop-blur-md p-3 border border-white/15 shadow-xl transition-colors group-hover:bg-black/80 group-hover:border-accent-pink/40">
+              <div className="relative z-10 w-full rounded-2xl bg-black/80 backdrop-blur-md p-3 border border-white/20 shadow-2xl transition-colors group-hover:bg-black/90 group-hover:border-accent-pink/60">
                 <div className="flex items-center gap-2 mb-1">
                   <span
-                    className="h-1.5 w-6 rounded-full transition-all duration-300 group-hover:w-10"
+                    className="h-1.5 w-6 rounded-full transition-all duration-300 group-hover:w-10 shadow-sm"
                     style={{ backgroundColor: series.color }}
                   />
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-300">
+                  <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-neutral-200 drop-shadow-[0_1px_3px_rgba(0,0,0,1)]">
                     Universe
                   </span>
                 </div>
-                <h3 className="font-heading text-base sm:text-lg font-extrabold text-white group-hover:text-accent-pink transition-colors line-clamp-1 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                <h3 className="font-heading text-base sm:text-lg font-black text-white group-hover:text-accent-pink transition-colors line-clamp-1 drop-shadow-[0_2px_6px_rgba(0,0,0,1)] tracking-wide">
                   {series.name}
                 </h3>
-                <p className="mt-0.5 text-xs text-neutral-200 font-medium line-clamp-1 flex items-center justify-between drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                <p className="mt-0.5 text-xs text-neutral-100 font-semibold line-clamp-1 flex items-center justify-between drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
                   <span>Explore Drops</span>
                   <ArrowRight size={12} className="transition-transform group-hover:translate-x-1 text-accent-pink" />
                 </p>

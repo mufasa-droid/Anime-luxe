@@ -209,7 +209,7 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Death Note",
     slug: "death-note",
     color: "#EF4444",
-    image: "/images/products/itachi-blood-moon-full-zip-jacket.jpeg",
+    image: "/images/anime/death-note.png",
   },
   {
     name: "Black Clover",
@@ -239,13 +239,13 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Baki",
     slug: "baki",
     color: "#DC2626",
-    image: "/images/products/baki-demon-back-swoosh-tee.jpeg",
+    image: "/images/anime/baki.png",
   },
   {
     name: "Mob Psycho 100",
     slug: "mob-psycho-100",
     color: "#8B5CF6",
-    image: "/images/products/mob-psycho-100-psychic-aura-tee.jpeg",
+    image: "/images/anime/mob-psycho-100.jpg",
   },
   {
     name: "Spy x Family",
@@ -269,13 +269,13 @@ export const ANIME_SERIES: AnimeMeta[] = [
     name: "Vinland Saga",
     slug: "vinland-saga",
     color: "#8B5CF6",
-    image: "/images/products/levi-ackerman-wings-of-freedom-hoodie.jpeg",
+    image: "/images/anime/vinland-saga.png",
   },
   {
     name: "Blue Lock",
     slug: "blue-lock",
     color: "#3B82F6",
-    image: "/images/products/hunter-license-double-x-fleece-shorts.jpeg",
+    image: "/images/anime/blue-lock.png",
   },
   {
     name: "One Punch Man",

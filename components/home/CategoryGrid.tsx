@@ -35,7 +35,7 @@ export function CategoryGrid() {
             <Link
               key={cat.slug}
               href={`/shop?category=${cat.slug}`}
-              className="group relative flex aspect-square flex-col justify-end overflow-hidden rounded-3xl p-3 sm:p-4 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/15 bg-base-900"
+              className="group relative flex aspect-square flex-col justify-end overflow-hidden rounded-3xl p-3 sm:p-4 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/20 bg-black shadow-xl"
             >
               {/* High-res background product image */}
               {cat.image && (
@@ -44,19 +44,19 @@ export function CategoryGrid() {
                   alt={cat.name}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-90"
                 />
               )}
 
               {/* Dynamic Gradient Overlay ensuring strong contrast across all image brightness levels */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 via-50% to-black/20 transition-opacity duration-300 group-hover:from-black/98 group-hover:via-black/75" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/65 via-45% to-black/20 transition-opacity duration-300 group-hover:from-black/98 group-hover:via-black/75" />
 
               {/* High-Contrast Frosted Scrim Content Box */}
-              <div className="relative z-10 w-full rounded-2xl bg-black/65 backdrop-blur-md p-2.5 sm:p-3 border border-white/15 shadow-xl transition-colors group-hover:bg-black/80 group-hover:border-accent-pink/40">
-                <span className="font-heading text-sm sm:text-base font-extrabold text-white group-hover:text-accent-pink transition-colors line-clamp-1 block drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+              <div className="relative z-10 w-full rounded-2xl bg-black/80 backdrop-blur-md p-2.5 sm:p-3 border border-white/20 shadow-2xl transition-colors group-hover:bg-black/90 group-hover:border-accent-pink/60">
+                <span className="font-heading text-sm sm:text-base font-black text-white group-hover:text-accent-pink transition-colors line-clamp-1 block drop-shadow-[0_2px_6px_rgba(0,0,0,1)] tracking-wide">
                   {cat.name}
                 </span>
-                <p className="mt-0.5 text-[11px] sm:text-xs text-neutral-200 line-clamp-1 font-medium drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                <p className="mt-0.5 text-[11px] sm:text-xs text-neutral-100 line-clamp-1 font-semibold drop-shadow-[0_2px_4px_rgba(0,0,0,1)]">
                   {cat.description || "View drops"}
                 </p>
               </div>

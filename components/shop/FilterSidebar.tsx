@@ -187,7 +187,7 @@ export function FilterSidebar({
           {PRODUCT_CATEGORIES.map((cat) => (
             <label
               key={cat.slug}
-              className="flex items-center gap-2 text-sm text-white/70"
+              className="flex items-center gap-2 text-sm font-medium text-neutral-200 hover:text-white transition-colors cursor-pointer"
             >
               <input
                 type="radio"
@@ -216,7 +216,7 @@ export function FilterSidebar({
           {ANIME_SERIES.map((series) => (
             <label
               key={series.slug}
-              className="flex items-center gap-2 text-sm text-white/70"
+              className="flex items-center gap-2 text-sm font-medium text-neutral-200 hover:text-white transition-colors cursor-pointer"
             >
               <input
                 type="checkbox"
