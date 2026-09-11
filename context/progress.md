@@ -76,6 +76,7 @@
 - Integrated `EnergyAura` cleanly into `FloatingCrystal.tsx` preserving all idle rotation, pointer reaction, and floating levitation.
 - Added uploaded franchise artwork to Shop by Anime categories (Naruto, One Piece, Solo Leveling, Dragon Ball, Chainsaw Man, Death Note, Baki, Mob Psycho 100, Vinland Saga, Blue Lock, One Punch Man, Tokyo Ghoul, Spy x Family, JoJo) and the main Anime Directory.
 - Redesigned Shop by Anime and CategoryGrid card proportions: switched to portrait frames with gentle bottom vignettes, floating universe pills, and moderate sleek frosted caption bars so character artwork remains bright, prominent, and clearly visible.
+- Audited and perfected light theme contrast: protected white text inside dark black glass containers, resolved neutral text contrast on light surfaces, enhanced active filter chips, inputs, and cyber grid background.
 
 ### 2026-09-09
 - Established the 3D learning/build direction.
