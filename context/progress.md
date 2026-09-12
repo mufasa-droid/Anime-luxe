@@ -71,6 +71,12 @@
 - [ ] Final UX review
 
 ## Change Log
+### 2026-09-12
+- Interactive Home Section Refinements:
+  - Enhanced `CategoryGrid` with progressive view toggle (`isExpanded`) showing 4 items on mobile / 12 on desktop by default with smooth expansion trigger for all 18 categories.
+  - Implemented interactive `ShopByAnime` carousel rail controls including play/pause auto-scroll toggle, desktop/mobile previous and next buttons, floating side navigation arrows, and snap-to-card touch scrolling.
+  - Fully verified Next.js 16 build across all 106 static & dynamic routes.
+
 ### 2026-09-11
 - Comprehensive Mobile Experience Optimization:
   - Redesigned Navigation drawer with touch-friendly hitboxes, quick search, franchise links, and mobile-safe padding.

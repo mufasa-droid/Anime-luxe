@@ -1,13 +1,81 @@
+"use client";
+
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Pause, Play, Sparkles } from "lucide-react";
 import { ANIME_SERIES } from "@/lib/data/categories";
 
 export function ShopByAnime() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  // Check scroll boundaries
+  const updateScrollButtons = useCallback(() => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+    setCanScrollLeft(scrollLeft > 10);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    updateScrollButtons();
+    el.addEventListener("scroll", updateScrollButtons, { passive: true });
+    window.addEventListener("resize", updateScrollButtons);
+    return () => {
+      el.removeEventListener("scroll", updateScrollButtons);
+      window.removeEventListener("resize", updateScrollButtons);
+    };
+  }, [updateScrollButtons]);
+
+  // Smooth scroll handler
+  const scroll = (direction: "left" | "right") => {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    const scrollAmount = Math.max(container.clientWidth * 0.75, 260);
+    container.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
+  // Auto-scroll loop
+  useEffect(() => {
+    if (isPaused) return;
+
+    const interval = setInterval(() => {
+      if (!scrollRef.current) return;
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+
+      // If reached the end, smoothly loop back to start
+      if (scrollLeft + clientWidth >= scrollWidth - 15) {
+        scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        const step = Math.max(clientWidth * 0.5, 240);
+        scrollRef.current.scrollBy({ left: step, behavior: "smooth" });
+      }
+    }, 4500);
+
+    return () => clearInterval(interval);
+  }, [isPaused]);
+
   return (
-    <section className="px-4 sm:px-6 py-12 sm:py-20 bg-base-950">
+    <section
+      className="px-4 sm:px-6 py-12 sm:py-20 bg-base-950 overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => {
+        // Resume after 4 seconds of inactivity
+        setTimeout(() => setIsPaused(false), 4000);
+      }}
+    >
       <div className="mx-auto max-w-7xl">
-        <div className="mb-6 sm:mb-10 flex flex-col gap-2 sm:gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-6 sm:mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-pink/40 bg-accent-pink/15 px-3 py-0.5 sm:px-3.5 sm:py-1 text-[11px] sm:text-xs font-bold tracking-widest text-accent-pink shadow-sm">
               <Sparkles size={11} />
@@ -21,65 +89,138 @@ export function ShopByAnime() {
             </p>
           </div>
 
-          <Link
-            href="/anime"
-            className="group hidden sm:inline-flex items-center gap-2 text-xs font-bold text-accent-purple hover:text-white transition-colors"
-          >
-            <span>View All Franchises</span>
-            <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-          </Link>
+          <div className="flex items-center justify-between sm:justify-end gap-3">
+            <Link
+              href="/anime"
+              className="group inline-flex items-center gap-2 text-xs font-bold text-accent-purple hover:text-white transition-colors"
+            >
+              <span>View All Franchises</span>
+              <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+            </Link>
+
+            {/* Carousel Navigation Arrow Controls */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <button
+                type="button"
+                onClick={() => setIsPaused((prev) => !prev)}
+                aria-label={isPaused ? "Play auto-scroll" : "Pause auto-scroll"}
+                title={isPaused ? "Play auto-scroll" : "Pause auto-scroll"}
+                className="hidden xs:flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full glass border border-white/20 text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              >
+                {isPaused ? <Play size={13} /> : <Pause size={13} />}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => scroll("left")}
+                disabled={!canScrollLeft}
+                aria-label="Scroll franchises left"
+                className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full glass border transition-all ${
+                  canScrollLeft
+                    ? "border-white/20 text-white hover:bg-white/10 hover:border-accent-pink/40 shadow-glow active:scale-95"
+                    : "border-white/5 text-white/25 cursor-not-allowed"
+                }`}
+              >
+                <ChevronLeft size={16} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => scroll("right")}
+                disabled={!canScrollRight}
+                aria-label="Scroll franchises right"
+                className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full glass border transition-all ${
+                  canScrollRight
+                    ? "border-white/20 text-white hover:bg-white/10 hover:border-accent-pink/40 shadow-glow active:scale-95"
+                    : "border-white/5 text-white/25 cursor-not-allowed"
+                }`}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="scrollbar-hide flex gap-3 sm:gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scroll-pl-4 sm:scroll-pl-6">
-          {ANIME_SERIES.map((series) => (
-            <Link
-              key={series.slug}
-              href={`/anime/${series.slug}`}
-              className="group relative flex h-60 w-44 sm:h-72 sm:w-60 shrink-0 flex-col justify-between overflow-hidden rounded-2xl p-2.5 sm:p-3.5 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/20 bg-base-900 shadow-xl snap-start"
-            >
-              {/* Background Franchise Image - Clean and Visible */}
-              {series.image && (
-                <Image
-                  src={series.image}
-                  alt={series.name}
-                  fill
-                  sizes="240px"
-                  className="object-cover object-top sm:object-center transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-              )}
+        {/* Carousel Rail with left & right floating touch buttons for fast mobile / desktop navigation */}
+        <div className="relative group/rail">
+          {/* Left Floating Overlay Arrow */}
+          <button
+            type="button"
+            onClick={() => scroll("left")}
+            aria-label="Previous anime cards"
+            className={`absolute left-2 top-1/2 -translate-y-1/2 z-20 hidden md:flex h-10 w-10 items-center justify-center rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-white shadow-2xl transition-all duration-300 hover:scale-110 hover:bg-black/90 ${
+              canScrollLeft ? "opacity-0 group-hover/rail:opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+          >
+            <ChevronLeft size={20} />
+          </button>
 
-              {/* Subtle Bottom Vignette so artwork is clearly visible while text has contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 via-40% to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-black/95" />
+          {/* Right Floating Overlay Arrow */}
+          <button
+            type="button"
+            onClick={() => scroll("right")}
+            aria-label="Next anime cards"
+            className={`absolute right-2 top-1/2 -translate-y-1/2 z-20 hidden md:flex h-10 w-10 items-center justify-center rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-white shadow-2xl transition-all duration-300 hover:scale-110 hover:bg-black/90 ${
+              canScrollRight ? "opacity-0 group-hover/rail:opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+          >
+            <ChevronRight size={20} />
+          </button>
 
-              {/* Compact Floating Universe Pill at Top */}
-              <div className="relative z-10 self-start flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 border border-white/20 shadow-md">
-                <span
-                  className="h-2 w-2 rounded-full shadow-sm"
-                  style={{ backgroundColor: series.color }}
-                />
-                <span className="text-[10px] font-mono font-black uppercase tracking-wider text-white">
-                  Universe
-                </span>
-              </div>
+          <div
+            ref={scrollRef}
+            className="scrollbar-hide no-scrollbar flex gap-3 sm:gap-4 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scroll-pl-4 sm:scroll-pl-6 scroll-smooth"
+          >
+            {ANIME_SERIES.map((series) => (
+              <Link
+                key={series.slug}
+                href={`/anime/${series.slug}`}
+                className="group relative flex h-60 w-44 sm:h-72 sm:w-60 shrink-0 flex-col justify-between overflow-hidden rounded-2xl p-2.5 sm:p-3.5 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/20 bg-base-900 shadow-xl snap-start"
+              >
+                {/* Background Franchise Image - Clean and Visible */}
+                {series.image && (
+                  <Image
+                    src={series.image}
+                    alt={series.name}
+                    fill
+                    sizes="240px"
+                    className="object-cover object-top sm:object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                )}
 
-              {/* Moderate & Sleek High-Contrast Bottom Content Box */}
-              <div className="relative z-10 w-full rounded-xl bg-black/75 backdrop-blur-md px-3 py-2 sm:py-2.5 border border-white/20 shadow-xl transition-all group-hover:bg-black/85 group-hover:border-accent-pink/50">
-                <div className="flex items-center justify-between gap-1.5">
-                  <h3 className="font-heading text-sm sm:text-base font-black text-white group-hover:text-accent-pink transition-colors truncate drop-shadow-[0_2px_4px_rgba(0,0,0,1)] tracking-wide">
-                    {series.name}
-                  </h3>
-                  <ArrowRight size={13} className="transition-transform group-hover:translate-x-1 text-accent-pink shrink-0" />
+                {/* Subtle Bottom Vignette so artwork is clearly visible while text has contrast */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 via-40% to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-black/95" />
+
+                {/* Compact Floating Universe Pill at Top */}
+                <div className="relative z-10 self-start flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 border border-white/20 shadow-md">
+                  <span
+                    className="h-2 w-2 rounded-full shadow-sm"
+                    style={{ backgroundColor: series.color }}
+                  />
+                  <span className="text-[10px] font-mono font-black uppercase tracking-wider text-white">
+                    Universe
+                  </span>
                 </div>
-                <p className="text-[11px] text-neutral-200 font-medium line-clamp-1 drop-shadow-[0_1px_2px_rgba(0,0,0,1)]">
-                  Explore Drops
-                </p>
-              </div>
-            </Link>
-          ))}
+
+                {/* Moderate & Sleek High-Contrast Bottom Content Box */}
+                <div className="relative z-10 w-full rounded-xl bg-black/75 backdrop-blur-md px-3 py-2 sm:py-2.5 border border-white/20 shadow-xl transition-all group-hover:bg-black/85 group-hover:border-accent-pink/50">
+                  <div className="flex items-center justify-between gap-1.5">
+                    <h3 className="font-heading text-sm sm:text-base font-black text-white group-hover:text-accent-pink transition-colors truncate drop-shadow-[0_2px_4px_rgba(0,0,0,1)] tracking-wide">
+                      {series.name}
+                    </h3>
+                    <ArrowRight size={13} className="transition-transform group-hover:translate-x-1 text-accent-pink shrink-0" />
+                  </div>
+                  <p className="text-[11px] text-neutral-200 font-medium line-clamp-1 drop-shadow-[0_1px_2px_rgba(0,0,0,1)]">
+                    Explore Drops
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
 
         {/* Mobile-only full width Explore All button */}
-        <div className="mt-6 block sm:hidden">
+        <div className="mt-4 block sm:hidden">
           <Link
             href="/anime"
             className="flex w-full items-center justify-center gap-2 rounded-2xl border border-accent-purple/30 bg-accent-purple/10 py-3 text-xs font-bold text-accent-purple shadow-sm active:scale-98 transition-transform"

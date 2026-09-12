@@ -1,9 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import { PRODUCT_CATEGORIES } from "@/lib/data/categories";
 
 export function CategoryGrid() {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <section className="px-4 sm:px-6 py-12 sm:py-20 bg-base-950">
       <div className="mx-auto max-w-7xl">
@@ -31,37 +36,64 @@ export function CategoryGrid() {
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {PRODUCT_CATEGORIES.map((cat) => (
-            <Link
-              key={cat.slug}
-              href={`/shop?category=${cat.slug}`}
-              className="group relative flex aspect-square flex-col justify-end overflow-hidden rounded-2xl p-2.5 sm:p-3 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/20 bg-base-900 shadow-xl"
-            >
-              {/* High-res background product image */}
-              {cat.image && (
-                <Image
-                  src={cat.image}
-                  alt={cat.name}
-                  fill
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-              )}
+          {PRODUCT_CATEGORIES.map((cat, idx) => {
+            // Display 2 rows on mobile (4 items) and 2 rows on desktop (12 items) when collapsed.
+            // Items with idx >= 4 are hidden on mobile unless expanded.
+            // Items with idx >= 12 are hidden on all screens unless expanded.
+            const isHiddenMobile = !isExpanded && idx >= 4;
+            const isHiddenDesktop = !isExpanded && idx >= 12;
 
-              {/* Gentle bottom gradient for clear image visibility and sharp text contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 via-45% to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-black/95" />
+            let visibilityClass = "flex";
+            if (isHiddenDesktop) {
+              visibilityClass = "hidden";
+            } else if (isHiddenMobile) {
+              visibilityClass = "hidden sm:flex";
+            }
 
-              {/* Moderate & Sleek High-Contrast Frosted Content Box */}
-              <div className="relative z-10 w-full rounded-xl bg-black/75 backdrop-blur-md px-2.5 py-2 border border-white/20 shadow-xl transition-all group-hover:bg-black/85 group-hover:border-accent-pink/50">
-                <span className="font-heading text-xs sm:text-sm font-black text-white group-hover:text-accent-pink transition-colors line-clamp-1 block drop-shadow-[0_2px_4px_rgba(0,0,0,1)] tracking-wide">
-                  {cat.name}
-                </span>
-                <p className="text-[10px] sm:text-[11px] text-neutral-200 line-clamp-1 font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,1)]">
-                  {cat.description || "View drops"}
-                </p>
-              </div>
-            </Link>
-          ))}
+            return (
+              <Link
+                key={cat.slug}
+                href={`/shop?category=${cat.slug}`}
+                className={`group relative aspect-square flex-col justify-end overflow-hidden rounded-2xl p-2.5 sm:p-3 transition-all duration-300 hover:scale-[1.03] hover:shadow-glow border border-white/20 bg-base-900 shadow-xl ${visibilityClass}`}
+              >
+                {/* High-res background product image */}
+                {cat.image && (
+                  <Image
+                    src={cat.image}
+                    alt={cat.name}
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                )}
+
+                {/* Gentle bottom gradient for clear image visibility and sharp text contrast */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 via-40% to-transparent pointer-events-none transition-opacity duration-300 group-hover:from-black/95" />
+
+                {/* Moderate & Sleek High-Contrast Frosted Content Box */}
+                <div className="relative z-10 w-full rounded-xl bg-black/75 backdrop-blur-md px-2.5 py-2 border border-white/20 shadow-xl transition-all group-hover:bg-black/85 group-hover:border-accent-pink/50">
+                  <span className="font-heading text-xs sm:text-sm font-black text-white group-hover:text-accent-pink transition-colors line-clamp-1 block drop-shadow-[0_2px_4px_rgba(0,0,0,1)] tracking-wide">
+                    {cat.name}
+                  </span>
+                  <p className="text-[10px] sm:text-[11px] text-neutral-200 line-clamp-1 font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,1)]">
+                    {cat.description || "View drops"}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Toggle Button for See More / See All */}
+        <div className="mt-6 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-white shadow-lg backdrop-blur-md transition-all active:scale-95 hover:border-accent-purple/50 hover:shadow-glow w-full sm:w-auto"
+          >
+            <span>{isExpanded ? "Show Fewer Categories" : `See All Categories (${PRODUCT_CATEGORIES.length})`}</span>
+            {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
         </div>
       </div>
     </section>
